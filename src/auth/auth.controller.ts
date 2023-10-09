@@ -1,34 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  Controller,
+  Post,
+  Body,
+  UnauthorizedException,
+  Req,
+  NotFoundException,
+} from '@nestjs/common';
+import { SignInDto } from './dto/login.dto';
+import { PersonRepository } from '../person/person.service';
+import { compareSync } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly personService: PersonRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('signin')
+  async login(@Body() loginDto: SignInDto) {
+    const person = await this.personService.findOneByPhoneNumber(
+      loginDto.phone_number,
+    );
+    if (person && person.password) {
+      if (compareSync(loginDto.password, person.password)) {
+        const payload = {
+          id: person.id,
+          type: person.type,
+        };
+        return {
+          access_token: this.jwtService.sign(payload, {
+            secret: process.env.ACCESS_TOKEN_SECRET,
+            expiresIn: '15p',
+          }),
+          refresh_token: this.jwtService.sign(payload, {
+            secret: process.env.REFRESH_TOKEN_SECRET,
+            expiresIn: '7d',
+          }),
+        };
+      }
+      throw new UnauthorizedException('Wrong phone number or password');
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @Post('token')
+  async generateToken(@Req() req) {
+    const payload = this.jwtService.verify(
+      req.headers.authorization.split(' ')[1],
+      { secret: process.env.REFRESH_TOKEN_SECRET },
+    );
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
+    const person = await this.personService.findOne(payload.id);
+    if (person) {
+      const payload = {
+        id: person.id,
+        type: person.type,
+      };
+      return {
+        access_token: this.jwtService.sign(payload, {
+          secret: process.env.ACCESS_TOKEN_SECRET,
+          expiresIn: '15p',
+        }),
+        refresh_token: this.jwtService.sign(payload, {
+          secret: process.env.REFRESH_TOKEN_SECRET,
+          expiresIn: '7d',
+        }),
+      };
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return new NotFoundException('Person not found');
   }
 }

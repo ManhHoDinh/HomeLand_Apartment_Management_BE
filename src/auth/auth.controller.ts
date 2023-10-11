@@ -1,9 +1,4 @@
-import {
-    Controller,
-    Post,
-    Body,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common";
 import { SignInDto } from "./dto/login.dto";
 import { PersonRepository } from "../person/person.service";
 import { compareSync } from "bcrypt";
@@ -18,32 +13,20 @@ export class AuthController {
         private readonly jwtService: JwtService
     ) {}
 
-    
     @Post("signin")
     async login(@Body() loginDto: SignInDto) {
-        const person =
-            await this.personService.findOneByEmail(
-                loginDto.email
-            );
+        const person = await this.personService.findOneByEmail(loginDto.email);
         if (person && person.password) {
-            if (
-                compareSync(
-                    loginDto.password,
-                    person.password
-                )
-            ) {
+            if (compareSync(loginDto.password, person.password)) {
                 const payload = {
                     id: person.id,
                     type: person.role,
                 };
                 return {
-                    access_token:
-                        this.jwtService.sign(payload),
+                    access_token: this.jwtService.sign(payload),
                 };
             }
         }
-        throw new UnauthorizedException(
-            "Wrong phone number or password"
-        );
+        throw new UnauthorizedException("Wrong email or password");
     }
 }

@@ -13,13 +13,16 @@ import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { MBtoBytes } from "./person/person.controller";
 import { ValidateFilePipe } from "./helper/pipe/validateFilePipe.pipe";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { CreateAccountDto } from "./account/dto/create-account.dto";
+import { AccountService } from "./account/account.service";
 
 @ApiTags("demo")
 @Controller()
 export class AppController {
     constructor(
         private readonly appService: AppService,
-        private readonly personRepository: PersonRepository
+        private readonly personRepository: PersonRepository,
+        private readonly accountService: AccountService
     ) {}
 
     @Get()
@@ -27,8 +30,13 @@ export class AppController {
         return this.appService.getHello();
     }
 
-    @ApiConsumes("multipart/form-data")
     @Post("/demo_account")
+    create(@Body() createAccountDto: CreateAccountDto) {
+        return this.accountService.create(createAccountDto);
+    }
+
+    @ApiConsumes("multipart/form-data")
+    @Post("/demo_person")
     @UseInterceptors(
         FileFieldsInterceptor([
             {

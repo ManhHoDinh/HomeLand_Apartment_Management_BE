@@ -1,16 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { createClient } from "@supabase/supabase-js";
-// import { MemoryStoredFile } from "nestjs-form-data";
 
 @Injectable()
 export class UploadService {
     readonly supabase = createClient(
-        "https://lmjxnelcwcqzrwiviyfl.supabase.co",
+        process.env.SUPABASE_URL || "supabaseurltest",
         process.env.SUPABASE_KEY || "supabasekeytest"
     );
 
     public BLOB_STORAGE_URL =
-        "https://lmjxnelcwcqzrwiviyfl.supabase.co/storage/v1/object/public/HomeLand/";
+        process.env.SUPABASE_URL + "/storage/v1/object/public/HomeLand";
 
     async upload(
         file: any,

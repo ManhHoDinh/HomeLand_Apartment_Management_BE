@@ -41,7 +41,7 @@ export class AppController {
             },
         ])
     )
-    createAdmin(
+    async createAdmin(
         @UploadedFiles(
             new ValidateFilePipe([
                 {
@@ -66,6 +66,6 @@ export class AppController {
             files.front_identify_card_photo_URL![0];
         createPersonDto.back_identify_card_photo_URL =
             files.back_identify_card_photo_URL![0];
-        return this.personRepository.create(createPersonDto);
+        return await this.personRepository.create(createPersonDto);
     }
 }

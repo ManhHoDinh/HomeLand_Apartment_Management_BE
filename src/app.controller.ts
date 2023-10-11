@@ -1,10 +1,18 @@
-import { Body, Controller, Get, Post, UploadedFiles } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    UploadedFiles,
+    UseInterceptors,
+} from "@nestjs/common";
 import { AppService } from "./app.service";
 import { PersonRepository } from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
 import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { MBtoBytes } from "./person/person.controller";
 import { ValidateFilePipe } from "./helper/pipe/validateFilePipe.pipe";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("demo")
 @Controller()
@@ -21,6 +29,18 @@ export class AppController {
 
     @ApiConsumes("multipart/form-data")
     @Post("/demo_account")
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            {
+                name: "front_identify_card_photo_URL",
+                maxCount: 1,
+            },
+            {
+                name: "back_identify_card_photo_URL",
+                maxCount: 1,
+            },
+        ])
+    )
     createAdmin(
         @UploadedFiles(
             new ValidateFilePipe([

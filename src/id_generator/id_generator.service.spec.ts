@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { IdGeneratorService } from './id_generator.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { IdGeneratorService } from "./id_generator.service";
 
-describe('IdGeneratorService', () => {
-  let service: IdGeneratorService;
+describe("IdGeneratorService", () => {
+    let service: IdGeneratorService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [IdGeneratorService],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [IdGeneratorService],
+        }).compile();
 
-    service = module.get<IdGeneratorService>(IdGeneratorService);
-  });
+        service = module.get<IdGeneratorService>(IdGeneratorService);
+    });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    it("should be defined", () => {
+        expect(service).toBeDefined();
+    });
 });

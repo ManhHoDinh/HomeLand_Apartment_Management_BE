@@ -1,8 +1,13 @@
-import { Module } from '@nestjs/common';
-import { IdGeneratorService } from './id_generator.service';
+import { Module } from "@nestjs/common";
+import { IdGenerator, IdGeneratorService } from "./id_generator.service";
 
 @Module({
-    providers: [IdGeneratorService],
-    exports: [IdGeneratorService]
+    providers: [
+        {
+            provide: IdGenerator,
+            useClass: IdGeneratorService,
+        },
+    ],
+    exports: [IdGenerator],
 })
-export class IdGeneratorModule { }
+export class IdGeneratorModule {}

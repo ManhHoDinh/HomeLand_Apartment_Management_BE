@@ -16,7 +16,6 @@ import { ValidateFilePipe } from "./helper/pipe/validateFilePipe.pipe";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./account/dto/create-account.dto";
 import { AccountService } from "./account/account.service";
-import { Auth } from "./helper/decorator/auth.decorator";
 
 @ApiTags("demo")
 @Controller()

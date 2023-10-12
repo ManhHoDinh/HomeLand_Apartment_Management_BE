@@ -27,6 +27,7 @@ export class JWTAuthGuard implements CanActivate {
                         payload.email
                     );
                     if (!user) return false;
+                    request.user = user;
                     return true;
                 } catch (error) {
                     console.error(error);

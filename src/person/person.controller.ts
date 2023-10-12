@@ -25,8 +25,8 @@ import { Person } from "./entities/person.entity";
 export const MBtoBytes = (mb: number) => mb * 1000000;
 
 @ApiTags("person")
-@ApiBearerAuth()
 @UseGuards(JWTAuthGuard)
+@ApiBearerAuth()
 @Controller("person")
 export class PersonController {
     constructor(private readonly personService: PersonRepository) {}

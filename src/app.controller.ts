@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Post,
+    Req,
     UploadedFiles,
     UseInterceptors,
 } from "@nestjs/common";
@@ -15,6 +16,7 @@ import { ValidateFilePipe } from "./helper/pipe/validateFilePipe.pipe";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./account/dto/create-account.dto";
 import { AccountService } from "./account/account.service";
+import { Auth } from "./helper/decorator/auth.decorator";
 
 @ApiTags("demo")
 @Controller()
@@ -81,5 +83,10 @@ export class AppController {
         createPersonDto.back_identify_card_photo_URL =
             files.back_identify_card_photo_URL![0];
         return await this.personRepository.create(createPersonDto);
+    }
+
+    @Get("/me")
+    getMe(@Req() req) {
+        return req.user;
     }
 }

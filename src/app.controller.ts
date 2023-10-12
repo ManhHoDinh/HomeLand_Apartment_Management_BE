@@ -30,11 +30,17 @@ export class AppController {
         return this.appService.getHello();
     }
 
+    /**
+     * Create account without need send token in header
+     */
     @Post("/demo_account")
     create(@Body() createAccountDto: CreateAccountDto) {
         return this.accountService.create(createAccountDto);
     }
 
+    /**
+     * Create person profile without need send token in header
+     */
     @ApiConsumes("multipart/form-data")
     @Post("/demo_person")
     @UseInterceptors(

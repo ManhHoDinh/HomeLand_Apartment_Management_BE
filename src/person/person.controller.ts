@@ -14,6 +14,7 @@ import {
     ApiBearerAuth,
     ApiConsumes,
     ApiCreatedResponse,
+    ApiOperation,
     ApiTags,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
@@ -34,9 +35,9 @@ export class PersonController {
      * Create person profile, only token from admin or manager can access this API
      * - Admin can create manager, manager, resident and techinician
      * - Manager can create resident and technician
-     * 
+     *
      * Other role can not create person profile */
-
+    @ApiOperation({ summary: "Create person profile" })
     @ApiConsumes("multipart/form-data")
     @ApiUnprocessableEntityResponse({
         description: "Email or phone number already exists",
@@ -85,6 +86,9 @@ export class PersonController {
         return this.personService.create(createPersonDto);
     }
 
+    @ApiOperation({
+        summary: "Get all person profile",
+    })
     @Get()
     findAll(): Promise<Person[]> {
         return this.personService.findAll();

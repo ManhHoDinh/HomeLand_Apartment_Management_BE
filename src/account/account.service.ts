@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Person } from "../person/entities/person.entity";
@@ -17,6 +21,8 @@ export class AccountService {
             where: { id: createAccountDto.id },
         });
         if (!person) throw new NotFoundException();
+        if (!person.password)
+            throw new ConflictException("Person profile already has account");
         person.email = createAccountDto.email;
         person.password = hashSync(createAccountDto.password, 13);
 

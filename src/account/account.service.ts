@@ -21,10 +21,10 @@ export class AccountService {
             where: { id: createAccountDto.id },
         });
         if (!person) throw new NotFoundException();
-        if (!person.password)
+        if (person.password)
             throw new ConflictException("Person profile already has account");
         person.email = createAccountDto.email;
-        person.password = hashSync(createAccountDto.password, 13);
+        person.password = hashSync(createAccountDto.password, 10);
 
         return await this.personRepository.save(person);
     }

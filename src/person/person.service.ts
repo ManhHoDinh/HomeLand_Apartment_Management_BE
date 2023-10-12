@@ -90,9 +90,25 @@ export class PersonService implements PersonRepository {
 
         let person = this.personRepository.create(rest);
         if (person.password) {
-            person.password = hashSync(person.password, 12);
+            person.password = hashSync(person.password, 10);
         }
-        person.id = "R" + this.idGenerator.generateId();
+        switch (createDto.role) {
+            case PersonRole.ADMIN:
+                person.id = "A" + this.idGenerator.generateId();
+                break;
+            case PersonRole.MANAGER:
+                person.id = "M" + this.idGenerator.generateId();
+                break;
+            case PersonRole.RESIDENT:
+                person.id = "R" + this.idGenerator.generateId();
+                break;
+            case PersonRole.TECHINICIAN:
+                person.id = "T" + this.idGenerator.generateId();
+                break;
+            default:
+                person.id = "U" + this.idGenerator.generateId();
+                break;
+        }
 
         try {
             const [dataFront, dataBack] = await Promise.all([

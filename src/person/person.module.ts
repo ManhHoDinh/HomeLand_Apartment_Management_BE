@@ -4,7 +4,6 @@ import { PersonController } from "./person.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Person } from "./entities/person.entity";
 import { IdGeneratorModule } from "../id_generator/id_generator.module";
-// import { NestjsFormDataModule } from "nestjs-form-data";
 import { UploadModule } from "../upload/upload.module";
 
 @Global()

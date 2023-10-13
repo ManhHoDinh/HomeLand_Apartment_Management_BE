@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from "@nestjs/common";
 import { CreatePersonDto } from "./dto/create-person.dto";
 import { UpdatePersonDto } from "./dto/update-person.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -10,6 +15,7 @@ import { UploadService } from "../upload/upload.service";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
+import { CreateAccountDto } from "./dto/create-account.dto";
 
 export abstract class PersonRepository extends BaseRepository<
     CreatePersonDto,
@@ -19,6 +25,10 @@ export abstract class PersonRepository extends BaseRepository<
     abstract create(
         createPersonDto: CreatePersonDto,
         creatorRole?: PersonRole
+    ): Promise<Person>;
+    abstract createAccount(
+        id: string,
+        createAccountDto: CreateAccountDto
     ): Promise<Person>;
 }
 
@@ -138,6 +148,22 @@ export class PersonService implements PersonRepository {
             console.error(error);
             throw error;
         }
+        return await this.personRepository.save(person);
+    }
+
+    async createAccount(
+        id: string,
+        createAccountDto: CreateAccountDto
+    ): Promise<Person> {
+        let person = await this.personRepository.findOne({
+            where: { id },
+        });
+        if (!person) throw new NotFoundException();
+        if (person.password)
+            throw new ConflictException("Person profile already has account");
+        person.email = createAccountDto.email;
+        person.password = hashSync(createAccountDto.password, 10);
+
         return await this.personRepository.save(person);
     }
 

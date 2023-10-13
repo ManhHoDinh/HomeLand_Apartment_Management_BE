@@ -6,6 +6,7 @@ import {
     UseGuards,
     Get,
     UploadedFiles,
+    Param,
 } from "@nestjs/common";
 import { PersonRepository } from "./person.service";
 import { CreatePersonDto } from "./dto/create-person.dto";
@@ -22,6 +23,8 @@ import { Person } from "./entities/person.entity";
 import { JWTAuthGuard } from "../helper/guard";
 import { ValidateFilePipe } from "../helper/pipe";
 import { MBtoBytes } from "../helper/validation";
+import { CreateAccountDto } from "./dto/create-account.dto";
+import { Auth } from "../helper/decorator";
 
 @ApiTags("person")
 @UseGuards(JWTAuthGuard)
@@ -83,6 +86,21 @@ export class PersonController {
         createPersonDto.back_identify_card_photo_URL =
             files.back_identify_card_photo_URL![0];
         return this.personService.create(createPersonDto);
+    }
+
+    /**
+     * Create account, only token from admin or manager can access this API
+     *
+     * Account must associate with person profile
+     */
+    @ApiOperation({ summary: "Create account" })
+    @Auth("admin", "manager")
+    @Post("/:id/account")
+    async createAccount(
+        @Param("id") id: string,
+        @Body() createAccountDto: CreateAccountDto
+    ): Promise<Person> {
+        return await this.personService.createAccount(id, createAccountDto);
     }
 
     @ApiOperation({

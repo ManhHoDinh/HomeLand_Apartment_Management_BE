@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Param,
     Post,
     Req,
     UploadedFiles,
@@ -12,8 +13,7 @@ import { PersonRepository } from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
 import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { CreateAccountDto } from "./account/dto/create-account.dto";
-import { AccountService } from "./account/account.service";
+import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
 
@@ -22,8 +22,7 @@ import { MBtoBytes } from "./helper/validation";
 export class AppController {
     constructor(
         private readonly appService: AppService,
-        private readonly personRepository: PersonRepository,
-        private readonly accountService: AccountService
+        private readonly personRepository: PersonRepository
     ) {}
 
     @Get()
@@ -34,9 +33,12 @@ export class AppController {
     /**
      * Create account without need send token in header
      */
-    @Post("/demo_account")
-    create(@Body() createAccountDto: CreateAccountDto) {
-        return this.accountService.create(createAccountDto);
+    @Post("/demo_account/:id")
+    create(
+        @Param("id") id: string,
+        @Body() createAccountDto: CreateAccountDto
+    ) {
+        return this.personRepository.createAccount(id, createAccountDto);
     }
 
     /**

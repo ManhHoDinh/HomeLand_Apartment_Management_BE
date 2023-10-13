@@ -7,7 +7,6 @@ import { PersonModule } from "./person/person.module";
 import { IdGeneratorModule } from "./id_generator/id-generator.module";
 import { UploadModule } from "./upload/upload.module";
 import { ConfigModule } from "@nestjs/config";
-import { AccountModule } from "./account/account.module";
 import { JwtModule } from "@nestjs/jwt";
 import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
@@ -68,7 +67,6 @@ import { HashModule } from "./hash/hash.module";
         PersonModule,
         IdGeneratorModule,
         UploadModule,
-        AccountModule,
         HashModule,
     ],
     controllers: [AppController],

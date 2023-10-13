@@ -7,11 +7,11 @@ import {
 import { CreatePersonDto } from "./dto/create-person.dto";
 import { UpdatePersonDto } from "./dto/update-person.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { Repository } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { IdGenerator } from "../id_generator/id-generator.service";
-import { UploadService } from "../upload/upload.service";
+import { SupabaseService, UploadService } from "../upload/upload.service";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
@@ -120,33 +120,22 @@ export class PersonService implements PersonRepository {
                 break;
         }
 
-        try {
-            const [dataFront, dataBack] = await Promise.all([
-                this.uploadService.upload(
-                    front_identify_card_photo_URL,
-                    "/person/" +
-                        person.id +
-                        "/front_identify_card_photo_URL.png",
-                    "image/png"
-                ),
+        const [frontURL, backURL] = await Promise.all([
+            this.uploadService.uploadAndGetURL(
+                front_identify_card_photo_URL,
+                "/person/" + person.id + "/front_identify_card_photo_URL.png",
+                "image/png"
+            ),
 
-                this.uploadService.upload(
-                    back_identify_card_photo_URL,
-                    "/person/" +
-                        person.id +
-                        "/back_identify_card_photo_URL.png",
-                    "image/png"
-                ),
-            ]);
-            if (dataFront && dataBack) {
-                person.front_identify_card_photo_URL =
-                    this.uploadService.BLOB_STORAGE_URL + "/" + dataFront.path;
-                person.back_identify_card_photo_URL =
-                    this.uploadService.BLOB_STORAGE_URL + "/" + dataBack.path;
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
+            this.uploadService.uploadAndGetURL(
+                back_identify_card_photo_URL,
+                "/person/" + person.id + "/back_identify_card_photo_URL.png",
+                "image/png"
+            ),
+        ]);
+        if (frontURL && backURL) {
+            person.front_identify_card_photo_URL = frontURL;
+            person.back_identify_card_photo_URL = backURL;
         }
         return await this.personRepository.save(person);
     }

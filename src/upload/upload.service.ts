@@ -1,21 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { createClient } from "@supabase/supabase-js";
 
+export abstract class UploadService {
+    abstract uploadAndGetURL(
+        file: any,
+        uploadPath: string,
+        mime?: string
+    ): Promise<string>;
+}
+
 @Injectable()
-export class UploadService {
+export class SupabaseService extends UploadService {
     readonly supabase = createClient(
         process.env.SUPABASE_URL || "supabaseurltest",
         process.env.SUPABASE_KEY || "supabasekeytest"
     );
 
-    public BLOB_STORAGE_URL =
+    private BLOB_STORAGE_URL =
         process.env.SUPABASE_URL + "/storage/v1/object/public/HomeLand";
 
-    async upload(
+    async uploadAndGetURL(
         file: any,
         uploadPath: string,
-        mime = "text/plain;charset=UTF-8"
-    ): Promise<{ path: string }> {
+        mime: string = "text/plain;charset=UTF-8"
+    ): Promise<string> {
         const { data, error } = await this.supabase.storage
             .from("HomeLand")
             .upload(uploadPath, file.buffer, {
@@ -23,6 +31,6 @@ export class UploadService {
             });
 
         if (error) throw error;
-        return data;
+        return this.BLOB_STORAGE_URL + "/" + data.path;
     }
 }

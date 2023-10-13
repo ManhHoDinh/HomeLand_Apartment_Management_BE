@@ -1,8 +1,13 @@
 import { Module } from "@nestjs/common";
-import { UploadService } from "./upload.service";
+import { SupabaseService, UploadService } from "./upload.service";
 
 @Module({
-    providers: [UploadService],
+    providers: [
+        {
+            provide: UploadService,
+            useClass: SupabaseService,
+        },
+    ],
     exports: [UploadService],
 })
 export class UploadModule {}

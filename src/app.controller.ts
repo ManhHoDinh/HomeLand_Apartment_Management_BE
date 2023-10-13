@@ -11,11 +11,11 @@ import { AppService } from "./app.service";
 import { PersonRepository } from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
 import { ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { MBtoBytes } from "./person/person.controller";
-import { ValidateFilePipe } from "./helper/pipe/validateFilePipe.pipe";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./account/dto/create-account.dto";
 import { AccountService } from "./account/account.service";
+import { ValidateFilePipe } from "./helper/pipe";
+import { MBtoBytes } from "./helper/validation";
 
 @ApiTags("demo")
 @Controller()

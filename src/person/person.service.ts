@@ -2,15 +2,14 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreatePersonDto } from "./dto/create-person.dto";
 import { UpdatePersonDto } from "./dto/update-person.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
-import {
-    IdGenerator,
-    IdGeneratorService,
-} from "../id_generator/id_generator.service";
+import { IdGenerator } from "../id_generator/id_generator.service";
 import { UploadService } from "../upload/upload.service";
-import { BaseRepository } from "../helper/base/base_repository";
+import { BaseRepository } from "../helper/base/base_repository.abstract";
+import { isAffected } from "../helper/validation";
+import { HashService } from "../hash/hash.service";
 
 export abstract class PersonRepository extends BaseRepository<
     CreatePersonDto,
@@ -29,7 +28,8 @@ export class PersonService implements PersonRepository {
         @InjectRepository(Person)
         private readonly personRepository: Repository<Person>,
         private readonly idGenerator: IdGenerator,
-        private readonly uploadService: UploadService
+        private readonly uploadService: UploadService,
+        private readonly hashService: HashService
     ) {}
 
     async create(
@@ -90,7 +90,7 @@ export class PersonService implements PersonRepository {
 
         let person = this.personRepository.create(rest);
         if (person.password) {
-            person.password = hashSync(person.password, 10);
+            person.password = this.hashService.hash(person.password);
         }
         switch (createDto.role) {
             case PersonRole.ADMIN:
@@ -138,7 +138,6 @@ export class PersonService implements PersonRepository {
             console.error(error);
             throw error;
         }
-
         return await this.personRepository.save(person);
     }
 
@@ -168,15 +167,21 @@ export class PersonService implements PersonRepository {
 
     async update(id: string, updatePersonDto: UpdatePersonDto) {
         let result = await this.personRepository.update(id, updatePersonDto);
-        if (!result.affected) return false;
-        if (result.affected > 0) return true;
-        return false;
+        return isAffected(result);
     }
 
-    async remove(id: string) {
-        const result = await this.personRepository.softDelete(id);
-        if (!result.affected) return false;
-        if (result.affected > 0) return true;
-        return false;
+    async softDelete(id: string): Promise<boolean> {
+        const result = await this.personRepository.softDelete({ id });
+        return isAffected(result);
+    }
+
+    async hardDelete?(id: any): Promise<boolean> {
+        try {
+            const result = await this.personRepository.delete({ id });
+            return isAffected(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 }

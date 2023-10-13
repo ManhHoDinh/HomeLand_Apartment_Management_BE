@@ -5,6 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Person } from "./entities/person.entity";
 import { IdGeneratorModule } from "../id_generator/id_generator.module";
 import { UploadModule } from "../upload/upload.module";
+import { HashModule } from "../hash/hash.module";
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { UploadModule } from "../upload/upload.module";
         TypeOrmModule.forFeature([Person]),
         IdGeneratorModule,
         UploadModule,
+        HashModule,
     ],
     controllers: [PersonController],
     providers: [

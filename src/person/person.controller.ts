@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common";
 import { PersonRepository } from "./person.service";
 import { CreatePersonDto } from "./dto/create-person.dto";
-import { JWTAuthGuard } from "../helper/guard/jwt.guard";
 import {
     ApiBearerAuth,
     ApiConsumes,
@@ -19,10 +18,10 @@ import {
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { ValidateFilePipe } from "../helper/pipe/validateFilePipe.pipe";
 import { Person } from "./entities/person.entity";
-
-export const MBtoBytes = (mb: number) => mb * 1000000;
+import { JWTAuthGuard } from "../helper/guard";
+import { ValidateFilePipe } from "../helper/pipe";
+import { MBtoBytes } from "../helper/validation";
 
 @ApiTags("person")
 @UseGuards(JWTAuthGuard)

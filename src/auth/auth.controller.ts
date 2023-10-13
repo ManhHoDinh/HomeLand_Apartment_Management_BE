@@ -1,16 +1,17 @@
 import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common";
 import { SignInDto } from "./dto/login.dto";
 import { PersonRepository } from "../person/person.service";
-import { compareSync } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { HashService } from "../hash/hash.service";
 
 @ApiTags("Authentication")
 @Controller("auth")
 export class AuthController {
     constructor(
         private readonly personService: PersonRepository,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly hashService: HashService
     ) {}
 
     @ApiOperation({
@@ -44,7 +45,7 @@ export class AuthController {
     async login(@Body() loginDto: SignInDto) {
         const person = await this.personService.findOneByEmail(loginDto.email);
         if (person && person.password) {
-            if (compareSync(loginDto.password, person.password)) {
+            if (this.hashService.compare(loginDto.password, person.password)) {
                 const payload = {
                     id: person.id,
                     role: person.role,

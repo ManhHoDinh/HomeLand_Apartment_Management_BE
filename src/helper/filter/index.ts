@@ -1,1 +1,1 @@
-export * from "./typeorm_exception.filter";
+export * from "./typeorm-exception.filter";

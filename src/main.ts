@@ -8,7 +8,7 @@ import {
 } from "@nestjs/swagger";
 import { Person } from "./person/entities/person.entity";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
-import { TypeOrmExceptionFilter } from "./helper/filter/typeorm_exception.filter";
+import { TypeOrmExceptionFilter } from "./helper/filter/typeorm-exception.filter";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);

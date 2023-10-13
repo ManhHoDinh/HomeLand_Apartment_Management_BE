@@ -5,9 +5,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
-import { IdGenerator } from "../id_generator/id_generator.service";
+import { IdGenerator } from "../id_generator/id-generator.service";
 import { UploadService } from "../upload/upload.service";
-import { BaseRepository } from "../helper/base/base_repository.abstract";
+import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 
@@ -17,7 +17,7 @@ export abstract class PersonRepository extends BaseRepository<
 > {
     abstract findOneByEmail(email: string): Promise<Person | null>;
     abstract create(
-        createDto: CreatePersonDto,
+        createPersonDto: CreatePersonDto,
         creatorRole?: PersonRole
     ): Promise<Person>;
 }
@@ -33,11 +33,11 @@ export class PersonService implements PersonRepository {
     ) {}
 
     async create(
-        createDto: CreatePersonDto,
+        createPersonDto: CreatePersonDto,
         creatorRole?: PersonRole
     ): Promise<Person> {
         if (creatorRole) {
-            switch (createDto.role) {
+            switch (createPersonDto.role) {
                 case PersonRole.ADMIN:
                     if (creatorRole !== PersonRole.ADMIN)
                         throw new UnauthorizedException(
@@ -86,13 +86,13 @@ export class PersonService implements PersonRepository {
             front_identify_card_photo_URL,
             back_identify_card_photo_URL,
             ...rest
-        } = createDto;
+        } = createPersonDto;
 
         let person = this.personRepository.create(rest);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
-        switch (createDto.role) {
+        switch (createPersonDto.role) {
             case PersonRole.ADMIN:
                 person.id = "A" + this.idGenerator.generateId();
                 break;

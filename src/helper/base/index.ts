@@ -1,1 +1,1 @@
-export * from "./base_repository.abstract";
+export * from "./base-repository.abstract";

@@ -47,7 +47,7 @@ export class AuthController {
         if (
             !person ||
             !person.password ||
-            !this.hashService.compare(signInDto.password, person.password)
+            !this.hashService.isMatch(signInDto.password, person.password)
         ) {
             throw new UnauthorizedException("Wrong email or password");
         }

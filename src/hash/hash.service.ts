@@ -4,7 +4,7 @@ import { hashRounds } from "../helper/constant";
 
 export abstract class HashService {
     abstract hash(value: string): string;
-    abstract compare(value: string, hash: string): boolean;
+    abstract isMatch(value: string, hash: string): boolean;
 }
 
 @Injectable()

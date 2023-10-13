@@ -7,6 +7,7 @@ import {
     Get,
     UploadedFiles,
     Param,
+    Patch,
 } from "@nestjs/common";
 import { PersonRepository } from "./person.service";
 import { CreatePersonDto } from "./dto/create-person.dto";
@@ -95,7 +96,7 @@ export class PersonController {
      */
     @ApiOperation({ summary: "Create account" })
     @Auth("admin", "manager")
-    @Post("/:id/account")
+    @Patch("/:id/account")
     async createAccount(
         @Param("id") id: string,
         @Body() createAccountDto: CreateAccountDto

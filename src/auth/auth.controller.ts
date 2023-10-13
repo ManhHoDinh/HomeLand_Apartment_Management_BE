@@ -1,5 +1,5 @@
 import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common";
-import { SignInDto } from "./dto/login.dto";
+import { SignInDto } from "./dto/signin.dto";
 import { PersonRepository } from "../person/person.service";
 import { JwtService } from "@nestjs/jwt";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -42,20 +42,22 @@ export class AuthController {
         },
     })
     @Post("signin")
-    async login(@Body() loginDto: SignInDto) {
-        const person = await this.personService.findOneByEmail(loginDto.email);
-        if (person && person.password) {
-            if (this.hashService.compare(loginDto.password, person.password)) {
-                const payload = {
-                    id: person.id,
-                    role: person.role,
-                };
-                return {
-                    access_token: this.jwtService.sign(payload),
-                    role: person.role,
-                };
-            }
+    async login(@Body() signInDto: SignInDto) {
+        const person = await this.personService.findOneByEmail(signInDto.email);
+        if (
+            !person ||
+            !person.password ||
+            !this.hashService.compare(signInDto.password, person.password)
+        ) {
+            throw new UnauthorizedException("Wrong email or password");
         }
-        throw new UnauthorizedException("Wrong email or password");
+        const payload = {
+            id: person.id,
+            role: person.role,
+        };
+        return {
+            access_token: this.jwtService.sign(payload),
+            role: person.role,
+        };
     }
 }

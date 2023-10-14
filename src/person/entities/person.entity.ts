@@ -5,6 +5,8 @@ import {
     Column,
     CreateDateColumn,
     DeleteDateColumn,
+    TableInheritance,
+    ChildEntity,
 } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import {
@@ -16,13 +18,14 @@ import {
     IsString,
 } from "class-validator";
 import { Exclude } from "class-transformer";
-import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export enum PersonRole {
     RESIDENT = "resident",
     ADMIN = "admin",
     TECHINICIAN = "technician",
     MANAGER = "manager",
+    EMPLOYEE = "employee",
 }
 
 export enum Gender {
@@ -31,6 +34,13 @@ export enum Gender {
 }
 
 @Entity()
+@TableInheritance({
+    column: {
+        type: "enum",
+        name: "role",
+        enum: PersonRole,
+    },
+})
 export class Person {
     @PrimaryColumn()
     id: string;
@@ -99,4 +109,34 @@ export class Person {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+}
+
+@ChildEntity()
+export class Resident extends Person {
+    @Column({ default: PersonRole.RESIDENT })
+    role: PersonRole = PersonRole.RESIDENT;
+}
+
+@ChildEntity()
+export class Admin extends Person {
+    @Column({ default: PersonRole.ADMIN })
+    role: PersonRole = PersonRole.ADMIN;
+}
+
+@ChildEntity()
+export class Manager extends Person {
+    @Column({ default: PersonRole.MANAGER })
+    role: PersonRole = PersonRole.MANAGER;
+}
+
+@ChildEntity()
+export class Technician extends Person {
+    @Column({ default: PersonRole.TECHINICIAN })
+    role: PersonRole = PersonRole.TECHINICIAN;
+}
+
+@ChildEntity()
+export class Employee extends Person {
+    @Column({ default: PersonRole.EMPLOYEE })
+    role: PersonRole = PersonRole.EMPLOYEE;
 }

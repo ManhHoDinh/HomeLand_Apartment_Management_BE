@@ -11,7 +11,7 @@ import { Repository } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { IdGenerator } from "../id_generator/id-generator.service";
-import { SupabaseService, UploadService } from "../upload/upload.service";
+import { UploadService } from "../upload/upload.service";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";

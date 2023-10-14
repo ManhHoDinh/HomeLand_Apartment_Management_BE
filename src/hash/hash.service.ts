@@ -8,12 +8,12 @@ export abstract class HashService {
 }
 
 @Injectable()
-export class BcryptHash {
+export class BcryptHash extends HashService {
     hash(value: string): string {
         return hashSync(value, hashRounds);
     }
 
-    compare(value: string, hash: string): boolean {
+    isMatch(value: string, hash: string): boolean {
         return compareSync(value, hash);
     }
 }

@@ -10,7 +10,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
-import { FactoryModule } from './factory/factory.module';
+import { PersonFactoryModule } from "./person-factory/person-factory.module";
 
 @Module({
     imports: [
@@ -69,7 +69,7 @@ import { FactoryModule } from './factory/factory.module';
         IdGeneratorModule,
         UploadModule,
         HashModule,
-        FactoryModule,
+        PersonFactoryModule,
     ],
     controllers: [AppController],
     providers: [AppService],

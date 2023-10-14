@@ -9,4 +9,7 @@ export class IdGeneratorService extends IdGenerator {
     public generateId() {
         return Date.now();
     }
+    static generateId() {
+        return Date.now();
+    }
 }

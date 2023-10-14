@@ -3,7 +3,7 @@ import { CreatePersonDto } from "./create-person.dto";
 
 export class UpdatePersonDto extends PartialType(
     OmitType(CreatePersonDto, [
-        "back_identify_card_photo_URL",
-        "front_identify_card_photo_URL",
+        "back_identify_card_photo",
+        "front_identify_card_photo",
     ] as const)
 ) {}

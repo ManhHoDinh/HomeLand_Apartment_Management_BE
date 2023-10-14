@@ -1,12 +1,12 @@
 import {
-    Entity,
     PrimaryColumn,
     ManyToOne,
     Column,
     CreateDateColumn,
     DeleteDateColumn,
-    TableInheritance,
     ChildEntity,
+    Entity,
+    TableInheritance,
 } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import {
@@ -19,6 +19,7 @@ import {
 } from "class-validator";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
+import { IdGeneratorService } from "../../id_generator/id-generator.service";
 
 export enum PersonRole {
     RESIDENT = "resident",
@@ -86,9 +87,7 @@ export class Person {
     back_identify_card_photo_URL: string;
 
     @IsPhoneNumber("VN")
-    @Column({
-        unique: true,
-    })
+    @Column({ unique: true })
     phone_number: string;
 
     @Column({ nullable: true })
@@ -111,32 +110,56 @@ export class Person {
     deleted_at?: Date;
 }
 
-@ChildEntity()
+@ChildEntity(PersonRole.RESIDENT)
 export class Resident extends Person {
-    @Column({ default: PersonRole.RESIDENT })
+    constructor() {
+        super();
+        if (!this.id) this.id = "R" + IdGeneratorService.generateId();
+    }
+
     role: PersonRole = PersonRole.RESIDENT;
 }
 
-@ChildEntity()
+@ChildEntity(PersonRole.ADMIN)
 export class Admin extends Person {
-    @Column({ default: PersonRole.ADMIN })
+    constructor() {
+        super();
+        if (!this.id) this.id = "A" + IdGeneratorService.generateId();
+    }
+
+    @Column({ enum: PersonRole, default: String(PersonRole.ADMIN) })
     role: PersonRole = PersonRole.ADMIN;
 }
 
-@ChildEntity()
+@ChildEntity(PersonRole.MANAGER)
 export class Manager extends Person {
-    @Column({ default: PersonRole.MANAGER })
+    constructor() {
+        super();
+        if (!this.id) this.id = "M" + IdGeneratorService.generateId();
+    }
+
+    @Column({ enum: PersonRole, default: PersonRole.MANAGER })
     role: PersonRole = PersonRole.MANAGER;
 }
 
-@ChildEntity()
+@ChildEntity(PersonRole.TECHINICIAN)
 export class Technician extends Person {
-    @Column({ default: PersonRole.TECHINICIAN })
+    constructor() {
+        super();
+        if (!this.id) this.id = "T" + IdGeneratorService.generateId();
+    }
+
+    @Column({ enum: PersonRole, default: PersonRole.TECHINICIAN })
     role: PersonRole = PersonRole.TECHINICIAN;
 }
 
-@ChildEntity()
+@ChildEntity(PersonRole.EMPLOYEE)
 export class Employee extends Person {
-    @Column({ default: PersonRole.EMPLOYEE })
+    constructor() {
+        super();
+        if (!this.id) this.id = "E" + IdGeneratorService.generateId();
+    }
+
+    @Column({ enum: PersonRole, default: PersonRole.EMPLOYEE })
     role: PersonRole = PersonRole.EMPLOYEE;
 }

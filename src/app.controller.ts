@@ -9,9 +9,18 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { PersonRepository } from "./person/person.service";
+import {
+    PersonRepository,
+    PersonService,
+} from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
-import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import {
+    ApiConsumes,
+    ApiCreatedResponse,
+    ApiOperation,
+    ApiTags,
+    ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { ValidateFilePipe } from "./helper/pipe";
@@ -22,7 +31,7 @@ import { MBtoBytes } from "./helper/validation";
 export class AppController {
     constructor(
         private readonly appService: AppService,
-        private readonly personRepository: PersonRepository
+        private readonly personRepository: PersonRepository,
     ) {}
 
     @Get()
@@ -34,56 +43,66 @@ export class AppController {
      * Create account without need send token in header
      */
     @Post("/demo_account/:id")
-    create(
+    createAccount(
         @Param("id") id: string,
-        @Body() createAccountDto: CreateAccountDto
+        @Body() createAccountDto: CreateAccountDto,
     ) {
-        return this.personRepository.createAccount(id, createAccountDto);
+        return this.personRepository.createAccount(
+            id,
+            createAccountDto,
+        );
     }
 
     /**
      * Create person profile without need send token in header
      */
+    @ApiOperation({ summary: "Create person profile" })
     @ApiConsumes("multipart/form-data")
+    @ApiUnprocessableEntityResponse({
+        description: "Email or phone number already exists",
+    })
+    @ApiCreatedResponse({
+        description: "Create person profile successfully",
+    })
     @Post("/demo_person")
     @UseInterceptors(
         FileFieldsInterceptor([
             {
-                name: "front_identify_card_photo_URL",
+                name: "front_identify_card_photo",
                 maxCount: 1,
             },
             {
-                name: "back_identify_card_photo_URL",
+                name: "back_identify_card_photo",
                 maxCount: 1,
             },
-        ])
+        ]),
     )
-    async createAdmin(
+    createPerson(
         @UploadedFiles(
             new ValidateFilePipe([
                 {
-                    name: "front_identify_card_photo_URL",
+                    name: "front_identify_card_photo",
                     limit: MBtoBytes(15),
                     mimetypes: ["image/jpeg", "image/png"],
                 },
                 {
-                    name: "back_identify_card_photo_URL",
+                    name: "back_identify_card_photo",
                     limit: MBtoBytes(15),
                     mimetypes: ["image/jpeg", "image/png"],
                 },
-            ])
+            ]),
         )
         files: {
-            front_identify_card_photo_URL?: Express.Multer.File[];
-            back_identify_card_photo_URL?: Express.Multer.File[];
+            front_identify_card_photo: Express.Multer.File;
+            back_identify_card_photo: Express.Multer.File;
         },
-        @Body() createPersonDto: CreatePersonDto
+        @Body() createPersonDto: CreatePersonDto,
     ) {
-        createPersonDto.front_identify_card_photo_URL =
-            files.front_identify_card_photo_URL![0];
-        createPersonDto.back_identify_card_photo_URL =
-            files.back_identify_card_photo_URL![0];
-        return await this.personRepository.create(createPersonDto);
+        createPersonDto.front_identify_card_photo =
+            files.front_identify_card_photo;
+        createPersonDto.back_identify_card_photo =
+            files.back_identify_card_photo;
+        return this.personRepository.create(createPersonDto);
     }
 
     @Get("/me")

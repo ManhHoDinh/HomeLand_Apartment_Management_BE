@@ -32,7 +32,9 @@ import { Auth } from "../helper/decorator";
 @ApiBearerAuth()
 @Controller("person")
 export class PersonController {
-    constructor(private readonly personService: PersonRepository) {}
+    constructor(
+        private readonly personRepository: PersonRepository,
+    ) {}
 
     /**
      * Create person profile, only token from admin or manager can access this API
@@ -52,41 +54,41 @@ export class PersonController {
     @UseInterceptors(
         FileFieldsInterceptor([
             {
-                name: "front_identify_card_photo_URL",
+                name: "front_identify_card_photo",
                 maxCount: 1,
             },
             {
-                name: "back_identify_card_photo_URL",
+                name: "back_identify_card_photo",
                 maxCount: 1,
             },
-        ])
+        ]),
     )
     create(
         @UploadedFiles(
             new ValidateFilePipe([
                 {
-                    name: "front_identify_card_photo_URL",
+                    name: "front_identify_card_photo",
                     limit: MBtoBytes(15),
                     mimetypes: ["image/jpeg", "image/png"],
                 },
                 {
-                    name: "back_identify_card_photo_URL",
+                    name: "back_identify_card_photo",
                     limit: MBtoBytes(15),
                     mimetypes: ["image/jpeg", "image/png"],
                 },
-            ])
+            ]),
         )
         files: {
-            front_identify_card_photo_URL?: Express.Multer.File[];
-            back_identify_card_photo_URL?: Express.Multer.File[];
+            front_identify_card_photo: Express.Multer.File;
+            back_identify_card_photo: Express.Multer.File;
         },
-        @Body() createPersonDto: CreatePersonDto
+        @Body() createPersonDto: CreatePersonDto,
     ) {
-        createPersonDto.front_identify_card_photo_URL =
-            files.front_identify_card_photo_URL![0];
-        createPersonDto.back_identify_card_photo_URL =
-            files.back_identify_card_photo_URL![0];
-        return this.personService.create(createPersonDto);
+        createPersonDto.front_identify_card_photo =
+            files.front_identify_card_photo;
+        createPersonDto.back_identify_card_photo =
+            files.back_identify_card_photo;
+        return this.personRepository.create(createPersonDto);
     }
 
     /**
@@ -99,9 +101,12 @@ export class PersonController {
     @Patch("/:id/account")
     async createAccount(
         @Param("id") id: string,
-        @Body() createAccountDto: CreateAccountDto
+        @Body() createAccountDto: CreateAccountDto,
     ): Promise<Person> {
-        return await this.personService.createAccount(id, createAccountDto);
+        return await this.personRepository.createAccount(
+            id,
+            createAccountDto,
+        );
     }
 
     @ApiOperation({
@@ -109,6 +114,6 @@ export class PersonController {
     })
     @Get()
     findAll(): Promise<Person[]> {
-        return this.personService.findAll();
+        return this.personRepository.findAll();
     }
 }

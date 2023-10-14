@@ -10,12 +10,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
-import { IdGenerator } from "../id_generator/id-generator.service";
 import { UploadService } from "../upload/upload.service";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
+import { PersonFactory } from "../person-factory/person-factory.service";
 
 export abstract class PersonRepository extends BaseRepository<
     CreatePersonDto,
@@ -24,11 +24,11 @@ export abstract class PersonRepository extends BaseRepository<
     abstract findOneByEmail(email: string): Promise<Person | null>;
     abstract create(
         createPersonDto: CreatePersonDto,
-        creatorRole?: PersonRole
+        creatorRole?: PersonRole,
     ): Promise<Person>;
     abstract createAccount(
         id: string,
-        createAccountDto: CreateAccountDto
+        createAccountDto: CreateAccountDto,
     ): Promise<Person>;
 }
 
@@ -37,28 +37,27 @@ export class PersonService implements PersonRepository {
     constructor(
         @InjectRepository(Person)
         private readonly personRepository: Repository<Person>,
-        private readonly idGenerator: IdGenerator,
         private readonly uploadService: UploadService,
-        private readonly hashService: HashService
+        private readonly hashService: HashService,
     ) {}
 
     async create(
         createPersonDto: CreatePersonDto,
-        creatorRole?: PersonRole
+        creatorRole?: PersonRole,
     ): Promise<Person> {
         if (creatorRole) {
             switch (createPersonDto.role) {
                 case PersonRole.ADMIN:
                     if (creatorRole !== PersonRole.ADMIN)
                         throw new UnauthorizedException(
-                            "Creator's role is not sufficient"
+                            "Creator's role is not sufficient",
                         );
                     break;
 
                 case PersonRole.MANAGER:
                     if (creatorRole !== PersonRole.ADMIN)
                         throw new UnauthorizedException(
-                            "Creator's role is not sufficient"
+                            "Creator's role is not sufficient",
                         );
                     break;
 
@@ -70,7 +69,7 @@ export class PersonService implements PersonRepository {
                         )
                     ) {
                         throw new UnauthorizedException(
-                            "Creator's role is not sufficient"
+                            "Creator's role is not sufficient",
                         );
                     }
                     break;
@@ -83,7 +82,7 @@ export class PersonService implements PersonRepository {
                         )
                     ) {
                         throw new UnauthorizedException(
-                            "Creator's role is not sufficient"
+                            "Creator's role is not sufficient",
                         );
                     }
                     break;
@@ -93,63 +92,36 @@ export class PersonService implements PersonRepository {
             }
         }
         const {
-            front_identify_card_photo_URL,
-            back_identify_card_photo_URL,
+            front_identify_card_photo,
+            back_identify_card_photo,
             ...rest
         } = createPersonDto;
 
-        let person = this.personRepository.create(rest);
+        let person = PersonFactory.create(rest);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
-        switch (createPersonDto.role) {
-            case PersonRole.ADMIN:
-                person.id = "A" + this.idGenerator.generateId();
-                break;
-            case PersonRole.MANAGER:
-                person.id = "M" + this.idGenerator.generateId();
-                break;
-            case PersonRole.RESIDENT:
-                person.id = "R" + this.idGenerator.generateId();
-                break;
-            case PersonRole.TECHINICIAN:
-                person.id = "T" + this.idGenerator.generateId();
-                break;
-            default:
-                person.id = "U" + this.idGenerator.generateId();
-                break;
-        }
 
-        const [frontURL, backURL] = await Promise.all([
-            this.uploadService.uploadAndGetURL(
-                front_identify_card_photo_URL,
-                "/person/" + person.id + "/front_identify_card_photo_URL.png",
-                "image/png"
-            ),
-
-            this.uploadService.uploadAndGetURL(
-                back_identify_card_photo_URL,
-                "/person/" + person.id + "/back_identify_card_photo_URL.png",
-                "image/png"
-            ),
-        ]);
-        if (frontURL && backURL) {
-            person.front_identify_card_photo_URL = frontURL;
-            person.back_identify_card_photo_URL = backURL;
-        }
+        person = await this.uploadService.save(
+            person,
+            front_identify_card_photo,
+            back_identify_card_photo,
+        );
         return await this.personRepository.save(person);
     }
 
     async createAccount(
         id: string,
-        createAccountDto: CreateAccountDto
+        createAccountDto: CreateAccountDto,
     ): Promise<Person> {
         let person = await this.personRepository.findOne({
             where: { id },
         });
         if (!person) throw new NotFoundException();
         if (person.password)
-            throw new ConflictException("Person profile already has account");
+            throw new ConflictException(
+                "Person profile already has account",
+            );
         person.email = createAccountDto.email;
         person.password = hashSync(createAccountDto.password, 10);
 
@@ -181,7 +153,10 @@ export class PersonService implements PersonRepository {
     }
 
     async update(id: string, updatePersonDto: UpdatePersonDto) {
-        let result = await this.personRepository.update(id, updatePersonDto);
+        let result = await this.personRepository.update(
+            id,
+            updatePersonDto,
+        );
         return isAffected(result);
     }
 

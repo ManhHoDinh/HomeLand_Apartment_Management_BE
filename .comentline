@@ -1,0 +1,5 @@
+npm run start:dev
+npm g module name
+nest g controller name
+nest g service name
+nest g resource name

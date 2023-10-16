@@ -1,8 +1,17 @@
-import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common";
+import {
+    Controller,
+    Post,
+    Body,
+    UnauthorizedException,
+} from "@nestjs/common";
 import { SignInDto } from "./dto/signin.dto";
 import { PersonRepository } from "../person/person.service";
 import { JwtService } from "@nestjs/jwt";
-import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+    ApiCreatedResponse,
+    ApiOperation,
+    ApiTags,
+} from "@nestjs/swagger";
 import { HashService } from "../hash/hash.service";
 
 @ApiTags("Authentication")
@@ -11,7 +20,7 @@ export class AuthController {
     constructor(
         private readonly personService: PersonRepository,
         private readonly jwtService: JwtService,
-        private readonly hashService: HashService
+        private readonly hashService: HashService,
     ) {}
 
     @ApiOperation({
@@ -43,21 +52,31 @@ export class AuthController {
     })
     @Post("signin")
     async login(@Body() signInDto: SignInDto) {
-        const person = await this.personService.findOneByEmail(signInDto.email);
+        const person = await this.personService.findOneByEmail(
+            signInDto.email,
+        );
         if (
             !person ||
             !person.password ||
-            !this.hashService.isMatch(signInDto.password, person.password)
+            !this.hashService.isMatch(
+                signInDto.password,
+                person.password,
+            )
         ) {
-            throw new UnauthorizedException("Wrong email or password");
+            throw new UnauthorizedException(
+                "Wrong email or password",
+            );
         }
-        const payload = {
+        const payload: TokenPayload = {
             id: person.id,
-            role: person.role,
         };
         return {
             access_token: this.jwtService.sign(payload),
             role: person.role,
         };
     }
+}
+
+export interface TokenPayload {
+    id: string;
 }

@@ -1,16 +1,21 @@
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+import {
+    Injectable,
+    CanActivate,
+    ExecutionContext,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
 import { PersonRepository } from "../../person/person.service";
+import { TokenPayload } from "../../auth/auth.controller";
 
 @Injectable()
 export class JWTAuthGuard implements CanActivate {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly personRepository: PersonRepository
+        private readonly personRepository: PersonRepository,
     ) {}
     canActivate(
-        context: ExecutionContext
+        context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
         const request = context.switchToHttp().getRequest();
         return this.validateRequest(request);
@@ -21,10 +26,10 @@ export class JWTAuthGuard implements CanActivate {
             const token = request.headers.authorization.split(" ")[1];
             if (token) {
                 try {
-                    const payload = this.jwtService.verify(token);
-                    request.user = payload;
-                    const user = await this.personRepository.findOneByEmail(
-                        payload.email
+                    const payload: TokenPayload =
+                        this.jwtService.verify(token);
+                    const user = await this.personRepository.findOne(
+                        payload.id,
                     );
                     if (!user) return false;
                     request.user = user;

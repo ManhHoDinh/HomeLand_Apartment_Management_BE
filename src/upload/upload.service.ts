@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { createClient } from "@supabase/supabase-js";
+import { SupabaseClient, createClient } from "@supabase/supabase-js";
 import { Person } from "../person/entities/person.entity";
 
 export abstract class UploadService {
@@ -17,6 +17,10 @@ export abstract class UploadService {
 
 @Injectable()
 export class SupabaseService extends UploadService {
+    constructor(private readonly supabaseClient: SupabaseClient) {
+        super();
+    }
+
     async save(
         person: Person,
         frontIdentifyCardPhoto: any,
@@ -44,21 +48,16 @@ export class SupabaseService extends UploadService {
         return person;
     }
 
-    readonly supabase = createClient(
-        process.env.SUPABASE_URL || "supabaseurltest",
-        process.env.SUPABASE_KEY || "supabasekeytest",
-    );
-
     private BLOB_STORAGE_URL =
         process.env.SUPABASE_URL +
-        "/storage/v1/object/public/HomeLand";
+        "/storage/v1/object/public/homeland";
 
     async uploadAndGetURL(
         file: any,
         uploadPath: string,
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
-        const { data, error } = await this.supabase.storage
+        const { data, error } = await this.supabaseClient.storage
             .from("HomeLand")
             .upload(uploadPath, file.buffer, {
                 contentType: mime,

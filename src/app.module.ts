@@ -11,7 +11,6 @@ import { JwtModule } from "@nestjs/jwt";
 import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
-import { Contract } from "./contract/entities/contract.entity";
 import { SeedingModule } from "./seeding/seeding.module";
 
 @Module({
@@ -51,7 +50,7 @@ import { SeedingModule } from "./seeding/seeding.module";
                     await client.disconnect();
                     return {
                         type: "postgres",
-                        url: "postgres://postgres:123@localhost:5432/db",
+                        url: process.env.DB_LOCAL_URL,
                         synchronize: true,
                         entities: ["dist/**/*.entity{.ts,.js}"],
                         duration: 5000,
@@ -59,7 +58,7 @@ import { SeedingModule } from "./seeding/seeding.module";
                             type: "redis",
                             ignoreErrors: true,
                             options: {
-                                url: "redis://localhost:6379",
+                                url: process.env.REDIS_LOCAL_URL,
                             },
                         },
                     };

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { SupabaseClient, createClient } from "@supabase/supabase-js";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { Person } from "../person/entities/person.entity";
 
 export abstract class UploadService {

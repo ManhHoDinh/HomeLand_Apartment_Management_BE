@@ -11,3 +11,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=123
       - POSTGRES_DB=db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

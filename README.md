@@ -4,8 +4,11 @@ How to build and run:
 $ npm install
 # start supabase local
 $ npx supabase start
-# start redis and postgresql with compose
+
+# start docker compose
+$ docker compose pull
 $ docker compose up -d
+
 # rename .env.example to .env
 $ cp .env.example .env
 # start nestjs

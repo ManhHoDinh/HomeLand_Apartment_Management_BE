@@ -7,7 +7,7 @@ import {
 import { CreatePersonDto } from "./dto/create-person.dto";
 import { UpdatePersonDto } from "./dto/update-person.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, TypeORMError } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { UploadService } from "../upload/upload.service";
@@ -102,12 +102,21 @@ export class PersonService implements PersonRepository {
             person.password = this.hashService.hash(person.password);
         }
 
-        person = await this.uploadService.save(
-            person,
-            front_identify_card_photo,
-            back_identify_card_photo,
-        );
-        return await this.personRepository.save(person);
+        try {
+            const [frontURL, backURL] = await this.uploadService.save(
+                person.id,
+                front_identify_card_photo,
+                back_identify_card_photo,
+            );
+            person.front_identify_card_photo_URL = frontURL;
+            person.back_identify_card_photo_URL = backURL;
+            return await this.personRepository.save(person);
+        } catch (error) {
+            if (error instanceof TypeORMError) {
+                await this.uploadService.remove(person.id);
+            }
+            throw error;
+        }
     }
 
     async createAccount(

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Person } from "../person/entities/person.entity";
 
 export abstract class UploadService {
     abstract uploadAndGetURL(
@@ -9,10 +8,11 @@ export abstract class UploadService {
         mime?: string,
     ): Promise<string>;
     abstract save(
-        person: Person,
+        personId: string,
         frontIdentifyCardPhoto: any,
         backIdentifyCardPhoto: any,
-    ): Promise<Person>;
+    ): Promise<string[]>;
+    abstract remove(personId: string): Promise<boolean>;
 }
 
 @Injectable()
@@ -22,15 +22,15 @@ export class SupabaseService extends UploadService {
     }
 
     async save(
-        person: Person,
+        personId: string,
         frontIdentifyCardPhoto: any,
         backIdentifyCardPhoto: any,
-    ): Promise<Person> {
+    ): Promise<string[]> {
         const [frontURL, backURL] = await Promise.all([
             this.uploadAndGetURL(
                 frontIdentifyCardPhoto,
                 "/person/" +
-                    person.id +
+                    personId +
                     "/front_identify_card_photo_URL.png",
                 "image/png",
             ),
@@ -38,14 +38,28 @@ export class SupabaseService extends UploadService {
             this.uploadAndGetURL(
                 backIdentifyCardPhoto,
                 "/person/" +
-                    person.id +
+                    personId +
                     "/back_identify_card_photo_URL.png",
                 "image/png",
             ),
         ]);
-        person.front_identify_card_photo_URL = frontURL;
-        person.back_identify_card_photo_URL = backURL;
-        return person;
+        return [frontURL, backURL];
+    }
+
+    async remove(personId: string): Promise<boolean> {
+        const { data, error } = await this.supabaseClient.storage
+            .from("homeland")
+            .remove([
+                "/person/" +
+                    personId +
+                    "/front_identify_card_photo_URL.png",
+                "/person/" +
+                    personId +
+                    "/back_identify_card_photo_URL.png",
+            ]);
+
+        if (error) throw error;
+        return true;
     }
 
     private BLOB_STORAGE_URL =

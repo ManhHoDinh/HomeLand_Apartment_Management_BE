@@ -49,7 +49,10 @@ export class SupabaseService extends UploadService {
     }
 
     private BLOB_STORAGE_URL =
-        process.env.SUPABASE_URL +
+        (process.env.IS_PRODUCTION == "true"
+            ? process.env.SUPABASE_URL
+            : process.env.SUPABASE_LOCAL_URL ||
+              process.env.SUPABASE_URL) +
         "/storage/v1/object/public/homeland";
 
     async uploadAndGetURL(
@@ -58,7 +61,7 @@ export class SupabaseService extends UploadService {
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
         const { data, error } = await this.supabaseClient.storage
-            .from("HomeLand")
+            .from("homeland")
             .upload(uploadPath, file.buffer, {
                 contentType: mime,
             });

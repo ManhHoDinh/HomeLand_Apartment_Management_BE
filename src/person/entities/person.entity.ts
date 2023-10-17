@@ -9,7 +9,7 @@ import {
     TableInheritance,
     OneToMany,
 } from "typeorm";
-import { Property } from "../../apartment/entities/apartment.entity";
+import { Property } from "../../property/entities/property.entity";
 import {
     IsDateString,
     IsEmail,

@@ -12,6 +12,7 @@ import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedingModule } from "./seeding/seeding.module";
+import { PropertyModule } from './property/property.module';
 
 @Module({
     imports: [
@@ -72,6 +73,7 @@ import { SeedingModule } from "./seeding/seeding.module";
         HashModule,
         PersonFactoryModule,
         SeedingModule,
+        PropertyModule,
     ],
     controllers: [AppController],
     providers: [AppService],

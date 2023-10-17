@@ -8,7 +8,7 @@ import {
     PrimaryColumn,
 } from "typeorm";
 import { Person } from "../../person/entities/person.entity";
-import { Property } from "../../apartment/entities/apartment.entity";
+import { Property } from "../../property/entities/property.entity";
 
 @Entity()
 export class Contract {

@@ -1,3 +1,17 @@
+How to build and run:
+```bash
+# install dependencies
+$ npm install
+# start supabase local
+$ npx supabase start
+# start redis and postgresql with compose
+$ docker compose up -d
+# rename .env.example to .env
+$ cp .env.example .env
+# start nestjs
+$ npm run start:dev
+```
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

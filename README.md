@@ -1,5 +1,9 @@
 How to build and run:
 ```bash
+# clone repository
+$ git clone https://github.com/phuochungus/HomeLand_Apartment_Management_BE.git
+$ cd HomeLand_Apartment_Management_BE
+
 # install dependencies
 $ npm install
 # start supabase local

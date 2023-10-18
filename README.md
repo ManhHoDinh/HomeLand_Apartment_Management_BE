@@ -1,3 +1,24 @@
+How to build and run:
+```bash
+# clone repository
+$ git clone https://github.com/phuochungus/HomeLand_Apartment_Management_BE.git
+$ cd HomeLand_Apartment_Management_BE
+
+# install dependencies
+$ npm install
+# start supabase local
+$ npx supabase start
+
+# start docker compose
+$ docker compose pull
+$ docker compose up -d
+
+# rename .env.example to .env
+$ cp .env.example .env
+# start nestjs
+$ npm run start:dev
+```
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

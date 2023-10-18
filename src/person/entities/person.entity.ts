@@ -58,6 +58,13 @@ export class Person {
     contracts: Contract[];
 
     @ApiProperty({
+        example: "Nguyen Van A",
+    })
+    @IsString()
+    @Column()
+    name: string;
+
+    @ApiProperty({
         default: PersonRole.ADMIN,
         type: "enum",
         enum: PersonRole,
@@ -68,13 +75,6 @@ export class Person {
         enum: PersonRole,
     })
     role: PersonRole;
-
-    @ApiProperty({
-        example: "Nguyen Van A",
-    })
-    @IsString()
-    @Column()
-    name: string;
 
     @ApiProperty({
         default: "1990-01-01",
@@ -112,17 +112,17 @@ export class Person {
     @Column({ nullable: true })
     activated_at?: Date;
 
+    @ApiProperty({ required: false, default: "admin@gmail.com" })
+    @IsOptional()
+    @IsEmail()
+    @Column({ nullable: true, unique: true })
+    email?: string;
+
     @ApiProperty({ required: false, default: "password" })
     @IsOptional()
     @Exclude()
     @Column({ nullable: true })
     password?: string;
-
-    @ApiProperty({ required: false, default: "abc@gmail.com" })
-    @IsOptional()
-    @IsEmail()
-    @Column({ nullable: true, unique: true })
-    email?: string;
 
     @ApiProperty()
     @CreateDateColumn()

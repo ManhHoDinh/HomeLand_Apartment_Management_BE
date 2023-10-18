@@ -22,7 +22,7 @@ On left menu, navigate to ```Storage```
 
 Create ```New bucket``` with following config
 
-<img src="/phuochungus/HomeLand_Apartment_Management_BE/raw/document/doc/pic2.png" alt="" style="width: 50">
+<img src="/phuochungus/HomeLand_Apartment_Management_BE/raw/document/doc/pic2.png"  width="50%">
 
 How to run:
 ```bash

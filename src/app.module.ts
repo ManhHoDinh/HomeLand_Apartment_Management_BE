@@ -19,6 +19,9 @@ import { SeedingModule } from "./seeding/seeding.module";
         JwtModule.register({
             secret: process.env.ACCESS_TOKEN_SECRET,
             global: true,
+            signOptions: {
+                expiresIn: "30d",
+            },
         }),
         TypeOrmModule.forRootAsync({
             useFactory: async () => {

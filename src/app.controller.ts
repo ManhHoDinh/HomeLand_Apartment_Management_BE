@@ -22,6 +22,7 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
+import { Auth } from "./helper/decorator";
 
 @ApiTags("demo")
 @Controller()
@@ -35,6 +36,13 @@ export class AppController {
     getHello(): string {
         return this.appService.getHello();
     }
+
+    @Auth()
+    @Get('/token/validate')
+    validateToken() {
+        return "Token is valid"
+    }
+    
 
     /**
      * Create account without need send token in header

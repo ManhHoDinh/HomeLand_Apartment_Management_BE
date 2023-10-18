@@ -19,10 +19,10 @@ How to run:
 $ docker compose up -d
 # start supabase local
 $ npx supabase start
-
 # start nestjs
 $ npm run start:dev
 ```
+
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>

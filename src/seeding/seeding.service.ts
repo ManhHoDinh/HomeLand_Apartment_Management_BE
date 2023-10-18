@@ -10,7 +10,6 @@ export class SeedingService {
     constructor(private readonly personService: PersonRepository) {}
 
     async startSeeding() {
-        console.log(process.cwd() + "/src/seeding/identify.png");
         const fakeImage = readFileSync(
             process.cwd() + "/src/seeding/identify.png",
         );

@@ -24,6 +24,7 @@ $ npm run start:dev
 ```
 
 How to turn off gracefully:
+
 On terminal where Nestjs running press ```Ctrl + C```
 ```bash
 $ docker compose stop

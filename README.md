@@ -24,10 +24,12 @@ $ npm run start:dev
 ```
 
 How to turn off gracefully:
+
 On terminal where Nestjs running press ```Ctrl + C```
 ```bash
+# stop docker containers
 $ docker compose stop
-# start supabase local
+# stop supabase
 $ npx supabase stop
 ```
 

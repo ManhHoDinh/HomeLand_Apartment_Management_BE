@@ -9,7 +9,7 @@ $ npm install
 
 # start docker compose
 $ docker compose pull
-# docker compose include redis and postgresql, so if your local machina have redis or postgresql, please turn off all in order to run properly
+# docker compose include redis and postgresql, so if your local machine have redis or postgresql, please turn off all in order to run properly
 
 # rename .env.example to .env
 $ cp .env.example .env

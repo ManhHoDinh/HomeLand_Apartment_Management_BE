@@ -26,7 +26,7 @@ import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
 
-@ApiTags("demo")
+@ApiTags("DEVELOPMENT ONLY")
 @Controller()
 export class AppController {
     constructor(

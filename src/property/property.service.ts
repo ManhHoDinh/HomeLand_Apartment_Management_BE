@@ -20,13 +20,6 @@ export class PropertyService extends PropertyRepository {
         super();
     }
 
-    softDelete(id: any): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-    hardDelete?(id: any): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-
     create(createPropertyDto: CreatePropertyDto) {
         let property =
             this.propertyRepository.create(createPropertyDto);
@@ -50,5 +43,13 @@ export class PropertyService extends PropertyRepository {
             updatePropertyDto,
         );
         return isAffected(result);
+    }
+
+    softDelete(id: any): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
+
+    hardDelete?(id: any): Promise<boolean> {
+        throw new Error("Method not implemented.");
     }
 }

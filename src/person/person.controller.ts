@@ -27,7 +27,7 @@ import { MBtoBytes } from "../helper/validation";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { Auth } from "../helper/decorator";
 
-@ApiTags("person")
+@ApiTags("Person")
 @UseGuards(JWTAuthGuard)
 @ApiBearerAuth()
 @Controller("person")

@@ -103,17 +103,37 @@ export class PersonService implements PersonRepository {
         }
 
         try {
-            const [frontURL, backURL] = await this.uploadService.save(
-                person.id,
+            const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,
+                "/person/" +
+                    person.id +
+                    "/front_identify_card_photo_URL.png",
+                "image/png",
+            );
+            const backURL = await this.uploadService.upload(
                 back_identify_card_photo,
+                "/person/" +
+                    person.id +
+                    "/back_identify_card_photo_URL.png",
+                "image/png",
             );
             person.front_identify_card_photo_URL = frontURL;
             person.back_identify_card_photo_URL = backURL;
             return await this.personRepository.save(person);
         } catch (error) {
             if (error instanceof TypeORMError) {
-                await this.uploadService.remove(person.id);
+                try {
+                    await this.uploadService.remove([
+                        "/person/" +
+                            person.id +
+                            "/front_identify_card_photo_URL.png",
+                        "/person/" +
+                            person.id +
+                            "/back_identify_card_photo_URL.png",
+                    ]);
+                } catch (error) {
+                    console.error(error);
+                }
             }
             throw error;
         }

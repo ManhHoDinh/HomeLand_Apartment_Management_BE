@@ -26,7 +26,7 @@ import { SeedingModule } from "./seeding/seeding.module";
                     return {
                         type: "postgres",
                         url: process.env.DB_URL,
-                        synchronize: false,
+                        synchronize: true,
                         entities: ["dist/**/*.entity{.ts,.js}"],
                         cache: {
                             duration: 5000,

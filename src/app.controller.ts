@@ -9,10 +9,7 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { AppService } from "./app.service";
-import {
-    PersonRepository,
-    PersonService,
-} from "./person/person.service";
+import { PersonRepository } from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
 import {
     ApiConsumes,

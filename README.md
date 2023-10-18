@@ -1,4 +1,4 @@
-## HOW TO BUILD:
+## HOW TO BUILD
 ```bash
 # clone repository
 $ git clone https://github.com/phuochungus/HomeLand_Apartment_Management_BE.git
@@ -9,7 +9,6 @@ $ npm install
 
 # start docker compose
 $ docker compose pull
-# docker compose include redis and postgresql, so if your local machine have redis or postgresql, please turn off all in order to run properly
 
 # rename .env.example to .env
 $ cp .env.example .env
@@ -28,19 +27,24 @@ Create ```New bucket``` with following config
 
 ## HOW TO RUN
 ```bash
+# docker compose include redis and postgresql
+# if your local machine have redis or postgresql, please turn off all in order to run properly
 $ docker compose up -d
+
 # start supabase local
 $ npx supabase start
+
 # start nestjs
 $ npm run start:dev
 ```
 
-How to turn off:
+# HOW TO CLOSE
 
 On terminal where Nestjs running press ```Ctrl + C```
 ```bash
 # stop docker containers
 $ docker compose stop
+
 # stop supabase
 $ npx supabase stop
 ```

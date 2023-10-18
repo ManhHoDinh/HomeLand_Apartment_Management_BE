@@ -14,12 +14,13 @@ $ docker compose pull
 $ cp .env.example .env
 ```
 
-Open browser, navigate to ```http://localhost:54323```
+Open  ```http://localhost:54323``` in the browser
 
 On left menu, navigate to ```Storage```
+![Pic1](./doc/pic1.png)
 
 Create ```New bucket``` with following config
-
+![Pic2](./doc/pic2.png)
 
 
 How to run:

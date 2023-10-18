@@ -14,6 +14,14 @@ $ docker compose pull
 $ cp .env.example .env
 ```
 
+Open browser, navigate to ```http://localhost:54323```
+
+On left menu, navigate to ```Storage```
+
+Create ```New bucket``` with following config
+
+
+
 How to run:
 ```bash
 $ docker compose up -d

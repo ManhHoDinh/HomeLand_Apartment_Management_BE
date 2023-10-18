@@ -21,6 +21,7 @@ On left menu, navigate to ```Storage```
 ![](./doc/pic1.png)
 
 Create ```New bucket``` with following config
+
 ![](./doc/pic2.png)
 
 

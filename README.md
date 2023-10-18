@@ -17,10 +17,11 @@ $ cp .env.example .env
 Open  ```http://localhost:54323``` in the browser
 
 On left menu, navigate to ```Storage```
-![Pic1](./doc/pic1.png)
+
+[](./doc/pic1.png)
 
 Create ```New bucket``` with following config
-![Pic2](./doc/pic2.png)
+[](./doc/pic2.png)
 
 
 How to run:

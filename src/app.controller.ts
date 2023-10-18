@@ -38,11 +38,10 @@ export class AppController {
     }
 
     @Auth()
-    @Get('/token/validate')
+    @Get("/token/validate")
     validateToken() {
-        return "Token is valid"
+        return "Token is valid";
     }
-    
 
     /**
      * Create account without need send token in header

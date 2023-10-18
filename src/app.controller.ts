@@ -9,10 +9,7 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { AppService } from "./app.service";
-import {
-    PersonRepository,
-    PersonService,
-} from "./person/person.service";
+import { PersonRepository } from "./person/person.service";
 import { CreatePersonDto } from "./person/dto/create-person.dto";
 import {
     ApiConsumes,
@@ -25,6 +22,7 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
+import { Auth } from "./helper/decorator";
 
 @ApiTags("DEVELOPMENT ONLY")
 @Controller()
@@ -37,6 +35,12 @@ export class AppController {
     @Get()
     getHello(): string {
         return this.appService.getHello();
+    }
+
+    @Auth()
+    @Get("/token/validate")
+    validateToken() {
+        return "Token is valid";
     }
 
     /**

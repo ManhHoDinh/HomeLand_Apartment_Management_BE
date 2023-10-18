@@ -21,6 +21,9 @@ import { ImageModule } from "./image/image.module";
         JwtModule.register({
             secret: process.env.ACCESS_TOKEN_SECRET,
             global: true,
+            signOptions: {
+                expiresIn: "30d",
+            },
         }),
         TypeOrmModule.forRootAsync({
             useFactory: async () => {
@@ -28,7 +31,7 @@ import { ImageModule } from "./image/image.module";
                     return {
                         type: "postgres",
                         url: process.env.DB_URL,
-                        synchronize: false,
+                        synchronize: true,
                         entities: ["dist/**/*.entity{.ts,.js}"],
                         cache: {
                             duration: 5000,

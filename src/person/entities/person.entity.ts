@@ -54,7 +54,7 @@ export class Person {
     })
     stay_at?: Property;
 
-    @OneToMany(() => Contract, (contract) => contract.president_id)
+    @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 
     @ApiProperty({

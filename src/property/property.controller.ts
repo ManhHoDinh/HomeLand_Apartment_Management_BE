@@ -37,7 +37,7 @@ export class PropertyController {
         @Param("id") id: string,
         @Body() updatePropertyDto: UpdatePropertyDto,
     ) {
-        return this.propertyService.update(+id, updatePropertyDto);
+        return this.propertyService.update(id, updatePropertyDto);
     }
 
     @Delete(":id")

@@ -1,13 +1,24 @@
-How to build and run:
+How to build:
 ```bash
+# clone repository
+$ git clone https://github.com/phuochungus/HomeLand_Apartment_Management_BE.git
+$ cd HomeLand_Apartment_Management_BE
+
 # install dependencies
 $ npm install
-# start supabase local
-$ npx supabase start
-# start redis and postgresql with compose
-$ docker compose up -d
+
+# start docker compose
+$ docker compose pull
+
 # rename .env.example to .env
 $ cp .env.example .env
+```
+
+How to run:
+```bash
+$ docker compose up -d
+# start supabase local
+$ npx supabase start
 # start nestjs
 $ npm run start:dev
 ```

@@ -12,6 +12,18 @@ $ cp .env.example .env
 $ npm run start:dev
 ```
 
+<<<<<<< Updated upstream
+=======
+How to turn off gracefully:
+On terminal where Nestjs running press ```Ctrl + C```
+```bash
+$ docker compose stop
+# start supabase local
+$ npx supabase stop
+```
+
+
+>>>>>>> Stashed changes
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>

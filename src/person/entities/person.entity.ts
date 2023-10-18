@@ -57,6 +57,11 @@ export class Person {
     @OneToMany(() => Contract, (contract) => contract.president_id)
     contracts: Contract[];
 
+    @ApiProperty({
+        default: PersonRole.ADMIN,
+        type: "enum",
+        enum: PersonRole,
+    })
     @IsEnum(PersonRole)
     @Column({
         type: "enum",
@@ -72,12 +77,17 @@ export class Person {
     name: string;
 
     @ApiProperty({
-        example: "1999-01-01",
+        default: "1990-01-01",
     })
     @IsDateString()
     @Column()
     date_of_birth: Date;
 
+    @ApiProperty({
+        default: Gender.MALE,
+        type: "enum",
+        enum: Gender,
+    })
     @IsEnum(Gender)
     @Column({
         type: "enum",
@@ -91,26 +101,34 @@ export class Person {
     @Column()
     back_identify_card_photo_URL: string;
 
+    @ApiProperty({
+        default: "0999999999",
+    })
     @IsPhoneNumber("VN")
     @Column({ unique: true })
     phone_number: string;
 
+    @ApiProperty({ required: false })
     @Column({ nullable: true })
     activated_at?: Date;
 
-    @Exclude()
+    @ApiProperty({ required: false, default: "password" })
     @IsOptional()
+    @Exclude()
     @Column({ nullable: true })
     password?: string;
 
+    @ApiProperty({ required: false, default: "abc@gmail.com" })
     @IsOptional()
     @IsEmail()
     @Column({ nullable: true, unique: true })
     email?: string;
 
+    @ApiProperty()
     @CreateDateColumn()
     created_at: Date;
 
+    @ApiProperty({ required: false })
     @DeleteDateColumn()
     deleted_at?: Date;
 }

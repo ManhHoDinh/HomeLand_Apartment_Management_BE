@@ -84,7 +84,6 @@ export class PersonController {
         },
         @Body() createPersonDto: CreatePersonDto,
     ) {
-        console.log(files);
         createPersonDto.front_identify_card_photo =
             files.front_identify_card_photo;
         createPersonDto.back_identify_card_photo =

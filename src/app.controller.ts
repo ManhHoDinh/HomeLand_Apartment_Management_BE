@@ -24,7 +24,7 @@ import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
 import { Auth } from "./helper/decorator";
 
-@ApiTags("demo")
+@ApiTags("DEVELOPMENT ONLY")
 @Controller()
 export class AppController {
     constructor(

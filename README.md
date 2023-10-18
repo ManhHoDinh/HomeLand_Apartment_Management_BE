@@ -1,4 +1,4 @@
-How to build:
+## HOW TO BUILD:
 ```bash
 # clone repository
 $ git clone https://github.com/phuochungus/HomeLand_Apartment_Management_BE.git
@@ -25,7 +25,7 @@ Create ```New bucket``` with following config
 <img src="https://github.com/phuochungus/HomeLand_Apartment_Management_BE/blob/7a908fc4e13f83ff9be4eefb910064257dce578d/doc/pic2.png" width="50%" />
 </div>
 
-How to run:
+## HOW TO RUN
 ```bash
 $ docker compose up -d
 # start supabase local
@@ -34,7 +34,7 @@ $ npx supabase start
 $ npm run start:dev
 ```
 
-How to turn off gracefully:
+How to turn off:
 
 On terminal where Nestjs running press ```Ctrl + C```
 ```bash

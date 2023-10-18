@@ -37,19 +37,18 @@ export class PropertyService extends PropertyRepository {
         });
     }
 
-    async update(id: number, updatePropertyDto: UpdatePropertyDto) {
+    async update(id: string, updatePropertyDto: UpdatePropertyDto) {
         const result = await this.propertyRepository.update(
-            id,
+            { property_id: id },
             updatePropertyDto,
         );
         return isAffected(result);
     }
 
-    softDelete(id: any): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-
-    hardDelete?(id: any): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async softDelete(id: string): Promise<boolean> {
+        const result = await this.propertyRepository.softDelete({
+            property_id: id,
+        });
+        return isAffected(result);
     }
 }

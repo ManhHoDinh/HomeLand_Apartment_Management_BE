@@ -110,9 +110,4 @@ export class AppController {
             files.back_identify_card_photo;
         return this.personRepository.create(createPersonDto);
     }
-
-    @Get("/me")
-    getMe(@Req() req) {
-        return req.user;
-    }
 }

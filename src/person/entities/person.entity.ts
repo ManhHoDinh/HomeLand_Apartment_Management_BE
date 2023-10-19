@@ -53,11 +53,8 @@ export class Person {
         nullable: true,
         eager: true,
     })
-    @JoinColumn({ name: "stay_at_property_id" })
+    @JoinColumn()
     stay_at?: Property;
-
-    @Column({ nullable: true })
-    stay_at_property_id?: string;
 
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];

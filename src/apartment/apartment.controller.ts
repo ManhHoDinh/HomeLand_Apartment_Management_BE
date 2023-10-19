@@ -16,42 +16,42 @@ import { ApiTags } from "@nestjs/swagger";
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {
-    constructor(private readonly propertyService: ApartmentService) {}
+    constructor(private readonly apartmentService: ApartmentService) {}
 
     @Post()
-    create(@Body() createPropertyDto: CreateApartmentDto) {
-        return this.propertyService.create(createPropertyDto);
+    create(@Body() createApartmentDto: CreateApartmentDto) {
+        return this.apartmentService.create(createApartmentDto);
     }
 
     @Get()
     findAll() {
-        return this.propertyService.findAll();
+        return this.apartmentService.findAll();
     }
 
     @Get(":id")
     async findOne(@Param("id") id: string) {
-        const property = await this.propertyService.findOne(id);
-        if (property) return property;
-        throw new NotFoundException("Property not found");
+        const apartment = await this.apartmentService.findOne(id);
+        if (apartment) return apartment;
+        throw new NotFoundException("Apartment not found");
     }
 
     @Patch(":id")
     async update(
         @Param("id") id: string,
-        @Body() updatePropertyDto: UpdateApartmentDto,
+        @Body() updateApartmentDto: UpdateApartmentDto,
     ) {
-        const result = await this.propertyService.update(
+        const result = await this.apartmentService.update(
             id,
-            updatePropertyDto,
+            updateApartmentDto,
         );
-        if (result) return { msg: "Property updated" };
-        throw new NotFoundException("Property not found");
+        if (result) return { msg: "Apartment updated" };
+        throw new NotFoundException("Apartment not found");
     }
 
     @Delete(":id")
     async remove(@Param("id") id: string) {
-        const result = await this.propertyService.softDelete(id);
-        if (result) return { msg: "Property deleted" };
-        throw new NotFoundException("Property not found");
+        const result = await this.apartmentService.softDelete(id);
+        if (result) return { msg: "Apartment deleted" };
+        throw new NotFoundException("Apartment not found");
     }
 }

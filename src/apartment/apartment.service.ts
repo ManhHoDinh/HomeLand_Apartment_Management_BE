@@ -15,30 +15,30 @@ export abstract class ApartmentRepository extends BaseRepository<
 export class ApartmentService extends ApartmentRepository {
     constructor(
         @InjectRepository(Apartment)
-        private readonly propertyRepository: Repository<Apartment>,
+        private readonly apartmentRepository: Repository<Apartment>,
     ) {
         super();
     }
 
     create(createPropertyDto: CreateApartmentDto) {
         let property =
-            this.propertyRepository.create(createPropertyDto);
+            this.apartmentRepository.create(createPropertyDto);
 
         return Promise.resolve(property);
     }
 
     async findAll() {
-        return await this.propertyRepository.find();
+        return await this.apartmentRepository.find();
     }
 
     async findOne(id: string) {
-        return await this.propertyRepository.findOne({
+        return await this.apartmentRepository.findOne({
             where: { apartment_id: id },
         });
     }
 
     async update(id: string, updatePropertyDto: UpdateApartmentDto) {
-        const result = await this.propertyRepository.update(
+        const result = await this.apartmentRepository.update(
             { apartment_id: id },
             updatePropertyDto,
         );
@@ -46,7 +46,7 @@ export class ApartmentService extends ApartmentRepository {
     }
 
     async softDelete(id: string): Promise<boolean> {
-        const result = await this.propertyRepository.softDelete({
+        const result = await this.apartmentRepository.softDelete({
             apartment_id: id,
         });
         return isQueryAffected(result);

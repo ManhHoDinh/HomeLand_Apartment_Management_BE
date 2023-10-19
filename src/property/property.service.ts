@@ -4,7 +4,7 @@ import { UpdatePropertyDto } from "./dto/update-property.dto";
 import { BaseRepository } from "../helper/base";
 import { Repository } from "typeorm";
 import { Property } from "./entities/property.entity";
-import { isAffected } from "../helper/validation";
+import { isQueryAffected } from "../helper/validation";
 import { InjectRepository } from "@nestjs/typeorm";
 
 export abstract class PropertyRepository extends BaseRepository<
@@ -42,13 +42,13 @@ export class PropertyService extends PropertyRepository {
             { property_id: id },
             updatePropertyDto,
         );
-        return isAffected(result);
+        return isQueryAffected(result);
     }
 
     async softDelete(id: string): Promise<boolean> {
         const result = await this.propertyRepository.softDelete({
             property_id: id,
         });
-        return isAffected(result);
+        return isQueryAffected(result);
     }
 }

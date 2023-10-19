@@ -96,8 +96,10 @@ export class PersonService implements PersonRepository {
             back_identify_card_photo,
             ...rest
         } = createPersonDto;
+        console.log(rest);
 
         let person = PersonFactory.create(rest);
+        console.log(person);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }

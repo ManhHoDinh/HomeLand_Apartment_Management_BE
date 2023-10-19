@@ -8,6 +8,7 @@ import {
     Entity,
     TableInheritance,
     OneToMany,
+    JoinColumn,
 } from "typeorm";
 import { Property } from "../../property/entities/property.entity";
 import {
@@ -52,7 +53,11 @@ export class Person {
         nullable: true,
         eager: true,
     })
+    @JoinColumn({ name: "stay_at_property_id" })
     stay_at?: Property;
+
+    @Column({ nullable: true })
+    stay_at_property_id?: string;
 
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
@@ -120,7 +125,7 @@ export class Person {
 
     @ApiProperty({ required: false, default: "password" })
     @IsOptional()
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ nullable: true })
     password?: string;
 

@@ -8,18 +8,18 @@ import {
     Delete,
     NotFoundException,
 } from "@nestjs/common";
-import { PropertyService } from "./property.service";
-import { CreatePropertyDto } from "./dto/create-property.dto";
-import { UpdatePropertyDto } from "./dto/update-property.dto";
+import { ApartmentService } from "./apartment.service";
+import { CreateApartmentDto } from "./dto/create-apartment.dto";
+import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { ApiTags } from "@nestjs/swagger";
 
-@ApiTags("Property")
-@Controller("property")
-export class PropertyController {
-    constructor(private readonly propertyService: PropertyService) {}
+@ApiTags("Apartment")
+@Controller("apartment")
+export class ApartmentController {
+    constructor(private readonly propertyService: ApartmentService) {}
 
     @Post()
-    create(@Body() createPropertyDto: CreatePropertyDto) {
+    create(@Body() createPropertyDto: CreateApartmentDto) {
         return this.propertyService.create(createPropertyDto);
     }
 
@@ -38,7 +38,7 @@ export class PropertyController {
     @Patch(":id")
     async update(
         @Param("id") id: string,
-        @Body() updatePropertyDto: UpdatePropertyDto,
+        @Body() updatePropertyDto: UpdateApartmentDto,
     ) {
         const result = await this.propertyService.update(
             id,

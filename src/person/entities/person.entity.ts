@@ -9,7 +9,7 @@ import {
     TableInheritance,
     OneToMany,
 } from "typeorm";
-import { Property } from "../../property/entities/property.entity";
+import { Apartment } from "../../apartment/entities/apartment.entity";
 import {
     IsDateString,
     IsEmail,
@@ -48,11 +48,11 @@ export class Person {
     @PrimaryColumn()
     id: string;
 
-    @ManyToOne(() => Property, (apartment) => apartment.residents, {
+    @ManyToOne(() => Apartment, (apartment) => apartment.residents, {
         nullable: true,
         eager: true,
     })
-    stay_at?: Property;
+    stay_at?: Apartment;
 
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];

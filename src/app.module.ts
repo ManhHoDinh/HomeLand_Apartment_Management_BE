@@ -12,7 +12,7 @@ import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedingModule } from "./seeding/seeding.module";
-import { PropertyModule } from "./property/property.module";
+import { PropertyModule } from "./apartment/apartment.module";
 import { ImageModule } from "./image/image.module";
 
 @Module({

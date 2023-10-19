@@ -1,26 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { CreatePropertyDto } from "./dto/create-property.dto";
-import { UpdatePropertyDto } from "./dto/update-property.dto";
+import { CreateApartmentDto } from "./dto/create-apartment.dto";
+import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { BaseRepository } from "../helper/base";
 import { Repository } from "typeorm";
-import { Property } from "./entities/property.entity";
+import { Apartment } from "./entities/apartment.entity";
 import { isAffected } from "../helper/validation";
 import { InjectRepository } from "@nestjs/typeorm";
 
-export abstract class PropertyRepository extends BaseRepository<
-    CreatePropertyDto,
-    Property
+export abstract class ApartmentRepository extends BaseRepository<
+    CreateApartmentDto,
+    Apartment
 > {}
 @Injectable()
-export class PropertyService extends PropertyRepository {
+export class ApartmentService extends ApartmentRepository {
     constructor(
-        @InjectRepository(Property)
-        private readonly propertyRepository: Repository<Property>,
+        @InjectRepository(Apartment)
+        private readonly propertyRepository: Repository<Apartment>,
     ) {
         super();
     }
 
-    create(createPropertyDto: CreatePropertyDto) {
+    create(createPropertyDto: CreateApartmentDto) {
         let property =
             this.propertyRepository.create(createPropertyDto);
 
@@ -37,7 +37,7 @@ export class PropertyService extends PropertyRepository {
         });
     }
 
-    async update(id: string, updatePropertyDto: UpdatePropertyDto) {
+    async update(id: string, updatePropertyDto: UpdateApartmentDto) {
         const result = await this.propertyRepository.update(
             { property_id: id },
             updatePropertyDto,

@@ -1,5 +1,8 @@
 import { Entity } from "typeorm";
 
+/**
+ * Base class for all CRUD service
+ */
 export abstract class BaseRepository<CreateEntityDto, Entity> {
     abstract create(createDto: CreateEntityDto): Promise<Entity>;
     abstract findOne(id: string): Promise<Entity | null>;

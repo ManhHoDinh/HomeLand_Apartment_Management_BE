@@ -13,6 +13,7 @@ import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedingModule } from "./seeding/seeding.module";
 import { PropertyModule } from "./property/property.module";
+import { MeModule } from './me/me.module';
 
 @Module({
     imports: [
@@ -77,6 +78,7 @@ import { PropertyModule } from "./property/property.module";
         PersonFactoryModule,
         SeedingModule,
         PropertyModule,
+        MeModule,
     ],
     controllers: [AppController],
     providers: [AppService],

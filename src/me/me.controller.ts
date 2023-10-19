@@ -8,7 +8,7 @@ import { Person } from "../person/entities/person.entity";
 @Controller("me")
 export class MeController {
     @Get()
-    getSelfInfo(@Req() req: any): Person {
+    getPersonalInfo(@Req() req: any): Person {
         return req.user;
     }
 }

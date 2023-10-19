@@ -17,6 +17,9 @@ import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
 
+/**
+ * Person repository interface
+ */
 export abstract class PersonRepository extends BaseRepository<
     CreatePersonDto,
     Person

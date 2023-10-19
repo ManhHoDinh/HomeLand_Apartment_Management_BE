@@ -2,6 +2,9 @@ import { Injectable, OnModuleInit } from "@nestjs/common";
 import StorageFileApi from "@supabase/storage-js/dist/module/packages/StorageFileApi";
 import { SupabaseClient } from "@supabase/supabase-js";
 
+/**
+ * Upload service interface
+ */
 export abstract class UploadService {
     /**
      * Upload a file to remote storage and return the public URL
@@ -16,7 +19,6 @@ export abstract class UploadService {
     ): Promise<string>;
 
     /**
-     *
      * @param paths path to files will be remove on remote storage
      */
     abstract remove(paths: string[]);

@@ -33,13 +33,13 @@ export class ApartmentService extends ApartmentRepository {
 
     async findOne(id: string) {
         return await this.propertyRepository.findOne({
-            where: { property_id: id },
+            where: { apartment_id: id },
         });
     }
 
     async update(id: string, updatePropertyDto: UpdateApartmentDto) {
         const result = await this.propertyRepository.update(
-            { property_id: id },
+            { apartment_id: id },
             updatePropertyDto,
         );
         return isAffected(result);
@@ -47,7 +47,7 @@ export class ApartmentService extends ApartmentRepository {
 
     async softDelete(id: string): Promise<boolean> {
         const result = await this.propertyRepository.softDelete({
-            property_id: id,
+            apartment_id: id,
         });
         return isAffected(result);
     }

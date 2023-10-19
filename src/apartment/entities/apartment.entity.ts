@@ -18,7 +18,7 @@ import { ApiProperty } from "@nestjs/swagger";
 export class Apartment {
     @ApiProperty()
     @PrimaryColumn()
-    property_id: string;
+    apartment_id: string;
 
     @ApiProperty()
     @Column()

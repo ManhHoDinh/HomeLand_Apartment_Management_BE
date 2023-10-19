@@ -8,6 +8,7 @@ import {
     Entity,
     TableInheritance,
     OneToMany,
+    JoinColumn,
 } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import {
@@ -120,7 +121,7 @@ export class Person {
 
     @ApiProperty({ required: false, default: "password" })
     @IsOptional()
-    @Exclude()
+    @Exclude({ toPlainOnly: true })
     @Column({ nullable: true })
     password?: string;
 

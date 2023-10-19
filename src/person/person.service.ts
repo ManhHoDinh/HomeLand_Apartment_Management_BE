@@ -12,11 +12,14 @@ import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { UploadService } from "../upload/upload.service";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
-import { isAffected } from "../helper/validation";
+import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
 
+/**
+ * Person repository interface
+ */
 export abstract class PersonRepository extends BaseRepository<
     CreatePersonDto,
     Person
@@ -96,8 +99,10 @@ export class PersonService implements PersonRepository {
             back_identify_card_photo,
             ...rest
         } = createPersonDto;
+        console.log(rest);
 
         let person = PersonFactory.create(rest);
+        console.log(person);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
@@ -105,14 +110,14 @@ export class PersonService implements PersonRepository {
         try {
             const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,
-                "/person/" +
+                "person/" +
                     person.id +
                     "/front_identify_card_photo_URL.png",
                 "image/png",
             );
             const backURL = await this.uploadService.upload(
                 back_identify_card_photo,
-                "/person/" +
+                "person/" +
                     person.id +
                     "/back_identify_card_photo_URL.png",
                 "image/png",
@@ -186,18 +191,18 @@ export class PersonService implements PersonRepository {
             id,
             updatePersonDto,
         );
-        return isAffected(result);
+        return isQueryAffected(result);
     }
 
     async softDelete(id: string): Promise<boolean> {
         const result = await this.personRepository.softDelete({ id });
-        return isAffected(result);
+        return isQueryAffected(result);
     }
 
     async hardDelete?(id: any): Promise<boolean> {
         try {
             const result = await this.personRepository.delete({ id });
-            return isAffected(result);
+            return isQueryAffected(result);
         } catch (error) {
             console.error(error);
             throw error;

@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    NotFoundException,
 } from "@nestjs/common";
 import { PropertyService } from "./property.service";
 import { CreatePropertyDto } from "./dto/create-property.dto";
@@ -28,20 +29,29 @@ export class PropertyController {
     }
 
     @Get(":id")
-    findOne(@Param("id") id: string) {
-        return this.propertyService.findOne(id);
+    async findOne(@Param("id") id: string) {
+        const property = await this.propertyService.findOne(id);
+        if (property) return property;
+        throw new NotFoundException("Property not found");
     }
 
     @Patch(":id")
-    update(
+    async update(
         @Param("id") id: string,
         @Body() updatePropertyDto: UpdatePropertyDto,
     ) {
-        return this.propertyService.update(id, updatePropertyDto);
+        const result = await this.propertyService.update(
+            id,
+            updatePropertyDto,
+        );
+        if (result) return { msg: "Property updated" };
+        throw new NotFoundException("Property not found");
     }
 
     @Delete(":id")
-    remove(@Param("id") id: string) {
-        return this.propertyService.softDelete(id);
+    async remove(@Param("id") id: string) {
+        const result = await this.propertyService.softDelete(id);
+        if (result) return { msg: "Property deleted" };
+        throw new NotFoundException("Property not found");
     }
 }

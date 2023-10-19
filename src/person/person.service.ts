@@ -110,14 +110,14 @@ export class PersonService implements PersonRepository {
         try {
             const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,
-                "/person/" +
+                "person/" +
                     person.id +
                     "/front_identify_card_photo_URL.png",
                 "image/png",
             );
             const backURL = await this.uploadService.upload(
                 back_identify_card_photo,
-                "/person/" +
+                "person/" +
                     person.id +
                     "/back_identify_card_photo_URL.png",
                 "image/png",

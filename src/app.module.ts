@@ -36,23 +36,12 @@ import { ApartmentModule } from "./apartment/apartment.module";
                         cache: {
                             duration: 5000,
                             type: "redis",
-                            ignoreErrors: true,
                             options: {
                                 url: process.env.REDIS_URL,
                             },
                         },
                     };
                 } else {
-                    const client = createClient();
-
-                    client.on("error", (error) => {
-                        console.error(error);
-                    });
-                    client.on("connect", async () => {
-                        console.log("Connected to redis");
-                    });
-                    await client.connect();
-                    await client.disconnect();
                     return {
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
@@ -61,7 +50,6 @@ import { ApartmentModule } from "./apartment/apartment.module";
                         duration: 5000,
                         cache: {
                             type: "redis",
-                            ignoreErrors: true,
                             options: {
                                 url: process.env.REDIS_LOCAL_URL,
                             },

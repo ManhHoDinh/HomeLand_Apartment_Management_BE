@@ -17,6 +17,10 @@ export class PersonInfo extends OmitType(CreatePersonDto, [
     "front_identify_card_photo",
 ]) {}
 
+/**
+ * Factory Pattern
+ * Factory create person by role
+ */
 @Injectable()
 export class PersonFactory {
     static create(personInfo: PersonInfo): Person {

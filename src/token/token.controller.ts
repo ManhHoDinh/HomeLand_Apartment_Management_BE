@@ -1,8 +1,14 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    HttpStatus,
+    Post,
+} from "@nestjs/common";
 import { Auth } from "../helper/decorator/auth.decorator";
-import { JwtService } from "@nestjs/jwt";
 import { SignInDto } from "../auth/dto/signin.dto";
 import { AuthService } from "../auth/auth.service";
+import { ApiForbiddenResponse, ApiResponse } from "@nestjs/swagger";
 
 @Controller("token")
 export class TokenController {
@@ -10,6 +16,13 @@ export class TokenController {
 
     @Auth()
     @Get("/validate")
+    @ApiForbiddenResponse({
+        description: "Token not have permission",
+    })
+    @ApiResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: "Token invalid or expired",
+    })
     validateToken() {
         return "Token is valid";
     }

@@ -8,7 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
 import { PersonRepository } from "../../person/person.service";
 import { TokenPayload } from "../../auth/auth.controller";
-import { TokenExpiredError } from "jsonwebtoken";
+import { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 
 @Injectable()
 export class JWTAuthGuard implements CanActivate {
@@ -33,7 +33,10 @@ export class JWTAuthGuard implements CanActivate {
                     const user = await this.personRepository.findOne(
                         payload.id,
                     );
-                    if (!user) return false;
+                    if (!user)
+                        throw new UnauthorizedException(
+                            "Token invalid",
+                        );
                     request.user = user;
                     return true;
                 } catch (error) {
@@ -41,8 +44,13 @@ export class JWTAuthGuard implements CanActivate {
                         throw new UnauthorizedException(
                             "Token expired",
                         );
+                    } else if (error instanceof JsonWebTokenError) {
+                        throw new UnauthorizedException(
+                            "Token invalid",
+                        );
                     }
-                    throw false;
+                    console.error(error);
+                    throw error;
                 }
             }
         }

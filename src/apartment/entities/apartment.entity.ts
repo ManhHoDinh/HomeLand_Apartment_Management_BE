@@ -12,21 +12,36 @@ import { Person } from "../../person/entities/person.entity";
 import { Contract } from "../../contract/entities/contract.entity";
 import { Image } from "../../image/entities/image.entity";
 import { Floor } from "../../floor/entities/floor.entity";
-import { ApiProperty } from "@nestjs/swagger";
 
+export enum ApartmentStatus {
+    ACTIVE = "active",
+    INACTIVE = "inactive",
+}
 @Entity()
 export class Apartment {
-    @ApiProperty()
     @PrimaryColumn()
     apartment_id: string;
 
-    @ApiProperty()
     @Column()
     width: number;
 
-    @ApiProperty()
     @Column()
     length: number;
+
+    @Column({ type: "int" })
+    number_of_bedroom: number;
+
+    @Column({ type: "int" })
+    number_of_bathroom: number;
+
+    @Column({
+        enum: ApartmentStatus,
+        default: ApartmentStatus.ACTIVE,
+    })
+    status: ApartmentStatus;
+
+    @Column()
+    description: string;
 
     @ManyToOne(() => Floor, (floor) => floor.apartments)
     @JoinColumn({ name: "floor_id" })

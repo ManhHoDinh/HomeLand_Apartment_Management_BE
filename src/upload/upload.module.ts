@@ -18,12 +18,8 @@ import { SupabaseClient, createClient } from "@supabase/supabase-js";
                     );
                 } else {
                     return createClient(
-                        process.env.SUPABASE_LOCAL_URL ||
-                            process.env.SUPABASE_URL ||
-                            "nothing",
-                        process.env.SUPABASE_LOCAL_KEY ||
-                            process.env.SUPABASE_KEY ||
-                            "nothing",
+                        process.env.SUPABASE_LOCAL_URL || "nothing",
+                        process.env.SUPABASE_LOCAL_KEY || "nothing",
                     );
                 }
             },

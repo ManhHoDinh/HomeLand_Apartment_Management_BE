@@ -2,11 +2,13 @@ import {
     Injectable,
     CanActivate,
     ExecutionContext,
+    UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
 import { PersonRepository } from "../../person/person.service";
 import { TokenPayload } from "../../auth/auth.controller";
+import { TokenExpiredError } from "jsonwebtoken";
 
 @Injectable()
 export class JWTAuthGuard implements CanActivate {
@@ -35,8 +37,12 @@ export class JWTAuthGuard implements CanActivate {
                     request.user = user;
                     return true;
                 } catch (error) {
-                    console.error(error);
-                    return false;
+                    if (error instanceof TokenExpiredError) {
+                        throw new UnauthorizedException(
+                            "Token expired",
+                        );
+                    }
+                    throw false;
                 }
             }
         }

@@ -8,12 +8,12 @@ import { IdGeneratorModule } from "./id_generator/id-generator.module";
 import { UploadModule } from "./upload/upload.module";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { createClient } from "redis";
 import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedingModule } from "./seeding/seeding.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
+import { TokenModule } from './token/token.module';
 
 @Module({
     imports: [
@@ -21,9 +21,6 @@ import { ApartmentModule } from "./apartment/apartment.module";
         JwtModule.register({
             secret: process.env.ACCESS_TOKEN_SECRET,
             global: true,
-            signOptions: {
-                expiresIn: "30d",
-            },
         }),
         TypeOrmModule.forRootAsync({
             useFactory: async () => {
@@ -67,6 +64,7 @@ import { ApartmentModule } from "./apartment/apartment.module";
         SeedingModule,
         ApartmentModule,
         MeModule,
+        TokenModule,
     ],
     controllers: [AppController],
     providers: [AppService],

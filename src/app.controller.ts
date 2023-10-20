@@ -20,10 +20,10 @@ import {
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./person/dto/create-account.dto";
-import { ValidateFilePipe } from "./helper/pipe";
 import { MBtoBytes } from "./helper/validation";
-import { Auth } from "./helper/decorator";
 import { PersonRole } from "./person/entities/person.entity";
+import { Auth } from "./helper/decorator/auth.decorator";
+import { ValidateFilePipe } from "./helper/pipe/validate-file-pipe.pipe";
 
 @ApiTags("DEVELOPMENT ONLY")
 @Controller()
@@ -37,12 +37,6 @@ export class AppController {
     @Get()
     getHello(): string {
         return this.appService.getHello();
-    }
-
-    @Auth()
-    @Get("/token/validate")
-    validateToken() {
-        return "Token is valid";
     }
 
     /**

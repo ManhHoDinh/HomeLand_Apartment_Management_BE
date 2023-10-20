@@ -21,11 +21,11 @@ import {
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { Person, PersonRole } from "./entities/person.entity";
-import { JWTAuthGuard } from "../helper/guard";
-import { ValidateFilePipe } from "../helper/pipe";
 import { MBtoBytes } from "../helper/validation";
 import { CreateAccountDto } from "./dto/create-account.dto";
-import { Auth } from "../helper/decorator";
+import { Auth } from "../helper/decorator/auth.decorator";
+import { JWTAuthGuard } from "../helper/guard/jwt.guard";
+import { ValidateFilePipe } from "../helper/pipe/validate-file-pipe.pipe";
 
 @ApiTags("Person")
 @UseGuards(JWTAuthGuard)

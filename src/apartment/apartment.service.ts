@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { BaseRepository } from "../helper/base";
 import { Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { isQueryAffected } from "../helper/validation";
+import { BaseRepository } from "../helper/base/base-repository.abstract";
 
 export abstract class ApartmentRepository extends BaseRepository<
     CreateApartmentDto,

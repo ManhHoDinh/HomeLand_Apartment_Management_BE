@@ -5,9 +5,9 @@ import { DataSource, In, Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { BaseRepository } from "../helper/base/base-repository.abstract";
-import { IdGenerator } from "../id_generator/id-generator.service";
 import { UploadService } from "../upload/upload.service";
 import { Resident } from "../person/entities/person.entity";
+import { IdGenerator } from "../id_generator/id-generator.service";
 
 export abstract class ApartmentRepository extends BaseRepository<
     CreateApartmentDto,
@@ -35,10 +35,10 @@ export class ApartmentService extends ApartmentRepository {
     }
 
     async create(
-        createPropertyDto: CreateApartmentDto,
+        createApartmentDto: CreateApartmentDto,
         id?: string,
     ): Promise<Apartment> {
-        const { images, ...rest } = createPropertyDto;
+        const { images, ...rest } = createApartmentDto;
         let apartment = this.apartmentRepository.create(rest);
         apartment.apartment_id = "APM" + this.idGenerate.generateId();
         if (id) apartment.apartment_id = id;
@@ -61,13 +61,13 @@ export class ApartmentService extends ApartmentRepository {
             apartment =
                 await this.apartmentRepository.save(apartment);
 
-            if (createPropertyDto.residentIds) {
+            if (createApartmentDto.residentIds) {
                 const residents = await this.residentRepository.find({
-                    where: { id: In(createPropertyDto.residentIds) },
+                    where: { id: In(createApartmentDto.residentIds) },
                 });
                 if (
                     residents.length !==
-                    createPropertyDto.residentIds.length
+                    createApartmentDto.residentIds.length
                 )
                     throw new NotFoundException(
                         "Some resident not found",
@@ -100,7 +100,7 @@ export class ApartmentService extends ApartmentRepository {
 
     async update(
         id: string,
-        updatePropertyDto: UpdateApartmentDto,
+        updateApartmentDto: UpdateApartmentDto,
     ): Promise<boolean> {
         throw new Error("Method not implemented.");
     }

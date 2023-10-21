@@ -54,6 +54,7 @@ export class ApartmentService extends ApartmentRepository {
                         `apartment/${apartment.apartment_id}/${
                             index + Date.now() + ".png"
                         }`,
+                        "image/png",
                     ),
                 ),
             );

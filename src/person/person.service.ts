@@ -28,6 +28,7 @@ export abstract class PersonRepository extends BaseRepository<
     abstract create(
         createPersonDto: CreatePersonDto,
         creatorRole?: PersonRole,
+        id?: string,
     ): Promise<Person>;
     abstract createAccount(
         id: string,
@@ -44,9 +45,19 @@ export class PersonService implements PersonRepository {
         private readonly hashService: HashService,
     ) {}
 
+    /**
+     * Create a person and insert into database
+     * @param createPersonDto JSON object to create person
+     * @param creatorRole role of who evoke this function
+     * @default creatorRole undefined
+     * @param id set the id of person, if not set, id will be generated
+     * @default id undefined
+     * @returns inserted person
+     */
     async create(
         createPersonDto: CreatePersonDto,
         creatorRole?: PersonRole,
+        id?: string,
     ): Promise<Person> {
         if (creatorRole) {
             switch (createPersonDto.role) {
@@ -99,14 +110,14 @@ export class PersonService implements PersonRepository {
             back_identify_card_photo,
             ...rest
         } = createPersonDto;
-        console.log(rest);
 
         let person = PersonFactory.create(rest);
-        console.log(person);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
 
+        if (id) person.id = id;
+        
         try {
             const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,

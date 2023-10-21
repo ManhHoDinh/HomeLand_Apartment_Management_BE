@@ -172,22 +172,22 @@ export class SeedingService {
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room.jpg",
+                            process.cwd() + "/src/seeding/room (2).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room.jpg",
+                            process.cwd() + "/src/seeding/room (3).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room.jpg",
+                            process.cwd() + "/src/seeding/room (4).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room.jpg",
+                            process.cwd() + "/src/seeding/room (5).jpg",
                         ),
                     } as Express.Multer.File,
                 ],

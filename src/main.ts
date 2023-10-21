@@ -11,9 +11,12 @@ import {
 } from "@nestjs/swagger";
 import { Person } from "./person/entities/person.entity";
 import { TypeOrmExceptionFilter } from "./helper/filter/typeorm-exception.filter";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app =
+        await NestFactory.create<NestExpressApplication>(AppModule);
+    app.useStaticAssets("static");
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -43,7 +46,13 @@ async function bootstrap() {
         config,
         option,
     );
-    SwaggerModule.setup("api", app, document);
+
+    SwaggerModule.setup("api", app, document, {
+        customCssUrl: "/style.css",
+        swaggerOptions: {
+            useUnsafeMarkdown: true,
+        },
+    });
 
     await app.listen(process.env.PORT || 3000);
 }

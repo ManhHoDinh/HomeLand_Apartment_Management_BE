@@ -7,30 +7,59 @@ import {
     Param,
     Delete,
     NotFoundException,
+    UseInterceptors,
+    UploadedFiles,
 } from "@nestjs/common";
-import { ApartmentService } from "./apartment.service";
+import { ApartmentRepository } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
+import { MBtoBytes } from "../helper/validation";
 
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {
-    constructor(private readonly apartmentService: ApartmentService) {}
+    constructor(
+        private readonly apartmentRepository: ApartmentRepository,
+    ) {}
 
+    @ApiConsumes("multipart/form-data")
+    @UseInterceptors(
+        FileFieldsInterceptor([
+            {
+                name: "images",
+            },
+        ]),
+    )
     @Post()
-    create(@Body() createApartmentDto: CreateApartmentDto) {
-        return this.apartmentService.create(createApartmentDto);
+    create(
+        @UploadedFiles(
+            new ValidateImagePipe([
+                {
+                    name: "images",
+                    limit: MBtoBytes(5),
+                },
+            ]),
+        )
+        file: { images: Express.Multer.File[] },
+        @Body() createApartmentDto: CreateApartmentDto,
+    ) {
+        return this.apartmentRepository.create({
+            ...createApartmentDto,
+            images: file.images,
+        });
     }
 
     @Get()
     findAll() {
-        return this.apartmentService.findAll();
+        return this.apartmentRepository.findAll();
     }
 
     @Get(":id")
     async findOne(@Param("id") id: string) {
-        const apartment = await this.apartmentService.findOne(id);
+        const apartment = await this.apartmentRepository.findOne(id);
         if (apartment) return apartment;
         throw new NotFoundException("Apartment not found");
     }
@@ -40,7 +69,7 @@ export class ApartmentController {
         @Param("id") id: string,
         @Body() updateApartmentDto: UpdateApartmentDto,
     ) {
-        const result = await this.apartmentService.update(
+        const result = await this.apartmentRepository.update(
             id,
             updateApartmentDto,
         );
@@ -50,7 +79,7 @@ export class ApartmentController {
 
     @Delete(":id")
     async remove(@Param("id") id: string) {
-        const result = await this.apartmentService.softDelete(id);
+        const result = await this.apartmentRepository.softDelete(id);
         if (result) return { msg: "Apartment deleted" };
         throw new NotFoundException("Apartment not found");
     }

@@ -53,6 +53,7 @@ export class Person {
         nullable: true,
         eager: true,
     })
+    @JoinColumn({ name: "stay_at_apartment_id" })
     stay_at?: Apartment;
 
     @OneToMany(() => Contract, (contract) => contract.resident)
@@ -138,7 +139,8 @@ export class Person {
 export class Resident extends Person {
     constructor() {
         super();
-        if (!this.id) this.id = "R" + IdGeneratorService.generateId();
+        if (!this.id)
+            this.id = "RSD" + IdGeneratorService.generateId();
     }
 
     role: PersonRole = PersonRole.RESIDENT;
@@ -148,7 +150,8 @@ export class Resident extends Person {
 export class Admin extends Person {
     constructor() {
         super();
-        if (!this.id) this.id = "A" + IdGeneratorService.generateId();
+        if (!this.id)
+            this.id = "ADM" + IdGeneratorService.generateId();
     }
 
     @Column({ enum: PersonRole, default: String(PersonRole.ADMIN) })
@@ -159,7 +162,8 @@ export class Admin extends Person {
 export class Manager extends Person {
     constructor() {
         super();
-        if (!this.id) this.id = "M" + IdGeneratorService.generateId();
+        if (!this.id)
+            this.id = "MNG" + IdGeneratorService.generateId();
     }
 
     @Column({ enum: PersonRole, default: PersonRole.MANAGER })
@@ -170,7 +174,8 @@ export class Manager extends Person {
 export class Technician extends Person {
     constructor() {
         super();
-        if (!this.id) this.id = "T" + IdGeneratorService.generateId();
+        if (!this.id)
+            this.id = "TEC" + IdGeneratorService.generateId();
     }
 
     @Column({ enum: PersonRole, default: PersonRole.TECHINICIAN })
@@ -181,7 +186,8 @@ export class Technician extends Person {
 export class Employee extends Person {
     constructor() {
         super();
-        if (!this.id) this.id = "E" + IdGeneratorService.generateId();
+        if (!this.id)
+            this.id = "EMP" + IdGeneratorService.generateId();
     }
 
     @Column({ enum: PersonRole, default: PersonRole.EMPLOYEE })

@@ -13,7 +13,7 @@ import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedingModule } from "./seeding/seeding.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
-import { TokenModule } from './token/token.module';
+import { TokenModule } from "./token/token.module";
 
 @Module({
     imports: [
@@ -40,6 +40,7 @@ import { TokenModule } from './token/token.module';
                     };
                 } else {
                     return {
+                        logging: true,
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,

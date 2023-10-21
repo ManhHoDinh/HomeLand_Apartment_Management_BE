@@ -4,7 +4,6 @@ import {
     Get,
     Param,
     Post,
-    Req,
     UploadedFiles,
     UseInterceptors,
 } from "@nestjs/common";
@@ -23,7 +22,7 @@ import { CreateAccountDto } from "./person/dto/create-account.dto";
 import { MBtoBytes } from "./helper/validation";
 import { PersonRole } from "./person/entities/person.entity";
 import { Auth } from "./helper/decorator/auth.decorator";
-import { ValidateFilePipe } from "./helper/pipe/validate-file-pipe.pipe";
+import { ValidateImagePipe } from "./helper/pipe/validate-file-pipe.pipe";
 
 @ApiTags("DEVELOPMENT ONLY")
 @Controller()
@@ -79,16 +78,14 @@ export class AppController {
     )
     createPerson(
         @UploadedFiles(
-            new ValidateFilePipe([
+            new ValidateImagePipe([
                 {
                     name: "front_identify_card_photo",
                     limit: MBtoBytes(15),
-                    mimetypes: ["image/jpeg", "image/png"],
                 },
                 {
                     name: "back_identify_card_photo",
                     limit: MBtoBytes(15),
-                    mimetypes: ["image/jpeg", "image/png"],
                 },
             ]),
         )

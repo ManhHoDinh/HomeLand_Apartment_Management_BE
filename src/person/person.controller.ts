@@ -25,7 +25,7 @@ import { MBtoBytes } from "../helper/validation";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { JWTAuthGuard } from "../helper/guard/jwt.guard";
-import { ValidateFilePipe } from "../helper/pipe/validate-file-pipe.pipe";
+import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
 
 @ApiTags("Person")
 @UseGuards(JWTAuthGuard)
@@ -38,7 +38,7 @@ export class PersonController {
 
     /**
      * Create person profile, only token from admin or manager can access this API
-     * - Admin can create manager, manager, resident and techinician
+     * - Admin can create manager, resident and techinician
      * - Manager can create resident and technician
      *
      * Other role can not create person profile */
@@ -65,16 +65,14 @@ export class PersonController {
     )
     create(
         @UploadedFiles(
-            new ValidateFilePipe([
+            new ValidateImagePipe([
                 {
                     name: "front_identify_card_photo",
                     limit: MBtoBytes(15),
-                    mimetypes: ["image/jpeg", "image/png"],
                 },
                 {
                     name: "back_identify_card_photo",
                     limit: MBtoBytes(15),
-                    mimetypes: ["image/jpeg", "image/png"],
                 },
             ]),
         )
@@ -84,11 +82,12 @@ export class PersonController {
         },
         @Body() createPersonDto: CreatePersonDto,
     ) {
-        createPersonDto.front_identify_card_photo =
-            files.front_identify_card_photo;
-        createPersonDto.back_identify_card_photo =
-            files.back_identify_card_photo;
-        return this.personRepository.create(createPersonDto);
+        return this.personRepository.create({
+            ...createPersonDto,
+            front_identify_card_photo:
+                files.front_identify_card_photo,
+            back_identify_card_photo: files.back_identify_card_photo,
+        });
     }
 
     /**

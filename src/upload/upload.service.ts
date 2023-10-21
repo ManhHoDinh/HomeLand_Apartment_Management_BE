@@ -13,7 +13,7 @@ export abstract class UploadService {
      * @param mime MIME type of file
      */
     abstract upload(
-        file: any,
+        file: { buffer: Buffer },
         path: string,
         mime?: string,
     ): Promise<string>;
@@ -21,7 +21,7 @@ export abstract class UploadService {
     /**
      * @param paths path to files will be remove on remote storage
      */
-    abstract remove(paths: string[]);
+    abstract remove(paths: string[]): Promise<boolean>;
 }
 
 @Injectable()
@@ -53,7 +53,7 @@ export class SupabaseService
     }
 
     async upload(
-        file: any,
+        file: { buffer: Buffer },
         uploadPath: string,
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {

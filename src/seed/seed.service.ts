@@ -265,7 +265,7 @@ export class SeedService {
     }
 
     async seeding() {
-        for (let i = 1; i < 200; i++) {
+        for (let i = 0; i < 200; i++) {
             let gender = faker.helpers.arrayElement([
                 Gender.FEMALE,
                 Gender.MALE,

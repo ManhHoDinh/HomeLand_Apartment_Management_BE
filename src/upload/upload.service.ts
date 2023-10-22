@@ -18,6 +18,9 @@ export abstract class UploadService {
         mime?: string,
     ): Promise<string>;
 
+    abstract createBucket();
+    abstract removeBucket();
+
     /**
      * @param paths path to files will be remove on remote storage
      */
@@ -29,23 +32,36 @@ export class SupabaseService
     extends UploadService
     implements OnModuleInit
 {
+    async removeBucket() {
+        await this.supabaseClient.storage.emptyBucket(
+            this.BUCKET_NAME,
+        );
+        await this.supabaseClient.storage.deleteBucket(
+            this.BUCKET_NAME,
+        );
+    }
+    async createBucket() {
+        await this.supabaseClient.storage.createBucket(
+            this.BUCKET_NAME,
+        );
+    }
     constructor(private readonly supabaseClient: SupabaseClient) {
         super();
     }
 
-    static readonly BUCKET_NAME = "homeland";
+    private readonly BUCKET_NAME = "homeland2";
 
     private bucket: StorageFileApi;
 
     onModuleInit() {
         this.bucket = this.supabaseClient.storage.from(
-            SupabaseService.BUCKET_NAME,
+            this.BUCKET_NAME,
         );
     }
 
     async remove(paths: string[]): Promise<boolean> {
         const { error } = await this.supabaseClient.storage
-            .from(SupabaseService.BUCKET_NAME)
+            .from(this.BUCKET_NAME)
             .remove(paths);
 
         if (error) throw error;
@@ -58,14 +74,14 @@ export class SupabaseService
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
         const { data, error } = await this.supabaseClient.storage
-            .from(SupabaseService.BUCKET_NAME)
+            .from(this.BUCKET_NAME)
             .upload(uploadPath, file.buffer, {
                 contentType: mime,
             });
 
         if (error) throw error;
         const response = this.supabaseClient.storage
-            .from(SupabaseService.BUCKET_NAME)
+            .from(this.BUCKET_NAME)
             .getPublicUrl(uploadPath);
         return response.data.publicUrl;
     }

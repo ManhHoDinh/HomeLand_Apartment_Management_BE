@@ -49,7 +49,7 @@ export class SupabaseService
         super();
     }
 
-    private readonly BUCKET_NAME = "homeland2";
+    private readonly BUCKET_NAME = "homeland";
 
     private bucket: StorageFileApi;
 

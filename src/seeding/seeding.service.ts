@@ -7,16 +7,36 @@ import { DataSource } from "typeorm";
 import { Floor } from "../floor/entities/floor.entity";
 import { Building } from "../building/entities/building.entity";
 import { ApartmentRepository } from "../apartment/apartment.service";
+import { UploadService } from "../upload/upload.service";
 
 @Injectable()
-export class SeedingService {
+export class SeedService {
     constructor(
         @InjectDataSource()
         private readonly dataSource: DataSource,
         private readonly personService: PersonRepository,
         private readonly apartmentRepository: ApartmentRepository,
+        private readonly uploadService: UploadService,
     ) {}
 
+    async dropDB() {
+        try {
+            await this.dataSource.dropDatabase();
+            await this.uploadService.removeBucket();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    async createDB() {
+        try {
+            await this.dataSource.synchronize();
+            await this.uploadService.createBucket();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
     async startSeeding() {
         const frontIdentity = {
             buffer: readFileSync(
@@ -172,22 +192,26 @@ export class SeedingService {
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room (2).jpg",
+                            process.cwd() +
+                                "/src/seeding/room (2).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room (3).jpg",
+                            process.cwd() +
+                                "/src/seeding/room (3).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room (4).jpg",
+                            process.cwd() +
+                                "/src/seeding/room (4).jpg",
                         ),
                     } as Express.Multer.File,
                     {
                         buffer: readFileSync(
-                            process.cwd() + "/src/seeding/room (5).jpg",
+                            process.cwd() +
+                                "/src/seeding/room (5).jpg",
                         ),
                     } as Express.Multer.File,
                 ],

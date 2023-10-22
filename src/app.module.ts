@@ -10,7 +10,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { HashModule } from "./hash/hash.module";
 import { PersonFactoryModule } from "./person-factory/person-factory.module";
-import { SeedingModule } from "./seeding/seeding.module";
+import { SeedModule } from "./seeding/seeding.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
@@ -62,7 +62,7 @@ import { TokenModule } from "./token/token.module";
         UploadModule,
         HashModule,
         PersonFactoryModule,
-        SeedingModule,
+        SeedModule,
         ApartmentModule,
         MeModule,
         TokenModule,

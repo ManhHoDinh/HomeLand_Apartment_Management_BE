@@ -43,6 +43,9 @@ export class SupabaseService
     async createBucket() {
         await this.supabaseClient.storage.createBucket(
             this.BUCKET_NAME,
+            {
+                public: true,
+            },
         );
     }
     constructor(private readonly supabaseClient: SupabaseClient) {

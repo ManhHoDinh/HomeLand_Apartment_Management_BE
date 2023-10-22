@@ -40,7 +40,7 @@ import { TokenModule } from "./token/token.module";
                     };
                 } else {
                     return {
-                        logging: true,
+                        logging: false,
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,

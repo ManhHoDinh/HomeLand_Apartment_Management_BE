@@ -56,6 +56,9 @@ export class Person {
     @JoinColumn({ name: "stay_at_apartment_id" })
     stay_at?: Apartment;
 
+    @Column({ nullable: true })
+    stay_at_apartment_id?: string;
+
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 

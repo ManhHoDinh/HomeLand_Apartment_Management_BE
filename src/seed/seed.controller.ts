@@ -16,7 +16,8 @@ export class SeedController {
     ) {}
 
     /**
-     * @deprecated this endpoint is deprecated, use `/seed/create` `/seed/drop` `/seed/seeding` instead
+     * @deprecated 
+     * this endpoint is deprecated, use `/seed/create` `/seed/drop` `/seed/seeding` instead
      * __WARNING__: this endpoint should be run in empty database.
      *  Otherwise, it will cause
      * <span style="color: red;"> server crash or duplicate/corrupted data</span>.

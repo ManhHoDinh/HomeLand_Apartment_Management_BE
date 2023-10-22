@@ -43,13 +43,16 @@ export class SupabaseService
     async createBucket() {
         await this.supabaseClient.storage.createBucket(
             this.BUCKET_NAME,
+            {
+                public: true,
+            },
         );
     }
     constructor(private readonly supabaseClient: SupabaseClient) {
         super();
     }
 
-    private readonly BUCKET_NAME = "homeland2";
+    private readonly BUCKET_NAME = "homeland";
 
     private bucket: StorageFileApi;
 

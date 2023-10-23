@@ -38,10 +38,10 @@ export class SeedService {
             throw error;
         }
     }
-    private readonly NUMBER_OF_BUILDING = 10;
-    private readonly NUMBER_OF_FLOOR = 10;
+    private readonly NUMBER_OF_BUILDING = 5;
+    private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 2400;
+    private readonly NUMBER_OF_RESIDENT = 600;
     private readonly NUMBER_OF_EMPLOYEE = 20;
     private readonly NUMBER_OF_MANAGER = 20;
     private readonly NUMBER_OF_TECHNICIAN = 20;
@@ -76,7 +76,7 @@ export class SeedService {
 
         let floorInfo: any[] = [];
         for (let building of buildingInfo) {
-            for (let i = 0; i < this.NUMBER_OF_FLOOR; i++) {
+            for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
                 floorInfo.push({
                     floor_id: `${building.building_id}/FLR${i}`,
                     name: `Floor ${i}`,

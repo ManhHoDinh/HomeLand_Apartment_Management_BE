@@ -17,6 +17,8 @@ export abstract class ApartmentRepository extends BaseRepository<
         createPropertyDto: CreateApartmentDto,
         id?: string,
     ): Promise<Apartment>;
+
+    abstract findAll(page?: number): Promise<Apartment[]>;
 }
 
 @Injectable()
@@ -89,7 +91,14 @@ export class ApartmentService extends ApartmentRepository {
         }
     }
 
-    async findAll() {
+    async findAll(page?: number) {
+        if (page != undefined && page != null) {
+            return await this.apartmentRepository.find({
+                skip: (page - 1) * 30,
+                take: 30,
+            });
+        }
+
         return await this.apartmentRepository.find();
     }
 

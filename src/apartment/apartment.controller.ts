@@ -9,11 +9,12 @@ import {
     NotFoundException,
     UseInterceptors,
     UploadedFiles,
+    Query,
 } from "@nestjs/common";
 import { ApartmentRepository } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
 import { MBtoBytes } from "../helper/validation";
@@ -52,9 +53,17 @@ export class ApartmentController {
         });
     }
 
+    @ApiQuery({
+        name: "page",
+        required: false,
+        description:
+            "Page number: Page indexed from 1, each page contain 30 items, if null then return all.",
+    })
     @Get()
-    findAll() {
-        return this.apartmentRepository.findAll();
+    findAll(@Query("page") page: number) {
+        if (Number.isNaN(page))
+            return this.apartmentRepository.findAll();
+        else return this.apartmentRepository.findAll(page);
     }
 
     @Get(":id")

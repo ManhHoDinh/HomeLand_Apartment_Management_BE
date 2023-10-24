@@ -94,4 +94,14 @@ export class Apartment {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    @ApiProperty({ example: "St. Crytal" })
+    @IsString()
+    @Column()
+    name: string;
+
+    @ApiProperty({ example: "Linh Trung, Thu Duc" })
+    @IsString()
+    @Column()
+    address: string;
 }

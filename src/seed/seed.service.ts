@@ -76,7 +76,11 @@ export class SeedService {
 
         let floorInfo: any[] = [];
         for (let building of buildingInfo) {
-            for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
+            for (
+                let i = 0;
+                i < this.NUMBER_OF_FLOOR_PER_BUILDING;
+                i++
+            ) {
                 floorInfo.push({
                     floor_id: `${building.building_id}/FLR${i}`,
                     name: `Floor ${i}`,
@@ -128,6 +132,8 @@ export class SeedService {
                 apartmentIds.push(
                     (
                         await this.apartmentRepository.create({
+                            name: "St. Crytal",
+                            address: "St. Crytal",
                             images: images,
                             length: 20,
                             building_id: floor.building_id,
@@ -241,7 +247,7 @@ export class SeedService {
                 phone_number: faker.phone.number(),
             });
         }
-        
+
         for (let i = 0; i < this.NUMBER_OF_MANAGER; i++) {
             const gender = faker.helpers.arrayElement([
                 Gender.FEMALE,

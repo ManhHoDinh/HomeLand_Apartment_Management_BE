@@ -12,6 +12,8 @@ export class CreateApartmentDto extends PickType(Apartment, [
     "number_of_bathroom",
     "number_of_bedroom",
     "rent",
+    "name",
+    "address",
 ] as const) {
     @ApiProperty({
         type: "file",

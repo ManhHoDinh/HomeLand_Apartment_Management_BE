@@ -64,7 +64,7 @@ export class Apartment {
     @JoinColumn({ name: "floor_id" })
     floor: Floor;
 
-    @ApiProperty({ example: "FLR0" })
+    @ApiProperty({ example: "BLD0/FLR0" })
     @IsString()
     @Column({ nullable: true })
     floor_id: string;

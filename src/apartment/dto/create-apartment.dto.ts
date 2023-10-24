@@ -26,13 +26,16 @@ export class CreateApartmentDto extends PickType(Apartment, [
     @ApiProperty({
         type: "string",
         required: false,
-        example: ["RSD000000"],
         isArray: true,
+        items: {
+            type: "string",
+        },
+        minItems: 1,
     })
     @IsOptional()
     @IsString({ each: true })
     @Transform(({ value }) => {
-        if (!Array.isArray(value)) return [value];
+        if (value && !Array.isArray(value)) return [value];
         return value;
     })
     residentIds?: string[];

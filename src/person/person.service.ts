@@ -34,6 +34,7 @@ export abstract class PersonRepository extends BaseRepository<
         id: string,
         createAccountDto: CreateAccountDto,
     ): Promise<Person>;
+    abstract findAll(role?: PersonRole): Promise<Person[]>;
 }
 
 @Injectable()
@@ -117,7 +118,7 @@ export class PersonService implements PersonRepository {
         }
 
         if (id) person.id = id;
-        
+
         try {
             const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,
@@ -191,8 +192,9 @@ export class PersonService implements PersonRepository {
         });
     }
 
-    findAll(): Promise<Person[]> {
+    findAll(role?: PersonRole): Promise<Person[]> {
         return this.personRepository.find({
+            where: role ? { role } : {},
             cache: true,
         });
     }

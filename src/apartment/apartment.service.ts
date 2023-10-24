@@ -4,7 +4,7 @@ import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { DataSource, In, Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { UploadService } from "../upload/upload.service";
+import { StorageManager } from "../storage/storage.service";
 import { Resident } from "../person/entities/person.entity";
 import { IdGenerator } from "../id_generator/id_generator.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
@@ -31,7 +31,7 @@ export class TypeORMApartmentService extends ApartmentService {
         @InjectDataSource()
         private readonly dataSource: DataSource,
         private readonly idGenerate: IdGenerator,
-        private readonly uploadService: UploadService,
+        private readonly uploadService: StorageManager,
     ) {
         super();
     }

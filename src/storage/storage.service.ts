@@ -1,13 +1,12 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
-import StorageFileApi from "@supabase/storage-js/dist/module/packages/StorageFileApi";
+import { Injectable } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Upload service interface
  */
-export abstract class UploadService {
+export abstract class StorageManager {
     /**
-     * Upload a file to remote storage and return the public URL
+     * Upload a file to storage and return the URL
      * @param file file must have buffer property
      * @param path path to upload on remote storage
      * @param mime MIME type of file
@@ -18,37 +17,39 @@ export abstract class UploadService {
         mime?: string,
     ): Promise<string>;
 
-    abstract createBucket();
-    abstract removeBucket();
-
     /**
-     * @param paths path to files will be remove on remote storage
+     * @param paths path to files will be remove on bucket
      */
     abstract remove(paths: string[]): Promise<boolean>;
+
+    /**
+     * Initiate storage if not exist
+     */
+    abstract initiateStorage(): Promise<void>;
+
+    /**
+     * Destroy storage if exist
+     */
+    abstract destroyStorage(): Promise<void>;
 }
 
 @Injectable()
-export class SupabaseService extends UploadService implements OnModuleInit {
-    async removeBucket() {
+export class SupabaseStorageManager extends StorageManager {
+    constructor(private readonly supabaseClient: SupabaseClient) {
+        super();
+    }
+    async destroyStorage() {
         await this.supabaseClient.storage.emptyBucket(this.BUCKET_NAME);
         await this.supabaseClient.storage.deleteBucket(this.BUCKET_NAME);
     }
-    async createBucket() {
+
+    async initiateStorage() {
         await this.supabaseClient.storage.createBucket(this.BUCKET_NAME, {
             public: true,
         });
     }
-    constructor(private readonly supabaseClient: SupabaseClient) {
-        super();
-    }
 
     private readonly BUCKET_NAME = "homeland";
-
-    private bucket: StorageFileApi;
-
-    onModuleInit() {
-        this.bucket = this.supabaseClient.storage.from(this.BUCKET_NAME);
-    }
 
     async remove(paths: string[]): Promise<boolean> {
         const { error } = await this.supabaseClient.storage
@@ -64,7 +65,7 @@ export class SupabaseService extends UploadService implements OnModuleInit {
         uploadPath: string,
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
-        const { data, error } = await this.supabaseClient.storage
+        const { error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .upload(uploadPath, file.buffer, {
                 contentType: mime,

@@ -4,7 +4,7 @@ import { PersonController } from "./person.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Person } from "./entities/person.entity";
 import { IdGeneratorModule } from "../id_generator/id_generator.module";
-import { UploadModule } from "../upload/upload.module";
+import { StorageModule } from "../storage/storage.module";
 import { HashModule } from "../hash/hash.module";
 import { PersonFactoryModule } from "../person-factory/person-factory.module";
 
@@ -13,7 +13,7 @@ import { PersonFactoryModule } from "../person-factory/person-factory.module";
     imports: [
         TypeOrmModule.forFeature([Person]),
         IdGeneratorModule,
-        UploadModule,
+        StorageModule,
         HashModule,
         PersonFactoryModule,
     ],

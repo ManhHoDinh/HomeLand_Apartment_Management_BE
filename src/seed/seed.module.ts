@@ -3,10 +3,10 @@ import { SeedService } from "./seed.service";
 import { PersonModule } from "../person/person.module";
 import { Seed } from "./seed.controller";
 import { ApartmentModule } from "../apartment/apartment.module";
-import { UploadModule } from "../upload/upload.module";
+import { StorageModule } from "../storage/storage.module";
 
 @Module({
-    imports: [PersonModule, ApartmentModule, UploadModule],
+    imports: [PersonModule, ApartmentModule, StorageModule],
     controllers: [Seed],
     providers: [SeedService],
 })

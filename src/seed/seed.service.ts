@@ -7,7 +7,7 @@ import { DataSource } from "typeorm";
 import { Floor } from "../floor/entities/floor.entity";
 import { Building } from "../building/entities/building.entity";
 import { ApartmentService } from "../apartment/apartment.service";
-import { UploadService } from "../upload/upload.service";
+import { StorageManager } from "../storage/storage.service";
 import { faker } from "@faker-js/faker";
 import { CreatePersonDto } from "../person/dto/create-person.dto";
 
@@ -18,12 +18,12 @@ export class SeedService {
         private readonly dataSource: DataSource,
         private readonly personService: PersonRepository,
         private readonly apartmentRepository: ApartmentService,
-        private readonly uploadService: UploadService,
+        private readonly uploadService: StorageManager,
     ) {}
 
     async dropDB() {
         try {
-            await this.uploadService.removeBucket();
+            await this.uploadService.destroyStorage();
             await this.dataSource.dropDatabase();
         } catch (error) {
             console.log(error);
@@ -32,7 +32,7 @@ export class SeedService {
     }
     async createDB() {
         try {
-            await this.uploadService.createBucket();
+            await this.uploadService.initiateStorage();
             await this.dataSource.synchronize();
         } catch (error) {
             console.log(error);

@@ -10,7 +10,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, TypeORMError } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
-import { UploadService } from "../upload/upload.service";
+import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
@@ -42,7 +42,7 @@ export class PersonService implements PersonRepository {
     constructor(
         @InjectRepository(Person)
         private readonly personRepository: Repository<Person>,
-        private readonly uploadService: UploadService,
+        private readonly uploadService: StorageManager,
         private readonly hashService: HashService,
         private readonly personFactory: PersonFactory,
     ) {}

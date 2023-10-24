@@ -20,7 +20,7 @@ import {
     IsString,
 } from "class-validator";
 import { Exclude } from "class-transformer";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { IdGeneratorService } from "../../id_generator/id-generator.service";
 import { Contract } from "../../contract/entities/contract.entity";
 
@@ -132,6 +132,10 @@ export class Person {
     @ApiProperty()
     @CreateDateColumn()
     created_at: Date;
+
+    @ApiHideProperty()
+    @Column({ nullable: true })
+    avatarURL?: string
 
     @ApiProperty({ required: false })
     @DeleteDateColumn()

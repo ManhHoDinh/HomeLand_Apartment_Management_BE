@@ -17,4 +17,7 @@ export class CreatePersonDto extends PickType(Person, [
 
     @ApiProperty({ type: "file", format: "binary", required: true })
     back_identify_card_photo: Express.Multer.File;
+
+    @ApiProperty({ type: "file", format: "binary", required: false })
+    avatar_photo?: Express.Multer.File;
 }

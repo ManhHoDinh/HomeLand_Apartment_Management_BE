@@ -4,10 +4,10 @@ import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { DataSource, In, Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { UploadService } from "../upload/upload.service";
 import { Resident } from "../person/entities/person.entity";
 import { IdGenerator } from "../id_generator/id-generator.service";
+import { BaseRepository } from "../helper/abstract_base_class/base_repository.abstract";
 
 export abstract class ApartmentRepository extends BaseRepository<
     CreateApartmentDto,

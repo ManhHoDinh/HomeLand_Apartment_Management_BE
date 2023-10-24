@@ -11,11 +11,11 @@ import { Repository, TypeORMError } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { UploadService } from "../upload/upload.service";
-import { BaseRepository } from "../helper/base/base-repository.abstract";
 import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
+import { BaseRepository } from "../helper/abstract_base_class/base_repository.abstract";
 
 /**
  * Person repository interface
@@ -134,6 +134,14 @@ export class PersonService implements PersonRepository {
                     "/back_identify_card_photo_URL.png",
                 "image/png",
             );
+            if (createPersonDto.avatar_photo) {
+                const avatarURL = await this.uploadService.upload(
+                    createPersonDto.avatar_photo,
+                    "person/" + person.id + "/avatarURL.png",
+                    "image/png",
+                );
+                person.avatarURL = avatarURL;
+            }
             person.front_identify_card_photo_URL = frontURL;
             person.back_identify_card_photo_URL = backURL;
             return await this.personRepository.save(person);

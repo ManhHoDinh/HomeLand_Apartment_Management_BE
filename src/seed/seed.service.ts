@@ -123,6 +123,20 @@ export class SeedService {
                 ),
             } as Express.Multer.File,
         ];
+
+        const avatars = [
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/avatar1.jpg",
+                ),
+            } as Express.Multer.File,
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/avatar2.jpg",
+                ),
+            } as Express.Multer.File,
+        ];
+
         let apartmentIds: any[] = [];
         for (let floor of floorInfo) {
             for (
@@ -160,6 +174,7 @@ export class SeedService {
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "resident@gmail.com",
+            avatar_photo: faker.helpers.arrayElement(avatars),
         });
 
         await this.createRandomPerson({
@@ -167,6 +182,7 @@ export class SeedService {
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "admin@gmail.com",
+            avatar_photo: faker.helpers.arrayElement(avatars),
         });
 
         await this.createRandomPerson({
@@ -174,6 +190,7 @@ export class SeedService {
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "manager@gmail.com",
+            avatar_photo: faker.helpers.arrayElement(avatars),
         });
 
         await this.createRandomPerson({
@@ -181,6 +198,7 @@ export class SeedService {
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "technician@gmail.com",
+            avatar_photo: faker.helpers.arrayElement(avatars),
         });
 
         await this.createRandomPerson({
@@ -196,6 +214,7 @@ export class SeedService {
                 back_identify_card_photo: backIdentity,
                 stay_at_apartment_id:
                     faker.helpers.arrayElement(apartmentIds),
+                avatar_photo: faker.helpers.arrayElement(avatars),
             });
         }
 
@@ -212,14 +231,16 @@ export class SeedService {
                 role: PersonRole.ADMIN,
                 front_identify_card_photo: frontIdentity,
                 back_identify_card_photo: backIdentity,
+                avatar_photo: faker.helpers.arrayElement(avatars),
             });
         }
 
         for (let i = 0; i < this.NUMBER_OF_TECHNICIAN - 1; i++) {
             await this.createRandomPerson({
-                role: PersonRole.ADMIN,
+                role: PersonRole.TECHINICIAN,
                 front_identify_card_photo: frontIdentity,
                 back_identify_card_photo: backIdentity,
+                avatar_photo: faker.helpers.arrayElement(avatars),
             });
         }
 
@@ -228,6 +249,7 @@ export class SeedService {
                 role: PersonRole.MANAGER,
                 front_identify_card_photo: frontIdentity,
                 back_identify_card_photo: backIdentity,
+                avatar_photo: faker.helpers.arrayElement(avatars),
             });
         }
     }
@@ -236,6 +258,7 @@ export class SeedService {
         role: PersonRole;
         front_identify_card_photo: Express.Multer.File;
         back_identify_card_photo: Express.Multer.File;
+        avatar_photo?: Express.Multer.File;
         email?: string;
         stay_at_apartment_id?: string;
     }) {
@@ -253,6 +276,10 @@ export class SeedService {
                 role == PersonRole.EMPLOYEE ? undefined : "password",
             activate_at:
                 role == PersonRole.EMPLOYEE ? null : new Date(),
+            avatar_photo:
+                role == PersonRole.EMPLOYEE
+                    ? undefined
+                    : partialCreatePersonDto.avatar_photo,
         };
 
         let createPersonDto: CreatePersonDto = {

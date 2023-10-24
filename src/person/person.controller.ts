@@ -8,6 +8,8 @@ import {
     UploadedFiles,
     Param,
     Patch,
+    Query,
+    ParseEnumPipe,
 } from "@nestjs/common";
 import { PersonRepository } from "./person.service";
 import { CreatePersonDto } from "./dto/create-person.dto";
@@ -112,7 +114,14 @@ export class PersonController {
         summary: "Get all person profile",
     })
     @Get()
-    findAll(): Promise<Person[]> {
+    findAll(
+        @Query(
+            "role",
+            new ParseEnumPipe(PersonRole, { optional: true }),
+        )
+        role?: PersonRole,
+    ): Promise<Person[]> {
+        if (role) return this.personRepository.findAll(role);
         return this.personRepository.findAll();
     }
 }

@@ -46,10 +46,7 @@ export class AppController {
         @Param("id") id: string,
         @Body() createAccountDto: CreateAccountDto,
     ) {
-        return this.personRepository.createAccount(
-            id,
-            createAccountDto,
-        );
+        return this.personRepository.createAccount(id, createAccountDto);
     }
 
     /**

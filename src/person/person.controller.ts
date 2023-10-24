@@ -35,9 +35,7 @@ import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
 @ApiBearerAuth()
 @Controller("person")
 export class PersonController {
-    constructor(
-        private readonly personRepository: PersonRepository,
-    ) {}
+    constructor(private readonly personRepository: PersonRepository) {}
 
     /**
      * Create person profile, only token from admin or manager can access this API
@@ -87,8 +85,7 @@ export class PersonController {
     ) {
         return this.personRepository.create({
             ...createPersonDto,
-            front_identify_card_photo:
-                files.front_identify_card_photo,
+            front_identify_card_photo: files.front_identify_card_photo,
             back_identify_card_photo: files.back_identify_card_photo,
         });
     }
@@ -105,10 +102,7 @@ export class PersonController {
         @Param("id") id: string,
         @Body() createAccountDto: CreateAccountDto,
     ): Promise<Person> {
-        return await this.personRepository.createAccount(
-            id,
-            createAccountDto,
-        );
+        return await this.personRepository.createAccount(id, createAccountDto);
     }
 
     @ApiOperation({
@@ -117,10 +111,7 @@ export class PersonController {
     @ApiQuery({ name: "role", enum: PersonRole, required: false })
     @Get()
     findAll(
-        @Query(
-            "role",
-            new ParseEnumPipe(PersonRole, { optional: true }),
-        )
+        @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
         role?: PersonRole,
     ): Promise<Person[]> {
         if (role) return this.personRepository.findAll(role);

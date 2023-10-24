@@ -4,8 +4,8 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { PersonModule } from "./person/person.module";
-import { IdGeneratorModule } from "./id_generator/id-generator.module";
-import { UploadModule } from "./upload/upload.module";
+import { IdGeneratorModule } from "./id_generator/id_generator.module";
+import { StorageModule } from "./storage/storage.module";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { HashModule } from "./hash/hash.module";
@@ -59,7 +59,7 @@ import { TokenModule } from "./token/token.module";
         AuthModule,
         PersonModule,
         IdGeneratorModule,
-        UploadModule,
+        StorageModule,
         HashModule,
         PersonFactoryModule,
         SeedModule,

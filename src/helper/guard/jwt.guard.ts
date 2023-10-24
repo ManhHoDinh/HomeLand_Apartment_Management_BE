@@ -28,26 +28,18 @@ export class JWTAuthGuard implements CanActivate {
             const token = request.headers.authorization.split(" ")[1];
             if (token) {
                 try {
-                    const payload: TokenPayload =
-                        this.jwtService.verify(token);
+                    const payload: TokenPayload = this.jwtService.verify(token);
                     const user = await this.personRepository.findOne(
                         payload.id,
                     );
-                    if (!user)
-                        throw new UnauthorizedException(
-                            "Token invalid",
-                        );
+                    if (!user) throw new UnauthorizedException("Token invalid");
                     request.user = user;
                     return true;
                 } catch (error) {
                     if (error instanceof TokenExpiredError) {
-                        throw new UnauthorizedException(
-                            "Token expired",
-                        );
+                        throw new UnauthorizedException("Token expired");
                     } else if (error instanceof JsonWebTokenError) {
-                        throw new UnauthorizedException(
-                            "Token invalid",
-                        );
+                        throw new UnauthorizedException("Token invalid");
                     }
                     console.error(error);
                     throw error;

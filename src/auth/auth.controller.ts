@@ -1,17 +1,8 @@
-import {
-    Controller,
-    Post,
-    Body,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common";
 import { SignInDto } from "./dto/signin.dto";
 import { PersonRepository } from "../person/person.service";
 import { JwtService } from "@nestjs/jwt";
-import {
-    ApiCreatedResponse,
-    ApiOperation,
-    ApiTags,
-} from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 
 @ApiTags("Authentication")

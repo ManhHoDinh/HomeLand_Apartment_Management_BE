@@ -10,20 +10,20 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, TypeORMError } from "typeorm";
 import { Person, PersonRole } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
-import { UploadService } from "../upload/upload.service";
+import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
-import { BaseRepository } from "../helper/abstract_base_class/base_repository.abstract";
+import { IRepository } from "../helper/interface/IRepository.interface";
 
 /**
  * Person repository interface
  */
-export abstract class PersonRepository extends BaseRepository<
-    CreatePersonDto,
-    Person
-> {
+export abstract class PersonRepository implements IRepository<Person> {
+    abstract findOne(id: string): Promise<Person | null>;
+    abstract update(id: string, updateEntityDto: any): Promise<boolean>;
+    abstract delete(id: string): Promise<boolean>;
     abstract findOneByEmail(email: string): Promise<Person | null>;
     abstract create(
         createPersonDto: CreatePersonDto,
@@ -42,8 +42,9 @@ export class PersonService implements PersonRepository {
     constructor(
         @InjectRepository(Person)
         private readonly personRepository: Repository<Person>,
-        private readonly uploadService: UploadService,
+        private readonly storageManager: StorageManager,
         private readonly hashService: HashService,
+        private readonly personFactory: PersonFactory,
     ) {}
 
     /**
@@ -106,13 +107,10 @@ export class PersonService implements PersonRepository {
                     break;
             }
         }
-        const {
-            front_identify_card_photo,
-            back_identify_card_photo,
-            ...rest
-        } = createPersonDto;
+        const { front_identify_card_photo, back_identify_card_photo, ...rest } =
+            createPersonDto;
 
-        let person = PersonFactory.create(rest);
+        let person = this.personFactory.create(rest);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
@@ -120,22 +118,18 @@ export class PersonService implements PersonRepository {
         if (id) person.id = id;
 
         try {
-            const frontURL = await this.uploadService.upload(
+            const frontURL = await this.storageManager.upload(
                 front_identify_card_photo,
-                "person/" +
-                    person.id +
-                    "/front_identify_card_photo_URL.png",
+                "person/" + person.id + "/front_identify_card_photo_URL.png",
                 "image/png",
             );
-            const backURL = await this.uploadService.upload(
+            const backURL = await this.storageManager.upload(
                 back_identify_card_photo,
-                "person/" +
-                    person.id +
-                    "/back_identify_card_photo_URL.png",
+                "person/" + person.id + "/back_identify_card_photo_URL.png",
                 "image/png",
             );
             if (createPersonDto.avatar_photo) {
-                const avatarURL = await this.uploadService.upload(
+                const avatarURL = await this.storageManager.upload(
                     createPersonDto.avatar_photo,
                     "person/" + person.id + "/avatarURL.png",
                     "image/png",
@@ -148,7 +142,7 @@ export class PersonService implements PersonRepository {
         } catch (error) {
             if (error instanceof TypeORMError) {
                 try {
-                    await this.uploadService.remove([
+                    await this.storageManager.remove([
                         "/person/" +
                             person.id +
                             "/front_identify_card_photo_URL.png",
@@ -173,9 +167,7 @@ export class PersonService implements PersonRepository {
         });
         if (!person) throw new NotFoundException();
         if (person.password)
-            throw new ConflictException(
-                "Person profile already has account",
-            );
+            throw new ConflictException("Person profile already has account");
         person.email = createAccountDto.email;
         person.password = hashSync(createAccountDto.password, 10);
 
@@ -208,14 +200,11 @@ export class PersonService implements PersonRepository {
     }
 
     async update(id: string, updatePersonDto: UpdatePersonDto) {
-        let result = await this.personRepository.update(
-            id,
-            updatePersonDto,
-        );
+        let result = await this.personRepository.update(id, updatePersonDto);
         return isQueryAffected(result);
     }
 
-    async softDelete(id: string): Promise<boolean> {
+    async delete(id: string): Promise<boolean> {
         const result = await this.personRepository.softDelete({ id });
         return isQueryAffected(result);
     }

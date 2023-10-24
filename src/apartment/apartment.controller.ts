@@ -5,13 +5,12 @@ import {
     Body,
     Patch,
     Param,
-    Delete,
     NotFoundException,
     UseInterceptors,
     UploadedFiles,
     Query,
 } from "@nestjs/common";
-import { ApartmentRepository } from "./apartment.service";
+import { ApartmentService } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
@@ -22,9 +21,7 @@ import { MBtoBytes } from "../helper/validation";
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {
-    constructor(
-        private readonly apartmentRepository: ApartmentRepository,
-    ) {}
+    constructor(private readonly apartmentRepository: ApartmentService) {}
 
     @ApiConsumes("multipart/form-data")
     @UseInterceptors(
@@ -61,8 +58,7 @@ export class ApartmentController {
     })
     @Get()
     findAll(@Query("page") page: number) {
-        if (Number.isNaN(page))
-            return this.apartmentRepository.findAll();
+        if (Number.isNaN(page)) return this.apartmentRepository.findAll();
         else return this.apartmentRepository.findAll(page);
     }
 
@@ -83,13 +79,6 @@ export class ApartmentController {
             updateApartmentDto,
         );
         if (result) return { msg: "Apartment updated" };
-        throw new NotFoundException("Apartment not found");
-    }
-
-    @Delete(":id")
-    async remove(@Param("id") id: string) {
-        const result = await this.apartmentRepository.softDelete(id);
-        if (result) return { msg: "Apartment deleted" };
         throw new NotFoundException("Apartment not found");
     }
 }

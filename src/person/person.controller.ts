@@ -18,6 +18,7 @@ import {
     ApiConsumes,
     ApiCreatedResponse,
     ApiOperation,
+    ApiQuery,
     ApiTags,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
@@ -113,6 +114,7 @@ export class PersonController {
     @ApiOperation({
         summary: "Get all person profile",
     })
+    @ApiQuery({ name: "role", enum: PersonRole, required: false })
     @Get()
     findAll(
         @Query(

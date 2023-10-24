@@ -7,12 +7,9 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { UploadService } from "../upload/upload.service";
 import { Resident } from "../person/entities/person.entity";
 import { IdGenerator } from "../id_generator/id-generator.service";
-import { BaseRepository } from "../helper/abstract_base_class/base_repository.abstract";
+import { BaseService } from "../helper/abstract_base_class/base_service.abstract";
 
-export abstract class ApartmentRepository extends BaseRepository<
-    CreateApartmentDto,
-    Apartment
-> {
+export abstract class ApartmentRepository extends BaseService<Apartment> {
     abstract create(
         createPropertyDto: CreateApartmentDto,
         id?: string,

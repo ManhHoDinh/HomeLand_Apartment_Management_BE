@@ -15,15 +15,12 @@ import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
-import { BaseRepository } from "../helper/abstract_base_class/base_repository.abstract";
+import { BaseService } from "../helper/abstract_base_class/base_service.abstract";
 
 /**
  * Person repository interface
  */
-export abstract class PersonRepository extends BaseRepository<
-    CreatePersonDto,
-    Person
-> {
+export abstract class PersonRepository extends BaseService<Person> {
     abstract findOneByEmail(email: string): Promise<Person | null>;
     abstract create(
         createPersonDto: CreatePersonDto,

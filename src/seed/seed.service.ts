@@ -61,6 +61,34 @@ export class SeedService {
             ),
         } as Express.Multer.File;
 
+        const images = [
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/room.jpg",
+                ),
+            } as Express.Multer.File,
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/room (2).jpg",
+                ),
+            } as Express.Multer.File,
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/room (3).jpg",
+                ),
+            } as Express.Multer.File,
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/room (4).jpg",
+                ),
+            } as Express.Multer.File,
+            {
+                buffer: readFileSync(
+                    process.cwd() + "/src/seed/room (5).jpg",
+                ),
+            } as Express.Multer.File,
+        ];
+        
         let buildingInfo: any[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
             buildingInfo.push({
@@ -95,34 +123,6 @@ export class SeedService {
             .into(Floor)
             .values(floorInfo)
             .execute();
-
-        const images = [
-            {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room.jpg",
-                ),
-            } as Express.Multer.File,
-            {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (2).jpg",
-                ),
-            } as Express.Multer.File,
-            {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (3).jpg",
-                ),
-            } as Express.Multer.File,
-            {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (4).jpg",
-                ),
-            } as Express.Multer.File,
-            {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (5).jpg",
-                ),
-            } as Express.Multer.File,
-        ];
 
         const avatars = [
             {

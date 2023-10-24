@@ -18,12 +18,12 @@ export class SeedService {
         private readonly dataSource: DataSource,
         private readonly personService: PersonRepository,
         private readonly apartmentRepository: ApartmentService,
-        private readonly uploadService: StorageManager,
+        private readonly storageManager: StorageManager,
     ) {}
 
     async dropDB() {
         try {
-            await this.uploadService.destroyStorage();
+            await this.storageManager.destroyStorage();
             await this.dataSource.dropDatabase();
         } catch (error) {
             console.log(error);
@@ -32,7 +32,7 @@ export class SeedService {
     }
     async createDB() {
         try {
-            await this.uploadService.initiateStorage();
+            await this.storageManager.initiateStorage();
             await this.dataSource.synchronize();
         } catch (error) {
             console.log(error);

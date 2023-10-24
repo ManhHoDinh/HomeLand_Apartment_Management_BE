@@ -31,7 +31,7 @@ export class TypeORMApartmentService extends ApartmentService {
         @InjectDataSource()
         private readonly dataSource: DataSource,
         private readonly idGenerate: IdGenerator,
-        private readonly uploadService: StorageManager,
+        private readonly storageManager: StorageManager,
     ) {
         super();
     }
@@ -51,7 +51,7 @@ export class TypeORMApartmentService extends ApartmentService {
             await queryRunnder.startTransaction();
             const imageURLS = await Promise.all(
                 images.map((image, index) =>
-                    this.uploadService.upload(
+                    this.storageManager.upload(
                         image,
                         `apartment/${apartment.apartment_id}/${
                             index + Date.now() + ".png"

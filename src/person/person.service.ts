@@ -42,7 +42,7 @@ export class PersonService implements PersonRepository {
     constructor(
         @InjectRepository(Person)
         private readonly personRepository: Repository<Person>,
-        private readonly uploadService: StorageManager,
+        private readonly storageManager: StorageManager,
         private readonly hashService: HashService,
         private readonly personFactory: PersonFactory,
     ) {}
@@ -118,18 +118,18 @@ export class PersonService implements PersonRepository {
         if (id) person.id = id;
 
         try {
-            const frontURL = await this.uploadService.upload(
+            const frontURL = await this.storageManager.upload(
                 front_identify_card_photo,
                 "person/" + person.id + "/front_identify_card_photo_URL.png",
                 "image/png",
             );
-            const backURL = await this.uploadService.upload(
+            const backURL = await this.storageManager.upload(
                 back_identify_card_photo,
                 "person/" + person.id + "/back_identify_card_photo_URL.png",
                 "image/png",
             );
             if (createPersonDto.avatar_photo) {
-                const avatarURL = await this.uploadService.upload(
+                const avatarURL = await this.storageManager.upload(
                     createPersonDto.avatar_photo,
                     "person/" + person.id + "/avatarURL.png",
                     "image/png",
@@ -142,7 +142,7 @@ export class PersonService implements PersonRepository {
         } catch (error) {
             if (error instanceof TypeORMError) {
                 try {
-                    await this.uploadService.remove([
+                    await this.storageManager.remove([
                         "/person/" +
                             person.id +
                             "/front_identify_card_photo_URL.png",

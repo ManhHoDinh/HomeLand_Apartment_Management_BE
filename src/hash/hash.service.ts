@@ -8,7 +8,7 @@ export abstract class HashService {
      * @param value value to be hashed
      */
     abstract hash(value: string): string;
-    
+
     /**
      * compare a string value with a hashed string
      * @param value value to be compared

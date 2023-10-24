@@ -14,20 +14,13 @@ export class AuthService {
     ) {}
 
     async signIn(signInDto: SignInDto, expiresIn: string = "30d") {
-        const person = await this.personService.findOneByEmail(
-            signInDto.email,
-        );
+        const person = await this.personService.findOneByEmail(signInDto.email);
         if (
             !person ||
             !person.password ||
-            !this.hashService.isMatch(
-                signInDto.password,
-                person.password,
-            )
+            !this.hashService.isMatch(signInDto.password, person.password)
         ) {
-            throw new UnauthorizedException(
-                "Wrong email or password",
-            );
+            throw new UnauthorizedException("Wrong email or password");
         }
         const payload: TokenPayload = {
             id: person.id,

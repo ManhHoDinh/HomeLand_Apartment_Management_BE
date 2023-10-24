@@ -6,7 +6,7 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { Floor } from "../floor/entities/floor.entity";
 import { Building } from "../building/entities/building.entity";
-import { ApartmentRepository } from "../apartment/apartment.service";
+import { ApartmentService } from "../apartment/apartment.service";
 import { UploadService } from "../upload/upload.service";
 import { faker } from "@faker-js/faker";
 import { CreatePersonDto } from "../person/dto/create-person.dto";
@@ -17,7 +17,7 @@ export class SeedService {
         @InjectDataSource()
         private readonly dataSource: DataSource,
         private readonly personService: PersonRepository,
-        private readonly apartmentRepository: ApartmentRepository,
+        private readonly apartmentRepository: ApartmentService,
         private readonly uploadService: UploadService,
     ) {}
 
@@ -50,45 +50,31 @@ export class SeedService {
 
     async startSeeding() {
         const frontIdentity = {
-            buffer: readFileSync(
-                process.cwd() + "/src/seed/front.jpg",
-            ),
+            buffer: readFileSync(process.cwd() + "/src/seed/front.jpg"),
         } as Express.Multer.File;
 
         const backIdentity = {
-            buffer: readFileSync(
-                process.cwd() + "/src/seed/back.jpg",
-            ),
+            buffer: readFileSync(process.cwd() + "/src/seed/back.jpg"),
         } as Express.Multer.File;
 
         const images = [
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room.jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
             } as Express.Multer.File,
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (2).jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/room (2).jpg"),
             } as Express.Multer.File,
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (3).jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/room (3).jpg"),
             } as Express.Multer.File,
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (4).jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/room (4).jpg"),
             } as Express.Multer.File,
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/room (5).jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/room (5).jpg"),
             } as Express.Multer.File,
         ];
-        
+
         let buildingInfo: any[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
             buildingInfo.push({
@@ -105,11 +91,7 @@ export class SeedService {
 
         let floorInfo: any[] = [];
         for (let building of buildingInfo) {
-            for (
-                let i = 0;
-                i < this.NUMBER_OF_FLOOR_PER_BUILDING;
-                i++
-            ) {
+            for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
                 floorInfo.push({
                     floor_id: `${building.building_id}/FLR${i}`,
                     name: `Floor ${i}`,
@@ -126,24 +108,16 @@ export class SeedService {
 
         const avatars = [
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/avatar1.jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/avatar1.jpg"),
             } as Express.Multer.File,
             {
-                buffer: readFileSync(
-                    process.cwd() + "/src/seed/avatar2.jpg",
-                ),
+                buffer: readFileSync(process.cwd() + "/src/seed/avatar2.jpg"),
             } as Express.Multer.File,
         ];
 
         let apartmentIds: any[] = [];
         for (let floor of floorInfo) {
-            for (
-                let i = 0;
-                i < this.NUMBER_OF_APARTMENT_PER_FLOOR;
-                i++
-            ) {
+            for (let i = 0; i < this.NUMBER_OF_APARTMENT_PER_FLOOR; i++) {
                 apartmentIds.push(
                     (
                         await this.apartmentRepository.create({
@@ -169,8 +143,7 @@ export class SeedService {
 
         await this.createRandomPerson({
             role: PersonRole.RESIDENT,
-            stay_at_apartment_id:
-                faker.helpers.arrayElement(apartmentIds),
+            stay_at_apartment_id: faker.helpers.arrayElement(apartmentIds),
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "resident@gmail.com",
@@ -212,8 +185,7 @@ export class SeedService {
                 role: PersonRole.RESIDENT,
                 front_identify_card_photo: frontIdentity,
                 back_identify_card_photo: backIdentity,
-                stay_at_apartment_id:
-                    faker.helpers.arrayElement(apartmentIds),
+                stay_at_apartment_id: faker.helpers.arrayElement(apartmentIds),
                 avatar_photo: faker.helpers.arrayElement(avatars),
             });
         }
@@ -263,19 +235,14 @@ export class SeedService {
         stay_at_apartment_id?: string;
     }) {
         const { role, email } = partialCreatePersonDto;
-        const gender = faker.helpers.arrayElement([
-            Gender.FEMALE,
-            Gender.MALE,
-        ]);
+        const gender = faker.helpers.arrayElement([Gender.FEMALE, Gender.MALE]);
         const account = {
             email:
                 role == PersonRole.EMPLOYEE
                     ? undefined
                     : email || faker.internet.email(),
-            password:
-                role == PersonRole.EMPLOYEE ? undefined : "password",
-            activate_at:
-                role == PersonRole.EMPLOYEE ? null : new Date(),
+            password: role == PersonRole.EMPLOYEE ? undefined : "password",
+            activate_at: role == PersonRole.EMPLOYEE ? null : new Date(),
             avatar_photo:
                 role == PersonRole.EMPLOYEE
                     ? undefined

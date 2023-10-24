@@ -15,12 +15,15 @@ import { isQueryAffected } from "../helper/validation";
 import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
-import { BaseService } from "../helper/abstract_base_class/base_service.abstract";
+import { IRepository } from "../helper/interface/IRepository.interface";
 
 /**
  * Person repository interface
  */
-export abstract class PersonRepository extends BaseService<Person> {
+export abstract class PersonRepository implements IRepository<Person> {
+    abstract findOne(id: string): Promise<Person | null>;
+    abstract update(id: string, updateEntityDto: any): Promise<boolean>;
+    abstract delete(id: string): Promise<boolean>;
     abstract findOneByEmail(email: string): Promise<Person | null>;
     abstract create(
         createPersonDto: CreatePersonDto,
@@ -41,6 +44,7 @@ export class PersonService implements PersonRepository {
         private readonly personRepository: Repository<Person>,
         private readonly uploadService: UploadService,
         private readonly hashService: HashService,
+        private readonly personFactory: PersonFactory,
     ) {}
 
     /**
@@ -103,13 +107,10 @@ export class PersonService implements PersonRepository {
                     break;
             }
         }
-        const {
-            front_identify_card_photo,
-            back_identify_card_photo,
-            ...rest
-        } = createPersonDto;
+        const { front_identify_card_photo, back_identify_card_photo, ...rest } =
+            createPersonDto;
 
-        let person = PersonFactory.create(rest);
+        let person = this.personFactory.create(rest);
         if (person.password) {
             person.password = this.hashService.hash(person.password);
         }
@@ -119,16 +120,12 @@ export class PersonService implements PersonRepository {
         try {
             const frontURL = await this.uploadService.upload(
                 front_identify_card_photo,
-                "person/" +
-                    person.id +
-                    "/front_identify_card_photo_URL.png",
+                "person/" + person.id + "/front_identify_card_photo_URL.png",
                 "image/png",
             );
             const backURL = await this.uploadService.upload(
                 back_identify_card_photo,
-                "person/" +
-                    person.id +
-                    "/back_identify_card_photo_URL.png",
+                "person/" + person.id + "/back_identify_card_photo_URL.png",
                 "image/png",
             );
             if (createPersonDto.avatar_photo) {
@@ -170,9 +167,7 @@ export class PersonService implements PersonRepository {
         });
         if (!person) throw new NotFoundException();
         if (person.password)
-            throw new ConflictException(
-                "Person profile already has account",
-            );
+            throw new ConflictException("Person profile already has account");
         person.email = createAccountDto.email;
         person.password = hashSync(createAccountDto.password, 10);
 
@@ -205,14 +200,11 @@ export class PersonService implements PersonRepository {
     }
 
     async update(id: string, updatePersonDto: UpdatePersonDto) {
-        let result = await this.personRepository.update(
-            id,
-            updatePersonDto,
-        );
+        let result = await this.personRepository.update(id, updatePersonDto);
         return isQueryAffected(result);
     }
 
-    async softDelete(id: string): Promise<boolean> {
+    async delete(id: string): Promise<boolean> {
         const result = await this.personRepository.softDelete({ id });
         return isQueryAffected(result);
     }

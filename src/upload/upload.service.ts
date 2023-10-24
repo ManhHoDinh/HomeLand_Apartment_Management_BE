@@ -28,25 +28,15 @@ export abstract class UploadService {
 }
 
 @Injectable()
-export class SupabaseService
-    extends UploadService
-    implements OnModuleInit
-{
+export class SupabaseService extends UploadService implements OnModuleInit {
     async removeBucket() {
-        await this.supabaseClient.storage.emptyBucket(
-            this.BUCKET_NAME,
-        );
-        await this.supabaseClient.storage.deleteBucket(
-            this.BUCKET_NAME,
-        );
+        await this.supabaseClient.storage.emptyBucket(this.BUCKET_NAME);
+        await this.supabaseClient.storage.deleteBucket(this.BUCKET_NAME);
     }
     async createBucket() {
-        await this.supabaseClient.storage.createBucket(
-            this.BUCKET_NAME,
-            {
-                public: true,
-            },
-        );
+        await this.supabaseClient.storage.createBucket(this.BUCKET_NAME, {
+            public: true,
+        });
     }
     constructor(private readonly supabaseClient: SupabaseClient) {
         super();
@@ -57,9 +47,7 @@ export class SupabaseService
     private bucket: StorageFileApi;
 
     onModuleInit() {
-        this.bucket = this.supabaseClient.storage.from(
-            this.BUCKET_NAME,
-        );
+        this.bucket = this.supabaseClient.storage.from(this.BUCKET_NAME);
     }
 
     async remove(paths: string[]): Promise<boolean> {

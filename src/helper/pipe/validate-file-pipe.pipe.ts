@@ -28,10 +28,7 @@ export class ValidateFilePipe implements PipeTransform {
                 value[name].forEach((file) => {
                     if (file.size > limit)
                         throw new BadRequestException(
-                            name +
-                                " size must not exceed " +
-                                limit +
-                                " bytes",
+                            name + " size must not exceed " + limit + " bytes",
                         );
                 });
             }
@@ -76,9 +73,7 @@ export class ValidateImageOption {
  */
 @Injectable()
 export class ValidateImagePipe extends ValidateFilePipe {
-    constructor(
-        private readonly imagesOption: ValidateImageOption[],
-    ) {
+    constructor(private readonly imagesOption: ValidateImageOption[]) {
         super(imagesOption);
     }
 }

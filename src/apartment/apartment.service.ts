@@ -6,10 +6,13 @@ import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { UploadService } from "../upload/upload.service";
 import { Resident } from "../person/entities/person.entity";
-import { IdGenerator } from "../id_generator/id-generator.service";
-import { BaseService } from "../helper/abstract_base_class/base_service.abstract";
+import { IdGenerator } from "../id_generator/id_generator.service";
+import { IRepository } from "../helper/interface/IRepository.interface";
 
-export abstract class ApartmentRepository extends BaseService<Apartment> {
+export abstract class ApartmentService implements IRepository<Apartment> {
+    abstract findOne(id: string): Promise<Apartment | null>;
+    abstract update(id: string, updateEntityDto: any): Promise<boolean>;
+    abstract delete(id: string): Promise<boolean>;
     abstract create(
         createPropertyDto: CreateApartmentDto,
         id?: string,
@@ -19,7 +22,7 @@ export abstract class ApartmentRepository extends BaseService<Apartment> {
 }
 
 @Injectable()
-export class ApartmentService extends ApartmentRepository {
+export class TypeORMApartmentService extends ApartmentService {
     constructor(
         @InjectRepository(Apartment)
         private readonly apartmentRepository: Repository<Apartment>,
@@ -58,25 +61,18 @@ export class ApartmentService extends ApartmentRepository {
                 ),
             );
             apartment.imageURLs = imageURLS;
-            apartment =
-                await this.apartmentRepository.save(apartment);
+            apartment = await this.apartmentRepository.save(apartment);
 
             if (createApartmentDto.residentIds) {
                 const residents = await this.residentRepository.find({
                     where: { id: In(createApartmentDto.residentIds) },
                 });
-                if (
-                    residents.length !==
-                    createApartmentDto.residentIds.length
-                )
-                    throw new NotFoundException(
-                        "Some resident not found",
-                    );
+                if (residents.length !== createApartmentDto.residentIds.length)
+                    throw new NotFoundException("Some resident not found");
                 apartment.residents = residents;
             }
 
-            apartment =
-                await this.apartmentRepository.save(apartment);
+            apartment = await this.apartmentRepository.save(apartment);
             await queryRunnder.commitTransaction();
             return apartment;
         } catch (error) {
@@ -112,7 +108,7 @@ export class ApartmentService extends ApartmentRepository {
         throw new Error("Method not implemented.");
     }
 
-    async softDelete(id: string): Promise<boolean> {
+    delete(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
 }

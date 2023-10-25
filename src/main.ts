@@ -8,11 +8,9 @@ import {
 } from "@nestjs/swagger";
 import { Person } from "./person/entities/person.entity";
 import { TypeOrmExceptionFilter } from "./helper/filter/typeorm-exception.filter";
-import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestExpressApplication>(AppModule);
-    app.useStaticAssets("static");
+    const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -40,7 +38,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config, option);
 
     SwaggerModule.setup("api", app, document, {
-        customCssUrl: "/style.css",
         swaggerOptions: {
             useUnsafeMarkdown: true,
         },

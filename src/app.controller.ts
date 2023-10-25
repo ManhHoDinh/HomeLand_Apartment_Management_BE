@@ -87,15 +87,15 @@ export class AppController {
             ]),
         )
         files: {
-            front_identify_card_photo: Express.Multer.File;
-            back_identify_card_photo: Express.Multer.File;
+            front_identify_card_photo: Express.Multer.File[];
+            back_identify_card_photo: Express.Multer.File[];
         },
         @Body() createPersonDto: CreatePersonDto,
     ) {
         createPersonDto.front_identify_card_photo =
-            files.front_identify_card_photo;
+            files.front_identify_card_photo[0];
         createPersonDto.back_identify_card_photo =
-            files.back_identify_card_photo;
+            files.back_identify_card_photo[0];
         return this.personRepository.create(createPersonDto);
     }
 }

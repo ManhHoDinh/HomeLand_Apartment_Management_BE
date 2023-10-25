@@ -62,6 +62,10 @@ export class PersonController {
                 name: "back_identify_card_photo",
                 maxCount: 1,
             },
+            {
+                name: "avatar_photo",
+                maxCount: 1,
+            },
         ]),
     )
     create(
@@ -75,16 +79,22 @@ export class PersonController {
                     name: "back_identify_card_photo",
                     limit: MBtoBytes(15),
                 },
+                {
+                    name: "avatar_photo",
+                    limit: MBtoBytes(15),
+                },
             ]),
         )
         files: {
             front_identify_card_photo: Express.Multer.File;
             back_identify_card_photo: Express.Multer.File;
+            avatar_photo: Express.Multer.File;
         },
         @Body() createPersonDto: CreatePersonDto,
     ) {
         return this.personRepository.create({
             ...createPersonDto,
+            avatar_photo: files.avatar_photo,
             front_identify_card_photo: files.front_identify_card_photo,
             back_identify_card_photo: files.back_identify_card_photo,
         });

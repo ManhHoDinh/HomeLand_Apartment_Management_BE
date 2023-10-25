@@ -107,8 +107,12 @@ export class PersonService implements PersonRepository {
                     break;
             }
         }
-        const { front_identify_card_photo, back_identify_card_photo, ...rest } =
-            createPersonDto;
+        const {
+            front_identify_card_photo,
+            back_identify_card_photo,
+            avatar_photo,
+            ...rest
+        } = createPersonDto;
 
         let person = this.personFactory.create(rest);
         if (person.password) {
@@ -128,9 +132,9 @@ export class PersonService implements PersonRepository {
                 "person/" + person.id + "/back_identify_card_photo_URL.png",
                 "image/png",
             );
-            if (createPersonDto.avatar_photo) {
+            if (avatar_photo) {
                 const avatarURL = await this.storageManager.upload(
-                    createPersonDto.avatar_photo,
+                    avatar_photo,
                     "person/" + person.id + "/avatarURL.png",
                     "image/png",
                 );

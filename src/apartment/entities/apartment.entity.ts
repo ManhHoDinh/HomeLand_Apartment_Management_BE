@@ -12,7 +12,7 @@ import { Resident } from "../../person/entities/person.entity";
 import { Contract } from "../../contract/entities/contract.entity";
 import { Floor } from "../../floor/entities/floor.entity";
 import { Building } from "../../building/entities/building.entity";
-import { IsNumberString, IsString } from "class-validator";
+import { IsNumberString, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export enum ApartmentStatus {
@@ -100,8 +100,9 @@ export class Apartment {
     @Column()
     name: string;
 
-    @ApiProperty({ example: "Linh Trung, Thu Duc" })
+    @ApiProperty({ example: "Linh Trung, Thu Duc", nullable: true })
+    @IsOptional()
     @IsString()
-    @Column()
-    address: string;
+    @Column({ nullable: true })
+    address?: string;
 }

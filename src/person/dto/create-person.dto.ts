@@ -10,12 +10,12 @@ export class CreatePersonDto extends PickType(Person, [
     "password",
     "email",
 ] as const) {
-    @ApiProperty({ type: "file", format: "binary", required: true })
+    @ApiProperty({ type: "file", required: true })
     front_identify_card_photo: Express.Multer.File;
 
-    @ApiProperty({ type: "file", format: "binary", required: true })
+    @ApiProperty({ type: "file", required: true })
     back_identify_card_photo: Express.Multer.File;
 
-    @ApiProperty({ type: "file", format: "binary", required: false })
+    @ApiProperty({ type: "file", required: false })
     avatar_photo?: Express.Multer.File;
 }

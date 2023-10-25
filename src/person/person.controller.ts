@@ -86,17 +86,17 @@ export class PersonController {
             ]),
         )
         files: {
-            front_identify_card_photo: Express.Multer.File;
-            back_identify_card_photo: Express.Multer.File;
-            avatar_photo: Express.Multer.File;
+            front_identify_card_photo: Express.Multer.File[];
+            back_identify_card_photo: Express.Multer.File[];
+            avatar_photo: Express.Multer.File[];
         },
         @Body() createPersonDto: CreatePersonDto,
     ) {
         return this.personRepository.create({
             ...createPersonDto,
-            avatar_photo: files.avatar_photo,
-            front_identify_card_photo: files.front_identify_card_photo,
-            back_identify_card_photo: files.back_identify_card_photo,
+            avatar_photo: files.avatar_photo[0],
+            front_identify_card_photo: files.front_identify_card_photo[0],
+            back_identify_card_photo: files.back_identify_card_photo[0],
         });
     }
 

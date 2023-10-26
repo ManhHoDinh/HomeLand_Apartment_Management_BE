@@ -21,9 +21,7 @@ export class ApartmentController {
     @ApiConsumes("multipart/form-data")
     @FormDataRequest()
     create(@Body() createApartmentDto: CreateApartmentDto) {
-        return this.apartmentRepository.create({
-            ...createApartmentDto,
-        });
+        return this.apartmentRepository.create(createApartmentDto);
     }
 
     @ApiQuery({

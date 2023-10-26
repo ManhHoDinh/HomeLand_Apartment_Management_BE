@@ -114,6 +114,11 @@ export class SeedService {
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/avatar2.jpg"),
             } as Express.Multer.File,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
         ];
 
         let apartmentIds: any[] = [];

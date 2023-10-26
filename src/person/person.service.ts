@@ -16,6 +16,8 @@ import { HashService } from "../hash/hash.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { PersonFactory } from "../person-factory/person-factory.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
+import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
+import { MemoryStoredFile } from "nestjs-form-data";
 
 /**
  * Person repository interface
@@ -45,6 +47,7 @@ export class PersonService implements PersonRepository {
         private readonly storageManager: StorageManager,
         private readonly hashService: HashService,
         private readonly personFactory: PersonFactory,
+        private readonly avatarGenerator: AvatarGenerator,
     ) {}
 
     /**
@@ -122,24 +125,48 @@ export class PersonService implements PersonRepository {
         if (id) person.id = id;
 
         try {
+            const frontPhoto = front_identify_card_photo as MemoryStoredFile;
+            const backPhoto = front_identify_card_photo as MemoryStoredFile;
             const frontURL = await this.storageManager.upload(
-                front_identify_card_photo,
-                "person/" + person.id + "/front_identify_card_photo_URL.png",
-                "image/png",
+                frontPhoto,
+                "person/" +
+                    person.id +
+                    "/front_identify_card_photo_URL." +
+                    frontPhoto.extension,
+                frontPhoto.mimetype,
             );
             const backURL = await this.storageManager.upload(
                 back_identify_card_photo,
-                "person/" + person.id + "/back_identify_card_photo_URL.png",
-                "image/png",
+                "person/" +
+                    person.id +
+                    "/back_identify_card_photo_URL." +
+                    backPhoto.extension,
+                backPhoto.mimetype,
             );
-            if (avatar_photo) {
-                const avatarURL = await this.storageManager.upload(
-                    avatar_photo,
-                    "person/" + person.id + "/avatarURL.png",
-                    "image/png",
-                );
-                person.avatarURL = avatarURL;
-            }
+            let avatarURL: string | undefined = undefined;
+            if (person.role !== PersonRole.EMPLOYEE)
+                if (avatar_photo) {
+                    const avatarPhoto =
+                        createPersonDto.avatar_photo as MemoryStoredFile;
+                    avatarURL = await this.storageManager.upload(
+                        avatar_photo,
+                        "person/" +
+                            person.id +
+                            "/avatarURL." +
+                            avatarPhoto.extension,
+                        avatarPhoto.mimetype,
+                    );
+                } else {
+                    const avatar = await this.avatarGenerator.generateAvatar(
+                        person.name,
+                    );
+                    avatarURL = await this.storageManager.upload(
+                        { buffer: avatar },
+                        "person/" + person.id + "/avatarURL.svg",
+                        "image/svg+xml",
+                    );
+                }
+            person.avatarURL = avatarURL;
             person.front_identify_card_photo_URL = frontURL;
             person.back_identify_card_photo_URL = backURL;
             return await this.personRepository.save(person);

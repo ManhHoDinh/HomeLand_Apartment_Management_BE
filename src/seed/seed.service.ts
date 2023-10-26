@@ -80,6 +80,7 @@ export class SeedService {
             buildingInfo.push({
                 building_id: `BLD${i}`,
                 name: `Building ${i}`,
+                address: faker.location.streetAddress(),
             });
         }
         await this.dataSource
@@ -122,7 +123,6 @@ export class SeedService {
                     (
                         await this.apartmentRepository.create({
                             name: "St. Crytal",
-                            address: "Linh Trung, Thu Duc",
                             images: images,
                             length: 20,
                             building_id: floor.building_id,

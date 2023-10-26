@@ -12,7 +12,7 @@ export abstract class StorageManager {
      * @param mime MIME type of file
      */
     abstract upload(
-        file: { buffer: Buffer },
+        file: { buffer: Buffer | ArrayBuffer },
         path: string,
         mime?: string,
     ): Promise<string>;

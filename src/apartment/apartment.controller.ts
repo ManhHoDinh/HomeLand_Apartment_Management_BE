@@ -1,22 +1,17 @@
 import {
     Controller,
     Get,
-    Post,
     Body,
     Patch,
     Param,
     NotFoundException,
-    UseInterceptors,
-    UploadedFiles,
     Query,
 } from "@nestjs/common";
 import { ApartmentService } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
-import { MBtoBytes } from "../helper/validation";
+import { FormDataRequest } from "nestjs-form-data";
 
 @ApiTags("Apartment")
 @Controller("apartment")
@@ -24,29 +19,10 @@ export class ApartmentController {
     constructor(private readonly apartmentRepository: ApartmentService) {}
 
     @ApiConsumes("multipart/form-data")
-    @UseInterceptors(
-        FileFieldsInterceptor([
-            {
-                name: "images",
-            },
-        ]),
-    )
-    @Post()
-    create(
-        @UploadedFiles(
-            new ValidateImagePipe([
-                {
-                    name: "images",
-                    limit: MBtoBytes(5),
-                },
-            ]),
-        )
-        file: { images: Express.Multer.File[] },
-        @Body() createApartmentDto: CreateApartmentDto,
-    ) {
+    @FormDataRequest()
+    create(@Body() createApartmentDto: CreateApartmentDto) {
         return this.apartmentRepository.create({
             ...createApartmentDto,
-            images: file.images,
         });
     }
 

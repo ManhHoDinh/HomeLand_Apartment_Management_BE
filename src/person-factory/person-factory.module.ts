@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { PersonFactory } from "./person-factory.service";
-import { IdGeneratorModule } from "../id_generator/id_generator.module";
+import { IdGeneratorModule } from "../id-generator/id-generator.module";
 
 @Module({
     imports: [IdGeneratorModule],

@@ -99,10 +99,4 @@ export class Apartment {
     @IsString()
     @Column()
     name: string;
-
-    @ApiProperty({ example: "Linh Trung, Thu Duc", nullable: true })
-    @IsOptional()
-    @IsString()
-    @Column({ nullable: true })
-    address?: string;
 }

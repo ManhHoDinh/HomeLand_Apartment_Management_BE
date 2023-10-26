@@ -11,7 +11,7 @@ import {
     Technician,
 } from "../person/entities/person.entity";
 import { plainToInstance } from "class-transformer";
-import { IdGenerator } from "../id_generator/id_generator.service";
+import { IdGenerator } from "../id-generator/id-generator.service";
 
 export class PersonInfo extends OmitType(CreatePersonDto, [
     "back_identify_card_photo",

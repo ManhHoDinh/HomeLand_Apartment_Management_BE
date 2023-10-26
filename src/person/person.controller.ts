@@ -2,10 +2,8 @@ import {
     Controller,
     Post,
     Body,
-    UseInterceptors,
     UseGuards,
     Get,
-    UploadedFiles,
     Param,
     Patch,
     Query,
@@ -22,13 +20,11 @@ import {
     ApiTags,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { Person, PersonRole } from "./entities/person.entity";
-import { MBtoBytes } from "../helper/validation";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { JWTAuthGuard } from "../helper/guard/jwt.guard";
-import { ValidateImagePipe } from "../helper/pipe/validate-file-pipe.pipe";
+import { FormDataRequest } from "nestjs-form-data";
 
 @ApiTags("Person")
 @UseGuards(JWTAuthGuard)
@@ -52,52 +48,9 @@ export class PersonController {
         description: "Create person profile successfully",
     })
     @Post()
-    @UseInterceptors(
-        FileFieldsInterceptor([
-            {
-                name: "front_identify_card_photo",
-                maxCount: 1,
-            },
-            {
-                name: "back_identify_card_photo",
-                maxCount: 1,
-            },
-            {
-                name: "avatar_photo",
-                maxCount: 1,
-            },
-        ]),
-    )
-    create(
-        @UploadedFiles(
-            new ValidateImagePipe([
-                {
-                    name: "front_identify_card_photo",
-                    limit: MBtoBytes(15),
-                },
-                {
-                    name: "back_identify_card_photo",
-                    limit: MBtoBytes(15),
-                },
-                {
-                    name: "avatar_photo",
-                    limit: MBtoBytes(15),
-                },
-            ]),
-        )
-        files: {
-            front_identify_card_photo: Express.Multer.File[];
-            back_identify_card_photo: Express.Multer.File[];
-            avatar_photo: Express.Multer.File[];
-        },
-        @Body() createPersonDto: CreatePersonDto,
-    ) {
-        return this.personRepository.create({
-            ...createPersonDto,
-            avatar_photo: files.avatar_photo[0],
-            front_identify_card_photo: files.front_identify_card_photo[0],
-            back_identify_card_photo: files.back_identify_card_photo[0],
-        });
+    @FormDataRequest()
+    async create(@Body() createPersonDto: CreatePersonDto) {
+        return await this.personRepository.create(createPersonDto);
     }
 
     /**

@@ -132,16 +132,16 @@ export class PersonService implements PersonRepository {
                 "person/" +
                     person.id +
                     "/front_identify_card_photo_URL." +
-                    frontPhoto.extension,
-                frontPhoto.mimetype,
+                    (frontPhoto.extension || "png"),
+                frontPhoto.mimetype || "image/png",
             );
             const backURL = await this.storageManager.upload(
                 back_identify_card_photo,
                 "person/" +
                     person.id +
                     "/back_identify_card_photo_URL." +
-                    backPhoto.extension,
-                backPhoto.mimetype,
+                    (backPhoto.extension || "png"),
+                backPhoto.mimetype || "image/png",
             );
             let avatarURL: string | undefined = undefined;
             if (person.role !== PersonRole.EMPLOYEE)
@@ -153,8 +153,8 @@ export class PersonService implements PersonRepository {
                         "person/" +
                             person.id +
                             "/avatarURL." +
-                            avatarPhoto.extension,
-                        avatarPhoto.mimetype,
+                            (avatarPhoto.extension || "png"),
+                        avatarPhoto.mimetype || "image/png",
                     );
                 } else {
                     const avatar = await this.avatarGenerator.generateAvatar(

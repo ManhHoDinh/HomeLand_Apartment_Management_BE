@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { PersonRepository } from "../person/person.service";
-import { Gender, PersonRole } from "../person/entities/person.entity";
 import { readFileSync } from "fs";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
@@ -10,6 +9,7 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { StorageManager } from "../storage/storage.service";
 import { faker } from "@faker-js/faker";
 import { CreatePersonDto } from "../person/dto/create-person.dto";
+import { Gender, PersonRole } from "../helper/class/profile.entity";
 
 @Injectable()
 export class SeedService {

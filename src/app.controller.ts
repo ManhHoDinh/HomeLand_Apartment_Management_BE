@@ -19,9 +19,8 @@ import {
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateAccountDto } from "./person/dto/create-account.dto";
-import { MBtoBytes } from "./helper/validation";
-import { PersonRole } from "./person/entities/person.entity";
 import { Auth } from "./helper/decorator/auth.decorator";
+import { PersonRole } from "./helper/class/profile.entity";
 
 @ApiTags("DEVELOPMENT ONLY")
 @Controller()
@@ -73,10 +72,9 @@ export class AppController {
         ]),
     )
     createPerson(
-        @UploadedFiles()
-        // new ValidateImagePipe([
-        //     {
+        @UploadedFiles() // new ValidateImagePipe([
         //         name: "front_identify_card_photo",
+        files //     {
         //         limit: MBtoBytes(15),
         //     },
         //     {
@@ -84,7 +82,7 @@ export class AppController {
         //         limit: MBtoBytes(15),
         //     },
         // ]),
-        files: {
+        : {
             front_identify_card_photo: Express.Multer.File[];
             back_identify_card_photo: Express.Multer.File[];
         },

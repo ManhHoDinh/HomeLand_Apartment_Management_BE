@@ -22,19 +22,7 @@ import {
 import { Exclude } from "class-transformer";
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Contract } from "../../contract/entities/contract.entity";
-
-export enum PersonRole {
-    RESIDENT = "resident",
-    ADMIN = "admin",
-    TECHINICIAN = "technician",
-    MANAGER = "manager",
-    EMPLOYEE = "employee",
-}
-
-export enum Gender {
-    MALE = "male",
-    FEMALE = "female",
-}
+import { Gender, PersonRole } from "../../helper/class/profile.entity";
 
 @Entity()
 @TableInheritance({

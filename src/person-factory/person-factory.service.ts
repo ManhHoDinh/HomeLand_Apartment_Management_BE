@@ -6,12 +6,12 @@ import {
     Employee,
     Manager,
     Person,
-    PersonRole,
     Resident,
     Technician,
 } from "../person/entities/person.entity";
 import { plainToInstance } from "class-transformer";
 import { IdGenerator } from "../id-generator/id-generator.service";
+import { PersonRole } from "../helper/class/profile.entity";
 
 export class PersonInfo extends OmitType(CreatePersonDto, [
     "back_identify_card_photo",

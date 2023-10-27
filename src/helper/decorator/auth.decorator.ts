@@ -3,7 +3,7 @@ import { Roles } from "./roles.decorator";
 import { JWTAuthGuard } from "../guard/jwt.guard";
 import { RolesGuard } from "../guard/role.guard";
 import { ApiBearerAuth, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { PersonRole } from "../../person/entities/person.entity";
+import { PersonRole } from "../class/profile.entity";
 
 /**
  * @description specify which role can have accesibility, if not specified, all role can access

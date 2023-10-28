@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsEnum, IsPhoneNumber, IsString } from "class-validator";
-import { Column, CreateDateColumn, DeleteDateColumn } from "typeorm";
+import { Column } from "typeorm";
 
 export enum PersonRole {
     RESIDENT = "resident",
@@ -54,10 +54,4 @@ export class Profile {
     @IsPhoneNumber("VN")
     @Column({ unique: true })
     phone_number: string;
-
-    @CreateDateColumn()
-    created_at: Date;
-
-    @DeleteDateColumn()
-    deleted_at?: Date;
 }

@@ -1,4 +1,12 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryColumn,
+} from "typeorm";
 import { PersonRole, Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../helper/class/account.entity";
 import { Contract } from "../../contract/entities/contract.entity";
@@ -29,6 +37,12 @@ export class Resident {
 
     @Column({ nullable: true })
     stay_at_apartment_id: string;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 
     role: PersonRole = PersonRole.RESIDENT;
 }

@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryColumn, OneToOne } from "typeorm";
+import {
+    Column,
+    Entity,
+    PrimaryColumn,
+    OneToOne,
+    DeleteDateColumn,
+    CreateDateColumn,
+} from "typeorm";
 import { PersonRole, Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../helper/class/account.entity";
 import { JoinColumn } from "typeorm";
@@ -19,6 +26,12 @@ export class Technician {
 
     @Column({ nullable: true })
     account_id?: string;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 
     role: PersonRole = PersonRole.TECHNICIAN;
 }

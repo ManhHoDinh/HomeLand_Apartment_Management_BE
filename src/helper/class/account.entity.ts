@@ -13,18 +13,14 @@ export class Account {
     @PrimaryColumn()
     id: string;
 
-    @Column({ nullable: true })
-    activated_at?: Date;
-
     @ApiProperty({ required: false, default: "admin@gmail.com" })
-    @IsOptional()
     @IsEmail()
     @Column({ unique: true })
     email: string;
 
     @ApiProperty({ required: false, default: "password" })
-    @IsOptional()
     @Exclude({ toPlainOnly: true })
+    @IsString()
     @Column()
     password: string;
 
@@ -46,4 +42,7 @@ export class Account {
 
     @OneToOne(() => Admin, (admin) => admin.account, { nullable: true })
     admin?: Admin;
+
+    @Column({ nullable: true })
+    activated_at?: Date;
 }

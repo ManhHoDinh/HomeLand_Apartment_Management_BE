@@ -11,7 +11,7 @@ export class AppController {
         private readonly appService: AppService, // private readonly personRepository: PersonRepository,
     ) {}
 
-    @Auth(PersonRole.MANAGER)
+    @Auth()
     @Get()
     getHello(): string {
         return this.appService.getHello();
@@ -28,9 +28,9 @@ export class AppController {
     //     return this.personRepository.createAccount(id, createAccountDto);
     // }
 
-    // /**
-    //  * Create person profile without need send token in header
-    //  */
+    /**
+     * Create person profile without need send token in header
+     */
     // @ApiOperation({ summary: "Create person profile" })
     // @ApiConsumes("multipart/form-data")
     // @ApiUnprocessableEntityResponse({
@@ -53,19 +53,10 @@ export class AppController {
     //     ]),
     // )
     // createPerson(
-    //     @UploadedFiles() // new ValidateImagePipe([
-    //     //         name: "front_identify_card_photo",
-    //     files //     {
-    //     //         limit: MBtoBytes(15),
-    //     //     },
-    //     //     {
-    //     //         name: "back_identify_card_photo",
-    //     //         limit: MBtoBytes(15),
-    //     //     },
-    //     // ]),
-    //     : {
-    //         front_identify_card_photo: Express.Multer.File[];
-    //         back_identify_card_photo: Express.Multer.File[];
+    //     @UploadedFiles()
+    //     files: {
+    //         front_identify_card_photo: MemoryStoredFile[];
+    //         back_identify_card_photo: MemoryStoredFile[];
     //     },
     //     @Body() createPersonDto: CreatePersonDto,
     // ) {

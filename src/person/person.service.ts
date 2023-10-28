@@ -145,12 +145,11 @@ export class PersonService implements PersonRepository {
                 backPhoto.mimetype || "image/png",
             );
             let avatarURL: string | undefined = undefined;
+            const avatarPhoto = createPersonDto.avatar_photo;
             if (person.role !== PersonRole.EMPLOYEE)
-                if (avatar_photo) {
-                    const avatarPhoto =
-                        createPersonDto.avatar_photo as MemoryStoredFile;
+                if (avatarPhoto) {
                     avatarURL = await this.storageManager.upload(
-                        avatar_photo,
+                        avatarPhoto,
                         "person/" +
                             person.id +
                             "/avatarURL." +

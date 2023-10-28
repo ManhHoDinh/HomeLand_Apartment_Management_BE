@@ -7,7 +7,7 @@ import {
     OneToOne,
     PrimaryColumn,
 } from "typeorm";
-import { PersonRole, Profile } from "../../helper/class/profile.entity";
+import { Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../account/entities/account.entity";
 import { Contract } from "../../contract/entities/contract.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
@@ -21,7 +21,7 @@ export class Resident {
     @Column(() => Profile)
     profile: Profile;
 
-    @OneToOne(() => Account, (account) => account.resident, { nullable: true })
+    @OneToOne(() => Account, { nullable: true, cascade: true })
     @JoinColumn({ name: "account_id" })
     account?: Account;
 
@@ -43,6 +43,4 @@ export class Resident {
 
     @DeleteDateColumn()
     deleted_at?: Date;
-
-    role: PersonRole = PersonRole.RESIDENT;
 }

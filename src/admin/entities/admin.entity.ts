@@ -7,7 +7,7 @@ import {
     OneToOne,
     PrimaryColumn,
 } from "typeorm";
-import { PersonRole, Profile } from "../../helper/class/profile.entity";
+import { Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../account/entities/account.entity";
 
 @Entity()
@@ -18,7 +18,10 @@ export class Admin {
     @Column(() => Profile)
     profile: Profile;
 
-    @OneToOne(() => Account, (account) => account.admin, { nullable: true })
+    @OneToOne(() => Account, {
+        nullable: true,
+        cascade: true,
+    })
     @JoinColumn({ name: "account_id" })
     account?: Account;
 
@@ -27,6 +30,4 @@ export class Admin {
 
     @DeleteDateColumn()
     deleted_at?: Date;
-
-    role: PersonRole = PersonRole.ADMIN;
 }

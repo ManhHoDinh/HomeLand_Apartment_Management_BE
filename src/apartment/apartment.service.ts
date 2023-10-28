@@ -22,7 +22,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
 }
 
 @Injectable()
-export class TypeORMApartmentService extends ApartmentService {
+export class ApartmentServiceImp extends ApartmentService {
     constructor(
         @InjectRepository(Apartment)
         private readonly apartmentRepository: Repository<Apartment>,
@@ -52,7 +52,7 @@ export class TypeORMApartmentService extends ApartmentService {
             const imageURLS = await Promise.all(
                 images.map((image, index) =>
                     this.storageManager.upload(
-                        image,
+                        image.buffer,
                         `apartment/${apartment.apartment_id}/${
                             index + Date.now() + ".png"
                         }`,

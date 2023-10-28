@@ -3,12 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { HashService } from "../hash/hash.service";
 import { SignInDto } from "./dto/signin.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { PersonRole } from "../helper/class/profile.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
 import { Resident } from "../resident/entities/resident.entity";
-import { Admin } from "../admin/entities/admin.entity";
 import { Repository } from "typeorm";
+import { Account } from "../account/entities/account.entity";
+import { Admin } from "../admin/entities/admin.entity";
+import { PersonRole } from "../helper/class/profile.entity";
 
 export class TokenPayload {
     id: string;
@@ -30,14 +31,8 @@ export abstract class AuthService {
 @Injectable()
 export class AuthServiceImp extends AuthService {
     constructor(
-        @InjectRepository(Admin)
-        private readonly adminRepository: Repository<Admin>,
-        @InjectRepository(Manager)
-        private readonly managerRepository: Repository<Manager>,
-        @InjectRepository(Technician)
-        private readonly technicianRepository: Repository<Technician>,
-        @InjectRepository(Resident)
-        private readonly residentRepository: Repository<Resident>,
+        @InjectRepository(Account)
+        private readonly accountRepository: Repository<Account>,
         private readonly jwtService: JwtService,
         private readonly hashService: HashService,
     ) {
@@ -70,38 +65,32 @@ export class AuthServiceImp extends AuthService {
     async findAccountOwnerByEmail(
         email: string,
     ): Promise<Admin | Manager | Technician | Resident | null> {
-        return await Promise.any([
-            this.adminRepository.findOne({
-                where: { account: { email } },
-            }),
-            this.managerRepository.findOne({
-                where: { account: { email } },
-            }),
-            this.technicianRepository.findOne({
-                where: { account: { email } },
-            }),
-            this.residentRepository.findOne({
-                where: { account: { email } },
-            }),
-        ]);
+        const account = await this.accountRepository.findOne({
+            where: { email },
+        });
+        if (!account) return null;
+        return (
+            account.admin ||
+            account.manager ||
+            account.technician ||
+            account.resident ||
+            null
+        );
     }
 
     async findAccountOwnerById(
         id: string,
     ): Promise<Admin | Manager | Technician | Resident | null> {
-        return await Promise.any([
-            this.adminRepository.findOne({
-                where: { id },
-            }),
-            this.managerRepository.findOne({
-                where: { id },
-            }),
-            this.technicianRepository.findOne({
-                where: { id },
-            }),
-            this.residentRepository.findOne({
-                where: { id },
-            }),
-        ]);
+        const account = await this.accountRepository.findOne({
+            where: { id },
+        });
+        if (!account) return null;
+        return (
+            account.admin ||
+            account.manager ||
+            account.technician ||
+            account.resident ||
+            null
+        );
     }
 }

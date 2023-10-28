@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { PersonRepository } from "../person/person.service";
-import { Gender, PersonRole } from "../person/entities/person.entity";
 import { readFileSync } from "fs";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
@@ -8,8 +6,11 @@ import { Floor } from "../floor/entities/floor.entity";
 import { Building } from "../building/entities/building.entity";
 import { ApartmentService } from "../apartment/apartment.service";
 import { StorageManager } from "../storage/storage.service";
-import { faker } from "@faker-js/faker";
-import { CreatePersonDto } from "../person/dto/create-person.dto";
+import { faker, ro } from "@faker-js/faker";
+import { Gender, PersonRole } from "../helper/class/profile.entity";
+import { PersonService } from "../person/person.service";
+import { Resident } from "../resident/entities/resident.entity";
+import { Account } from "../helper/class/account.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 
 @Injectable()
@@ -17,7 +18,6 @@ export class SeedService {
     constructor(
         @InjectDataSource()
         private readonly dataSource: DataSource,
-        private readonly personService: PersonRepository,
         private readonly apartmentRepository: ApartmentService,
         private readonly storageManager: StorageManager,
     ) {}
@@ -173,7 +173,7 @@ export class SeedService {
         });
 
         await this.createRandomPerson({
-            role: PersonRole.TECHINICIAN,
+            role: PersonRole.TECHNICIAN,
             front_identify_card_photo: frontIdentity,
             back_identify_card_photo: backIdentity,
             email: "technician@gmail.com",
@@ -215,7 +215,7 @@ export class SeedService {
 
         for (let i = 0; i < this.NUMBER_OF_TECHNICIAN - 1; i++) {
             await this.createRandomPerson({
-                role: PersonRole.TECHINICIAN,
+                role: PersonRole.TECHNICIAN,
                 front_identify_card_photo: frontIdentity,
                 back_identify_card_photo: backIdentity,
                 avatar_photo: faker.helpers.arrayElement(avatars),
@@ -240,32 +240,36 @@ export class SeedService {
         email?: string;
         stay_at_apartment_id?: string;
     }) {
-        const { role, email } = partialCreatePersonDto;
-        const gender = faker.helpers.arrayElement([Gender.FEMALE, Gender.MALE]);
-        const account = {
-            email:
-                role == PersonRole.EMPLOYEE
-                    ? undefined
-                    : email || faker.internet.email(),
-            password: role == PersonRole.EMPLOYEE ? undefined : "password",
-            activate_at: role == PersonRole.EMPLOYEE ? null : new Date(),
-            avatar_photo:
-                role == PersonRole.EMPLOYEE
-                    ? undefined
-                    : partialCreatePersonDto.avatar_photo,
-        };
-
-        let createPersonDto: CreatePersonDto = {
-            ...partialCreatePersonDto,
-            ...account,
-            name: faker.person.fullName({ sex: gender }),
-            gender,
-            phone_number: faker.phone.number(),
-            date_of_birth: faker.date.between({
-                from: new Date(1930, 1, 1),
-                to: new Date(2000, 1, 1),
-            }),
-        };
-        await this.personService.create(createPersonDto);
+        // const { role, email } = partialCreatePersonDto;
+        // const gender = faker.helpers.arrayElement([Gender.FEMALE, Gender.MALE]);
+        // const account = {
+        //     email:
+        //         role == PersonRole.EMPLOYEE
+        //             ? undefined
+        //             : email || faker.internet.email(),
+        //     password: role == PersonRole.EMPLOYEE ? undefined : "password",
+        //     activate_at: role == PersonRole.EMPLOYEE ? null : new Date(),
+        //     avatar_photo:
+        //         role == PersonRole.EMPLOYEE
+        //             ? undefined
+        //             : partialCreatePersonDto.avatar_photo,
+        // };
+        // let account: Account | undefined;
+        // if (role == PersonRole.EMPLOYEE) {
+        //     account = undefined;
+        // } else {
+        //     account = {
+        //         avatarURL: await this.storageManager.upload(avatar_photo,role+"/"+)
+        //     };
+        // }
+        // await this.dataSource
+        //     .createQueryBuilder()
+        //     .insert()
+        //     .into(Resident)
+        //     .values([
+        //         {
+        //             account,
+        //         },
+        //     ]);
     }
 }

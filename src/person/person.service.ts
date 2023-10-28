@@ -8,7 +8,7 @@ import { CreatePersonDto } from "./dto/create-person.dto";
 import { UpdatePersonDto } from "./dto/update-person.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, TypeORMError } from "typeorm";
-import { Person, PersonRole } from "./entities/person.entity";
+import { Person } from "./entities/person.entity";
 import { hashSync } from "bcrypt";
 import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
@@ -18,6 +18,7 @@ import { PersonFactory } from "../person-factory/person-factory.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
+import { PersonRole } from "../helper/class/profile.entity";
 
 /**
  * Person repository interface
@@ -93,7 +94,7 @@ export class PersonService implements PersonRepository {
                     }
                     break;
 
-                case PersonRole.TECHINICIAN:
+                case PersonRole.TECHNICIAN:
                     if (
                         !(
                             creatorRole == PersonRole.MANAGER ||

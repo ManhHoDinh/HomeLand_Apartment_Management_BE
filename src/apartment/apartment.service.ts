@@ -52,7 +52,7 @@ export class TypeORMApartmentService extends ApartmentService {
             const imageURLS = await Promise.all(
                 images.map((image, index) =>
                     this.storageManager.upload(
-                        image,
+                        image.buffer,
                         `apartment/${apartment.apartment_id}/${
                             index + Date.now() + ".png"
                         }`,

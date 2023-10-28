@@ -1,16 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 import { IsEmail, IsString } from "class-validator";
-import { Column, Entity, PrimaryColumn, OneToOne } from "typeorm";
-import { Resident } from "../../resident/entities/resident.entity";
-import { Technician } from "../../technician/entities/technician.entity";
-import { Manager } from "../../manager/entities/manager.entity";
-import { Admin } from "../../admin/entities/admin.entity";
+import {
+    Column,
+    Entity,
+    PrimaryColumn,
+    CreateDateColumn,
+    DeleteDateColumn,
+} from "typeorm";
 
 @Entity()
 export class Account {
     @PrimaryColumn()
-    id: string;
+    account_id: string;
 
     @ApiProperty({ required: false, default: "admin@gmail.com" })
     @IsEmail()
@@ -24,23 +26,14 @@ export class Account {
     password: string;
 
     @IsString()
+    @Column()
     avatarURL: string;
 
-    @OneToOne(() => Resident, (resident) => resident.account, {
-        nullable: true,
-    })
-    resident?: Resident;
+    @CreateDateColumn()
+    created_at: Date;
 
-    @OneToOne(() => Technician, (technician) => technician.account, {
-        nullable: true,
-    })
-    technician?: Technician;
-
-    @OneToOne(() => Manager, (manager) => manager.account, { nullable: true })
-    manager?: Manager;
-
-    @OneToOne(() => Admin, (admin) => admin.account, { nullable: true })
-    admin?: Admin;
+    @DeleteDateColumn()
+    deleted_at?: Date;
 
     @Column({ nullable: true })
     activated_at?: Date;

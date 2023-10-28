@@ -2,17 +2,17 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { HashService } from "../hash/hash.service";
 import { SignInDto } from "./dto/signin.dto";
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
+import { PersonRole } from "../helper/class/profile.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
 import { Resident } from "../resident/entities/resident.entity";
-import { Repository } from "typeorm";
-import { Account } from "../account/entities/account.entity";
 import { Admin } from "../admin/entities/admin.entity";
-import { PersonRole } from "../helper/class/profile.entity";
+import { DataSource, Repository } from "typeorm";
+import { Account } from "../account/entities/account.entity";
 
 export class TokenPayload {
-    id: string;
+    account_id: string;
 }
 
 export abstract class AuthService {
@@ -20,11 +20,11 @@ export abstract class AuthService {
         signInDto: SignInDto,
         expiresIn?: string,
     ): Promise<{ access_token: string; role: PersonRole }>;
-    abstract findAccountOwnerByEmail(
+    abstract findOwnerByAccountEmail(
         email: string,
     ): Promise<Admin | Manager | Technician | Resident | null>;
 
-    abstract findAccountOwnerById(
+    abstract findOwnerByAccountId(
         id: string,
     ): Promise<Admin | Manager | Technician | Resident | null>;
 }
@@ -33,6 +33,8 @@ export class AuthServiceImp extends AuthService {
     constructor(
         @InjectRepository(Account)
         private readonly accountRepository: Repository<Account>,
+        @InjectDataSource()
+        private readonly dataSource: DataSource,
         private readonly jwtService: JwtService,
         private readonly hashService: HashService,
     ) {
@@ -40,7 +42,8 @@ export class AuthServiceImp extends AuthService {
     }
 
     async signIn(signInDto: SignInDto, expiresIn: string = "30d") {
-        const person = await this.findAccountOwnerByEmail(signInDto.email);
+        const person = await this.findOwnerByAccountEmail(signInDto.email);
+        console.log(person);
         if (
             !person ||
             !person.account ||
@@ -52,7 +55,7 @@ export class AuthServiceImp extends AuthService {
             throw new UnauthorizedException("Wrong email or password");
         }
         const payload: TokenPayload = {
-            id: person.id,
+            account_id: person.account.account_id,
         };
         return {
             access_token: this.jwtService.sign(payload, {
@@ -62,35 +65,95 @@ export class AuthServiceImp extends AuthService {
         };
     }
 
-    async findAccountOwnerByEmail(
+    async findOwnerByAccountEmail(
         email: string,
     ): Promise<Admin | Manager | Technician | Resident | null> {
         const account = await this.accountRepository.findOne({
             where: { email },
         });
+
         if (!account) return null;
-        return (
-            account.admin ||
-            account.manager ||
-            account.technician ||
-            account.resident ||
-            null
-        );
+
+        let owners = await Promise.all([
+            await this.dataSource.getRepository(Admin).findOne({
+                where: {
+                    account: {
+                        email,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Manager).findOne({
+                where: {
+                    account: {
+                        email,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Technician).findOne({
+                where: {
+                    account: {
+                        email,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Resident).findOne({
+                where: {
+                    account: {
+                        email,
+                    },
+                },
+                relations: { account: true },
+            }),
+        ]);
+        return owners.reduce((acc, cur) => acc || cur, null);
     }
 
-    async findAccountOwnerById(
+    async findOwnerByAccountId(
         id: string,
     ): Promise<Admin | Manager | Technician | Resident | null> {
         const account = await this.accountRepository.findOne({
-            where: { id },
+            where: { account_id: id },
         });
+
         if (!account) return null;
-        return (
-            account.admin ||
-            account.manager ||
-            account.technician ||
-            account.resident ||
-            null
-        );
+
+        let owners = await Promise.all([
+            await this.dataSource.getRepository(Admin).findOne({
+                where: {
+                    account: {
+                        account_id: id,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Manager).findOne({
+                where: {
+                    account: {
+                        account_id: id,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Technician).findOne({
+                where: {
+                    account: {
+                        account_id: id,
+                    },
+                },
+                relations: { account: true },
+            }),
+            await this.dataSource.getRepository(Resident).findOne({
+                where: {
+                    account: {
+                        account_id: id,
+                    },
+                },
+                relations: { account: true },
+            }),
+        ]);
+        return owners.reduce((acc, cur) => acc || cur, null);
     }
 }

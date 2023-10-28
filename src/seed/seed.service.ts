@@ -177,5 +177,10 @@ export class SeedService {
                 "image/svg+xml",
             ),
         };
+
+        await this.dataSource.getRepository(Admin).save({
+            account,
+            ...admin,
+        });
     }
 }

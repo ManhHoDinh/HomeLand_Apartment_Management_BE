@@ -23,9 +23,9 @@ import {
 import { Person } from "./entities/person.entity";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { Auth } from "../helper/decorator/auth.decorator";
-import { JWTAuthGuard } from "../helper/guard/jwt.guard";
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
+import { JWTAuthGuard } from "../auth/guard/jwt.guard";
 
 @ApiTags("Person")
 @UseGuards(JWTAuthGuard)

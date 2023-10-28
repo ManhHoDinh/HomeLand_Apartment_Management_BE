@@ -5,7 +5,7 @@ import { Column, CreateDateColumn, DeleteDateColumn } from "typeorm";
 export enum PersonRole {
     RESIDENT = "resident",
     ADMIN = "admin",
-    TECHINICIAN = "technician",
+    TECHNICIAN = "technician",
     MANAGER = "manager",
     EMPLOYEE = "employee",
 }

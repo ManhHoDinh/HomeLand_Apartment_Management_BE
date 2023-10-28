@@ -149,10 +149,10 @@ export class Manager extends Person {
     role: PersonRole = PersonRole.MANAGER;
 }
 
-@ChildEntity(PersonRole.TECHINICIAN)
+@ChildEntity(PersonRole.TECHNICIAN)
 export class Technician extends Person {
-    @Column({ enum: PersonRole, default: PersonRole.TECHINICIAN })
-    role: PersonRole = PersonRole.TECHINICIAN;
+    @Column({ enum: PersonRole, default: PersonRole.TECHNICIAN })
+    role: PersonRole = PersonRole.TECHNICIAN;
 }
 
 @ChildEntity(PersonRole.EMPLOYEE)

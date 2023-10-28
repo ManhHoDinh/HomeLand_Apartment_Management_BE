@@ -1,6 +1,6 @@
 import { UseGuards, applyDecorators } from "@nestjs/common";
 import { Roles } from "./roles.decorator";
-import { JWTAuthGuard } from "../guard/jwt.guard";
+import { JWTAuthGuard } from "../../auth/guard/jwt.guard";
 import { RolesGuard } from "../guard/role.guard";
 import { ApiBearerAuth, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { PersonRole } from "../class/profile.entity";

@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
-import { Profile } from "../../helper/class/profile.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { PersonRole, Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../helper/class/account.entity";
 
 @Entity()
@@ -10,6 +10,9 @@ export class Admin {
     @Column(() => Profile)
     profile: Profile;
 
-    @Column(() => Account)
-    account: Account;
+    @OneToOne(() => Account, (account) => account.admin, { nullable: true })
+    @JoinColumn({ name: "account_id" })
+    account?: Account;
+
+    role: PersonRole = PersonRole.ADMIN;
 }

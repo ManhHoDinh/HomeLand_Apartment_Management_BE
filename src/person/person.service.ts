@@ -94,7 +94,7 @@ export class PersonService implements PersonRepository {
                     }
                     break;
 
-                case PersonRole.TECHINICIAN:
+                case PersonRole.TECHNICIAN:
                     if (
                         !(
                             creatorRole == PersonRole.MANAGER ||

@@ -3,19 +3,18 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
-import { PersonModule } from "./person/person.module";
 import { IdGeneratorModule } from "./id-generator/id-generator.module";
 import { StorageModule } from "./storage/storage.module";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { HashModule } from "./hash/hash.module";
-import { PersonFactoryModule } from "./person-factory/person-factory.module";
 import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
 import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
+import { AccountModule } from './account/account.module';
 
 @Module({
     imports: [
@@ -59,11 +58,9 @@ import { NestjsFormDataModule } from "nestjs-form-data";
             },
         }),
         AuthModule,
-        PersonModule,
         IdGeneratorModule,
         StorageModule,
         HashModule,
-        PersonFactoryModule,
         SeedModule,
         ApartmentModule,
         MeModule,
@@ -72,6 +69,7 @@ import { NestjsFormDataModule } from "nestjs-form-data";
         NestjsFormDataModule.config({
             isGlobal: true,
         }),
+        AccountModule,
     ],
     controllers: [AppController],
     providers: [AppService],

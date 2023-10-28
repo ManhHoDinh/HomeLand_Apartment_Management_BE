@@ -43,7 +43,7 @@ export class PersonFactory {
                 const resident = plainToInstance(Resident, personInfo);
                 resident.id = "RES" + this.idGenerator.generateId();
                 return resident;
-            case PersonRole.TECHINICIAN:
+            case PersonRole.TECHNICIAN:
                 const technician = plainToInstance(Technician, personInfo);
                 technician.id = "TEC" + this.idGenerator.generateId();
                 return technician;

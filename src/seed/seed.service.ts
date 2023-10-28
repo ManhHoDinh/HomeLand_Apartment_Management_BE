@@ -12,6 +12,7 @@ import { Admin } from "../admin/entities/admin.entity";
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { HashService } from "../hash/hash.service";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
+import { ApartmentService } from "../apartment/apartment.service";
 
 @Injectable()
 export class SeedService {
@@ -22,6 +23,7 @@ export class SeedService {
         private readonly idGenerator: IdGenerator,
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
+        private readonly apartmentService: ApartmentService,
     ) {}
 
     async dropDB() {
@@ -78,6 +80,7 @@ export class SeedService {
     ];
 
     async startSeeding() {
+        // Create demo building
         let buildingInfo: any[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
             buildingInfo.push({
@@ -93,6 +96,7 @@ export class SeedService {
             .values(buildingInfo)
             .execute();
 
+        // Create demo floors
         let floorInfo: any[] = [];
         for (let building of buildingInfo) {
             for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
@@ -110,6 +114,33 @@ export class SeedService {
             .values(floorInfo)
             .execute();
 
+        // Create demo apartments
+        let apartmentIds: any[] = [];
+        for (let floor of floorInfo) {
+            for (let i = 0; i < this.NUMBER_OF_APARTMENT_PER_FLOOR; i++) {
+                apartmentIds.push(
+                    (
+                        await this.apartmentService.create({
+                            name: "St. Crytal",
+                            images: this.images,
+                            length: 20,
+                            building_id: floor.building_id,
+                            floor_id: floor.floor_id,
+                            width: 15,
+                            description: faker.lorem.paragraphs({
+                                min: 3,
+                                max: 5,
+                            }),
+                            number_of_bathroom: 2,
+                            number_of_bedroom: 1,
+                            rent: 9000000,
+                        })
+                    ).apartment_id,
+                );
+            }
+        }
+
+        // Create demo admin
         await this.createDemoAdmin();
     }
 
@@ -146,15 +177,5 @@ export class SeedService {
                 "image/svg+xml",
             ),
         };
-        admin = await this.dataSource.getRepository(Admin).save({
-            account,
-            ...admin,
-        });
-
-        admin.profile.name = "DEMO ADMIN";
-        await this.dataSource.getRepository(Admin).save({
-            account,
-            ...admin,
-        });
     }
 }

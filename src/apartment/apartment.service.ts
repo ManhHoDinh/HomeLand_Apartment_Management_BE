@@ -22,7 +22,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
 }
 
 @Injectable()
-export class TypeORMApartmentService extends ApartmentService {
+export class ApartmentServiceImp extends ApartmentService {
     constructor(
         @InjectRepository(Apartment)
         private readonly apartmentRepository: Repository<Apartment>,

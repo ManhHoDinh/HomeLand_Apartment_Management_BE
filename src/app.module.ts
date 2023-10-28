@@ -14,6 +14,7 @@ import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
+import { ContractModule } from './contract/contract.module';
 
 @Module({
     imports: [
@@ -66,6 +67,7 @@ import { TokenModule } from "./token/token.module";
         ApartmentModule,
         MeModule,
         TokenModule,
+        ContractModule,
     ],
     controllers: [AppController],
     providers: [AppService],

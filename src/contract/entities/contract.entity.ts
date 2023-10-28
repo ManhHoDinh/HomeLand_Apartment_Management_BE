@@ -7,20 +7,22 @@ import {
     ManyToOne,
     OneToOne,
     PrimaryColumn,
+    PrimaryGeneratedColumn,
 } from "typeorm";
 import { Person, Resident } from "../../person/entities/person.entity";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 
 @Entity()
 export class Contract {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     contract_id: string;
 
     @OneToOne(() => Contract, (contract) => contract.contract_id)
     @JoinColumn()
-    previos_contract?: Contract;
+    previous_contract?: Contract;
 
     @OneToOne(() => Contract, (contract) => contract.contract_id)
+    
     @JoinColumn()
     next_contract?: Contract;
 

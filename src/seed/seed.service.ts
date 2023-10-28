@@ -6,11 +6,8 @@ import { Floor } from "../floor/entities/floor.entity";
 import { Building } from "../building/entities/building.entity";
 import { ApartmentService } from "../apartment/apartment.service";
 import { StorageManager } from "../storage/storage.service";
-import { faker, ro } from "@faker-js/faker";
-import { Gender, PersonRole } from "../helper/class/profile.entity";
-import { PersonService } from "../person/person.service";
-import { Resident } from "../resident/entities/resident.entity";
-import { Account } from "../helper/class/account.entity";
+import { faker } from "@faker-js/faker";
+import { PersonRole } from "../helper/class/profile.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 
 @Injectable()

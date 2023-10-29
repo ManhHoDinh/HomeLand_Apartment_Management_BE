@@ -112,7 +112,6 @@ export class Person {
     @Column({ unique: true })
     phone_number: string;
 
-    @ApiProperty({ required: false })
     @Column({ nullable: true })
     activated_at?: Date;
 

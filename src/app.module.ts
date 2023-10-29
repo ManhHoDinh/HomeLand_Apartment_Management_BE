@@ -4,7 +4,7 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { PersonModule } from "./person/person.module";
-import { IdGeneratorModule } from "./id_generator/id_generator.module";
+import { IdGeneratorModule } from "./id-generator/id-generator.module";
 import { StorageModule } from "./storage/storage.module";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
@@ -15,6 +15,10 @@ import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
 import { ContractModule } from './contract/contract.module';
+import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
+import { NestjsFormDataModule } from "nestjs-form-data";
+import { ResidentModule } from './resident/resident.module';
+import { TechnicianModule } from './technician/technician.module';
 
 @Module({
     imports: [
@@ -68,6 +72,12 @@ import { ContractModule } from './contract/contract.module';
         MeModule,
         TokenModule,
         ContractModule,
+        AvatarGeneratorModule,
+        NestjsFormDataModule.config({
+            isGlobal: true,
+        }),
+        ResidentModule,
+        TechnicianModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -10,6 +10,7 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { StorageManager } from "../storage/storage.service";
 import { faker } from "@faker-js/faker";
 import { CreatePersonDto } from "../person/dto/create-person.dto";
+import { MemoryStoredFile } from "nestjs-form-data";
 
 @Injectable()
 export class SeedService {
@@ -51,28 +52,28 @@ export class SeedService {
     async startSeeding() {
         const frontIdentity = {
             buffer: readFileSync(process.cwd() + "/src/seed/front.jpg"),
-        } as Express.Multer.File;
+        } as MemoryStoredFile;
 
         const backIdentity = {
             buffer: readFileSync(process.cwd() + "/src/seed/back.jpg"),
-        } as Express.Multer.File;
+        } as MemoryStoredFile;
 
         const images = [
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/room (2).jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/room (3).jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/room (4).jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/room (5).jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
         ];
 
         let buildingInfo: any[] = [];
@@ -80,6 +81,7 @@ export class SeedService {
             buildingInfo.push({
                 building_id: `BLD${i}`,
                 name: `Building ${i}`,
+                address: faker.location.streetAddress(),
             });
         }
         await this.dataSource
@@ -109,10 +111,15 @@ export class SeedService {
         const avatars = [
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/avatar1.jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
             {
                 buffer: readFileSync(process.cwd() + "/src/seed/avatar2.jpg"),
-            } as Express.Multer.File,
+            } as MemoryStoredFile,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
         ];
 
         let apartmentIds: any[] = [];
@@ -122,7 +129,6 @@ export class SeedService {
                     (
                         await this.apartmentRepository.create({
                             name: "St. Crytal",
-                            address: "Linh Trung, Thu Duc",
                             images: images,
                             length: 20,
                             building_id: floor.building_id,
@@ -228,9 +234,9 @@ export class SeedService {
 
     private async createRandomPerson(partialCreatePersonDto: {
         role: PersonRole;
-        front_identify_card_photo: Express.Multer.File;
-        back_identify_card_photo: Express.Multer.File;
-        avatar_photo?: Express.Multer.File;
+        front_identify_card_photo: MemoryStoredFile;
+        back_identify_card_photo: MemoryStoredFile;
+        avatar_photo?: MemoryStoredFile;
         email?: string;
         stay_at_apartment_id?: string;
     }) {

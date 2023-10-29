@@ -6,7 +6,7 @@ import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageManager } from "../storage/storage.service";
 import { Resident } from "../person/entities/person.entity";
-import { IdGenerator } from "../id_generator/id_generator.service";
+import { IdGenerator } from "../id-generator/id-generator.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
 
 export abstract class ApartmentService implements IRepository<Apartment> {

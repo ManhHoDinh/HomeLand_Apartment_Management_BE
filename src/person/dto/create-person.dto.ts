@@ -1,5 +1,15 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
 import { Person } from "../entities/person.entity";
+import { IsOptional } from "class-validator";
+import {
+    HasMimeType,
+    IsFile,
+    MaxFileSize,
+    MemoryStoredFile,
+    isFile,
+} from "nestjs-form-data";
+import { commonImageMIMETypes } from "../../helper/constant";
+import { Transform } from "class-transformer";
 
 export class CreatePersonDto extends PickType(Person, [
     "name",
@@ -9,15 +19,23 @@ export class CreatePersonDto extends PickType(Person, [
     "phone_number",
     "password",
     "email",
-    "activated_at",
-    "stay_at_apartment_id",
 ] as const) {
-    @ApiProperty({ type: "file", format: "binary", required: true })
-    front_identify_card_photo: Express.Multer.File;
+    @ApiProperty({ type: "file", required: true })
+    @IsFile()
+    @MaxFileSize(10e6)
+    @HasMimeType(commonImageMIMETypes)
+    front_identify_card_photo: MemoryStoredFile;
 
-    @ApiProperty({ type: "file", format: "binary", required: true })
-    back_identify_card_photo: Express.Multer.File;
+    @ApiProperty({ type: "file", required: true })
+    @IsFile()
+    @MaxFileSize(10e6)
+    @HasMimeType(commonImageMIMETypes)
+    back_identify_card_photo: MemoryStoredFile;
 
-    @ApiProperty({ type: "file", format: "binary", required: false })
-    avatar_photo?: Express.Multer.File;
+    @ApiProperty({ type: "file", required: false })
+    @Transform(({ value }) => (isFile(value) ? value : undefined))
+    @IsOptional()
+    @MaxFileSize(10e6)
+    @HasMimeType(commonImageMIMETypes)
+    avatar_photo?: MemoryStoredFile;
 }

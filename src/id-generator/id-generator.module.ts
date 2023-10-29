@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { IdGenerator, DatetimeGenerator } from "./id_generator.service";
+import { IdGenerator, DatetimeGenerator } from "./id-generator.service";
 
 @Module({
     providers: [

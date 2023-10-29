@@ -12,7 +12,7 @@ export abstract class StorageManager {
      * @param mime MIME type of file
      */
     abstract upload(
-        file: { buffer: Buffer },
+        file: { buffer: Buffer | ArrayBuffer },
         path: string,
         mime?: string,
     ): Promise<string>;
@@ -65,10 +65,12 @@ export class SupabaseStorageManager extends StorageManager {
         uploadPath: string,
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
+        if (!file.buffer) throw new Error("File must have buffer property");
         const { error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .upload(uploadPath, file.buffer, {
                 contentType: mime,
+                upsert: true,
             });
 
         if (error) throw error;

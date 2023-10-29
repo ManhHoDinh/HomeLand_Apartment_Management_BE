@@ -7,12 +7,12 @@ import { SupabaseClient } from "@supabase/supabase-js";
 export abstract class StorageManager {
     /**
      * Upload a file to storage and return the URL
-     * @param file file must have buffer property
+     * @param buffer file must have buffer property
      * @param path path to upload on remote storage
      * @param mime MIME type of file
      */
     abstract upload(
-        file: { buffer: Buffer | ArrayBuffer },
+        buffer: Buffer | ArrayBuffer,
         path: string,
         mime?: string,
     ): Promise<string>;
@@ -61,14 +61,14 @@ export class SupabaseStorageManager extends StorageManager {
     }
 
     async upload(
-        file: { buffer: Buffer },
+        file: Buffer | ArrayBuffer,
         uploadPath: string,
         mime: string = "text/plain;charset=UTF-8",
     ): Promise<string> {
-        if (!file.buffer) throw new Error("File must have buffer property");
+        if (!file) throw new Error("File must have buffer property");
         const { error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
-            .upload(uploadPath, file.buffer, {
+            .upload(uploadPath, file, {
                 contentType: mime,
                 upsert: true,
             });

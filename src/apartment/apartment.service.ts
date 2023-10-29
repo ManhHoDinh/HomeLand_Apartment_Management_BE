@@ -5,9 +5,9 @@ import { DataSource, In, Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageManager } from "../storage/storage.service";
-import { Resident } from "../person/entities/person.entity";
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
+import { Resident } from "../resident/entities/resident.entity";
 
 export abstract class ApartmentService implements IRepository<Apartment> {
     abstract findOne(id: string): Promise<Apartment | null>;
@@ -22,7 +22,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
 }
 
 @Injectable()
-export class TypeORMApartmentService extends ApartmentService {
+export class ApartmentServiceImp extends ApartmentService {
     constructor(
         @InjectRepository(Apartment)
         private readonly apartmentRepository: Repository<Apartment>,
@@ -52,7 +52,7 @@ export class TypeORMApartmentService extends ApartmentService {
             const imageURLS = await Promise.all(
                 images.map((image, index) =>
                     this.storageManager.upload(
-                        image,
+                        image.buffer,
                         `apartment/${apartment.apartment_id}/${
                             index + Date.now() + ".png"
                         }`,

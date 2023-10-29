@@ -9,16 +9,23 @@ import {
     Redirect,
     Query,
     UseGuards,
+    UploadedFile,
+    ParseFilePipe,
+    NotFoundException,
 } from "@nestjs/common";
 import { ContractService } from "./contract.service";
 import { CreateContractDto } from "./dto/create-contract.dto";
 import { UpdateContractDto } from "./dto/update-contract.dto";
 import { Auth } from "src/helper/decorator/auth.decorator";
-@Auth()
+import { ApiConsumes } from "@nestjs/swagger";
+import { FormDataRequest } from "nestjs-form-data";
+
 @Controller("contract")
 export class ContractController {
     constructor(private readonly contractService: ContractService) {}
     @Post()
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
     create(@Body() createContractDto: CreateContractDto) {
         return this.contractService.create(createContractDto);
     }
@@ -34,11 +41,16 @@ export class ContractController {
     }
 
     @Patch(":id")
-    update(
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
+    async update(
         @Param("id") id: string,
         @Body() updateContractDto: UpdateContractDto,
     ) {
-        return this.contractService.update(id, updateContractDto);
+        const result = await this.contractService.update(id, updateContractDto);
+        if (result)
+            return [{ msg: "Contract updated" }, await this.findOne(id)];
+        throw new NotFoundException("Contract not found");
     }
 
     @Delete(":id")

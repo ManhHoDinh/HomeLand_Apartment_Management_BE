@@ -14,7 +14,7 @@ import { Resident } from "../../resident/entities/resident.entity";
 
 @Entity()
 export class Contract {
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     contract_id: string;
 
     @OneToOne(() => Contract, (contract) => contract.contract_id, {
@@ -45,9 +45,10 @@ export class Contract {
     @CreateDateColumn()
     created_at: Date;
 
-    
-    @Column({nullable:true})
+    @Column({ nullable: true })
     expire_at: Date;
     @DeleteDateColumn()
     deleted_at?: Date;
+    @Column()
+    contract_with_signature_photo_URL: string;
 }

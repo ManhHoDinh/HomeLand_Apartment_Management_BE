@@ -9,16 +9,16 @@ export class CreateContractDto {
     @IsOptional()
     @IsString()
     previous_contract_id?: string;
-    @ApiProperty({ example: "RES1698503013193", description: "The resident id" })
+    @ApiProperty({ example: "Res123", description: "The resident id" })
     @IsString()
     resident_id: string;
     @IsDateString()
-    expired_at: Date;
+    expire_at: Date;
     @ApiProperty({
-        example: "APM1698224764681",
+        example: "APM1698502960091",
         description: "The Previous contract id",
     })
 
     @IsString()
-    property_id: string;
+    apartment_id: string;
 }

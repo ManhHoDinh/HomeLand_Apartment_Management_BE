@@ -4,6 +4,7 @@ import { UpdateContractDto } from "./dto/update-contract.dto";
 import { Repository } from "typeorm";
 import { Contract } from "./entities/contract.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { isQueryAffected } from "src/helper/validation";
 
 @Injectable()
 export class ContractService {
@@ -33,11 +34,12 @@ export class ContractService {
         return contract;
     }
 
-    update(id: number, updateContractDto: UpdateContractDto) {
-        return this.contractRepository.update(
+    async update(id: number, updateContractDto: UpdateContractDto) {
+        let result = await this.contractRepository.update(
             { contract_id: id.toString() },
             { ...updateContractDto },
         );
+        return isQueryAffected(result);
     }
 
     remove(id: number) {

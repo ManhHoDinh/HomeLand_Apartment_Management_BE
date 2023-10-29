@@ -44,10 +44,4 @@ export class ContractController {
     remove(@Param("id") id: string) {
         return this.contractService.remove(+id);
     }
-
-    @Get("docs")
-    @Redirect("https://docs.nestjs.com", 302)
-    getDocs(@Query("version") version) {
-      return { url: "https://docs.nestjs.com/v5/" };
-    }
 }

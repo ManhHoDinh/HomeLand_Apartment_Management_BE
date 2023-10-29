@@ -12,20 +12,20 @@ export class ContractService {
         @InjectRepository(Contract)
         private contractRepository: Repository<Contract>,
     ) {}
-    create(createContract: CreateContractDto) {
-        return this.contractRepository.save(createContract);
+    async create(createContract: CreateContractDto) {
+        return await this.contractRepository.save(createContract);
     }
 
-    findAll() {
-        return this.contractRepository.find({
+    async findAll() {
+        return await this.contractRepository.find({
             relations: ["resident", "apartment"],
         });
     }
 
-    async findOne(id: number): Promise<Contract> {
+    async findOne(id: string): Promise<Contract> {
         let contract = await this.contractRepository.findOne({
             where: {
-                contract_id: id.toString(),
+                contract_id: id,
             },
             cache: true,
             relations: ["resident", "apartment"],
@@ -34,15 +34,17 @@ export class ContractService {
         return contract;
     }
 
-    async update(id: number, updateContractDto: UpdateContractDto) {
+    async update(id: string, updateContractDto: UpdateContractDto) {
         let result = await this.contractRepository.update(
-            { contract_id: id.toString() },
+            { contract_id: id },
             { ...updateContractDto },
         );
-        return isQueryAffected(result);
+        return await isQueryAffected(result);
     }
 
-    remove(id: number) {
-        return this.contractRepository.delete({ contract_id: id.toString() });
+    async remove(id: string) {
+        return await this.contractRepository.softDelete({
+            contract_id: id,
+        });
     }
 }

@@ -3,9 +3,10 @@ import { ContractService } from './contract.service';
 import { ContractController } from './contract.controller';
 import { Contract } from './entities/contract.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [
+  imports: [AuthModule,
     TypeOrmModule.forFeature([Contract]),
   ],
   controllers: [ContractController],

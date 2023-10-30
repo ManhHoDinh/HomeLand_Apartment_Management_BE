@@ -16,6 +16,8 @@ import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.modul
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
+import { Employee } from "./employee/entities/employee.entity";
+import { EmployeeModule } from "./employee/employee.module";
 
 @Module({
     imports: [
@@ -64,6 +66,7 @@ import { AdminModule } from "./admin/admin.module";
         HashModule,
         SeedModule,
         ApartmentModule,
+        EmployeeModule,
         MeModule,
         TokenModule,
         AvatarGeneratorModule,

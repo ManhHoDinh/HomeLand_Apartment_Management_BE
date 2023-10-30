@@ -43,7 +43,6 @@ export class AuthServiceImp extends AuthService {
 
     async signIn(signInDto: SignInDto, expiresIn: string = "30d") {
         const person = await this.findOwnerByAccountEmail(signInDto.email);
-        console.log(person);
         if (
             !person ||
             !person.account ||

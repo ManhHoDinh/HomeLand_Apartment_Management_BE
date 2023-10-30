@@ -17,11 +17,10 @@ import { ContractService } from "./contract.service";
 import { CreateContractDto } from "./dto/create-contract.dto";
 import { UpdateContractDto } from "./dto/update-contract.dto";
 import { Auth } from "src/helper/decorator/auth.decorator";
-import { ApiConsumes } from "@nestjs/swagger";
+import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "src/helper/class/profile.entity";
-
-@Auth(PersonRole.ADMIN)
+@ApiTags("Contract")
 @Controller("contract")
 export class ContractController {
     constructor(private readonly contractService: ContractService) {}
@@ -33,9 +32,18 @@ export class ContractController {
         return this.contractService.create(createContractDto);
     }
 
+    @ApiQuery({
+        name: "page",
+        required: false,
+        description:
+            "Page number: Page indexed from 1, each page contain 30 items, if null then return all.",
+    })
     @Get()
-    findAll() {
-        return this.contractService.findAll();
+   async findAll(@Query("page") page: number) {
+        var data;
+        if (Number.isNaN(page)) data = await this.contractService.findAll();
+        else data = await this.contractService.findAll(page);
+        return { data, current_page: page, per_page: 30, total: data.length};
     }
 
     @Get(":id")

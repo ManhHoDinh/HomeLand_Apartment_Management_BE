@@ -20,6 +20,7 @@ export class CreateContractDto extends PickType(Contract, [] as const) {
     resident_id: string;
     
     @ApiProperty({ example: new Date(), description: "The expire date" })
+    @IsOptional()
     @IsDateString()
     expire_at: Date;
     

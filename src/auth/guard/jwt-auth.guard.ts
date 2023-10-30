@@ -29,11 +29,9 @@ export class JWTAuthGuard implements CanActivate {
             if (token) {
                 try {
                     const payload: TokenPayload = this.jwtService.verify(token);
-                    console.log(payload);
                     const user = await this.authService.findOwnerByAccountId(
                         payload.account_id,
                     );
-                    console.log(user);
                     if (!user) throw new UnauthorizedException("Token invalid");
                     request.user = user;
                     return true;

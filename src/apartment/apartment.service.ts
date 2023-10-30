@@ -49,7 +49,6 @@ export class ApartmentServiceImp extends ApartmentService {
         try {
             await queryRunnder.connect();
             await queryRunnder.startTransaction();
-            apartment = await this.apartmentRepository.save(apartment);
             uploadedImageURLs = await Promise.all(
                 createApartmentDto.images.map((image, index) =>
                     this.storageManager.upload(
@@ -78,7 +77,12 @@ export class ApartmentServiceImp extends ApartmentService {
             return apartment;
         } catch (error) {
             if (error instanceof TypeORMError) {
-                await this.storageManager.remove(uploadedImageURLs);
+                try {
+                    await this.storageManager.remove(uploadedImageURLs);
+                } catch (error) {
+                    throw error;
+                }
+                throw error;
             }
             await queryRunnder.rollbackTransaction();
             console.error(error);

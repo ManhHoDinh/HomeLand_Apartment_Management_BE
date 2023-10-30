@@ -52,6 +52,7 @@ export class SupabaseStorageManager extends StorageManager {
     private readonly BUCKET_NAME = "homeland";
 
     async remove(pathsOrURLs: string[]): Promise<boolean> {
+        if (pathsOrURLs.length === 0) return true;
         const { error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .remove(

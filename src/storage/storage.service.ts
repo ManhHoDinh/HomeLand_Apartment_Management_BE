@@ -51,13 +51,34 @@ export class SupabaseStorageManager extends StorageManager {
 
     private readonly BUCKET_NAME = "homeland";
 
-    async remove(paths: string[]): Promise<boolean> {
+    async remove(pathsOrURLs: string[]): Promise<boolean> {
         const { error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
-            .remove(paths);
+            .remove(
+                pathsOrURLs.map(
+                    (path) => this.extractPathFromUrl(path) || path,
+                ),
+            );
 
         if (error) throw error;
         return true;
+    }
+
+    /**
+     *
+     * @param url public url of file in supabase storage
+     * @returns path of file, undefined if url is not valid
+     */
+    private extractPathFromUrl(url: string): string | undefined {
+        if (!url.startsWith("http://")) {
+            return undefined;
+        }
+        const prefix = `http://localhost:54321/storage/v1/object/public/${this.BUCKET_NAME}/`;
+        if (url.indexOf(prefix) !== 0) {
+            return undefined;
+        }
+        const restOfPath = url.slice(prefix.length);
+        return restOfPath;
     }
 
     async upload(

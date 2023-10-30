@@ -12,7 +12,7 @@ export class UpdateContractDto extends OmitType(
         type: "file",
         required: false,
     })
-    
+       
     @IsOptional()
     imageUpdate?: MemoryStoredFile;
 }

@@ -47,8 +47,10 @@ export class Contract {
 
     @Column({ nullable: true })
     expire_at: Date;
+    
     @DeleteDateColumn()
     deleted_at?: Date;
+    
     @Column()
     contract_with_signature_photo_URL: string;
 }

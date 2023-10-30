@@ -19,10 +19,13 @@ import { UpdateContractDto } from "./dto/update-contract.dto";
 import { Auth } from "src/helper/decorator/auth.decorator";
 import { ApiConsumes } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
+import { PersonRole } from "src/helper/class/profile.entity";
 
+@Auth(PersonRole.ADMIN)
 @Controller("contract")
 export class ContractController {
     constructor(private readonly contractService: ContractService) {}
+
     @Post()
     @ApiConsumes("multipart/form-data")
     @FormDataRequest()

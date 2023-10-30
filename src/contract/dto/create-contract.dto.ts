@@ -3,7 +3,6 @@ import { IsDateString, IsOptional, IsString } from "class-validator";
 import {
     HasMimeType,
     IsFile,
-    IsFiles,
     MaxFileSize,
     MemoryStoredFile,
 } from "nestjs-form-data";
@@ -15,18 +14,22 @@ export class CreateContractDto extends PickType(Contract, [] as const) {
     @IsOptional()
     @IsString()
     previous_contract_id?: string;
+    
     @ApiProperty({ example: "Res123", description: "The resident id" })
     @IsString()
     resident_id: string;
+    
     @ApiProperty({ example: new Date(), description: "The expire date" })
     @IsDateString()
     expire_at: Date;
+    
     @ApiProperty({
         example: "APM1698502960091",
         description: "The Apartment id",
     })
     @IsString()
     apartment_id: string;
+    
     @ApiProperty({
         type: "file",
         required: true,

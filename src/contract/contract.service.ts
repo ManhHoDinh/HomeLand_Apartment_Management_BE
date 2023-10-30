@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateContractDto } from "./dto/create-contract.dto";
 import { UpdateContractDto } from "./dto/update-contract.dto";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, Repository, TypeORMError } from "typeorm";
 import { Contract } from "./entities/contract.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { isQueryAffected } from "src/helper/validation";
@@ -19,38 +19,60 @@ export class ContractService {
         private readonly idGenerate: IdGenerator,
     ) {}
     async create(createContract: CreateContractDto) {
-        const { image, ...rest } = createContract;
+        const {  ...rest } = createContract;
         let contract = this.contractRepository.create(rest);
 
         contract.contract_id = "CT" + this.idGenerate.generateId().toString();
-        const queryRunner = this.dataSource.createQueryRunner();
+        await this.contractRepository.save(contract);
+        return await this.findOne(contract.contract_id);
+       // const queryRunner = this.dataSource.createQueryRunner();
+            
+        // try {
+        //     await queryRunner.connect();
+        //     await queryRunner.startTransaction();
+        //     const imageURL = await this.storageManager.upload(
+        //         image.buffer,
+        //         `contract/${contract.contract_id}/${Date.now()}.` +
+        //             (image.extension || "png"),
+        //         image.mimetype || "image/png",
+        //     );
 
-        try {
-            await queryRunner.connect();
-            await queryRunner.startTransaction();
-            const imageURL = await this.storageManager.upload(
-                image.buffer,
-                `contract/${contract.contract_id}/${Date.now()}.` +
-                    (image.extension || "png"),
-                image.mimetype || "image/png",
-            );
-
-            contract.contract_with_signature_photo_URL = imageURL;
-            contract = await this.contractRepository.save(contract);
-            await queryRunner.commitTransaction();
-            return this.findOne(contract.contract_id);
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-            console.error(error);
-            throw error;
-        } finally {
-            await queryRunner.release();
-        }
+        //     contract.contract_with_signature_photo_URL = imageURL;
+        //     await this.contractRepository.save(contract);
+        //     await queryRunner.commitTransaction();
+        //     return this.findOne(contract.contract_id);
+        // } catch (error) {
+        //     if (error instanceof TypeORMError) {
+        //         try {
+        //             await this.storageManager.remove([
+        //                 `contract/${contract.contract_id}/${Date.now()}.` +
+        //                     (image.extension || "png"),
+        //                 image.mimetype || "image/png",
+        //             ]);
+        //         } catch (error) {
+        //             console.error(error);
+        //         }
+        //     }
+        //     throw error;
+        // } finally {
+        //     await queryRunner.release();
+        // }
     }
 
-    async findAll() {
+    async findAll(page?: number) {
+        if (page != undefined && page != null && page > 0) {
+            return await this.contractRepository.find({
+                skip: (page - 1) * 30,
+                take: 30,
+                relations: ["resident", "apartment"],
+                cache: true,
+            });
+        }
+        
+
         return await this.contractRepository.find({
             relations: ["resident", "apartment"],
+            cache: true,
         });
     }
 
@@ -87,8 +109,17 @@ export class ContractService {
                 contract = await this.contractRepository.save(contract);
                 await queryRunner.commitTransaction();
             } catch (error) {
-                await queryRunner.rollbackTransaction();
-                console.error(error);
+                if (error instanceof TypeORMError) {
+                    try {
+                        await this.storageManager.remove([
+                            `contract/${id}/${Date.now()}.` +
+                                (imageUpdate.extension || "png"),
+                            imageUpdate.mimetype || "image/png",
+                        ]);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
                 throw error;
             } finally {
                 await queryRunner.release();

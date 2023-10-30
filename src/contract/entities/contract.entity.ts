@@ -8,9 +8,16 @@ import {
     OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn,
+    TableInheritance,
 } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { Resident } from "../../resident/entities/resident.entity";
+import {
+    ContractRole,
+    ContractStatusRole,
+} from "src/helper/enums/contractEnum";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum } from "class-validator";
 
 @Entity()
 export class Contract {
@@ -41,16 +48,38 @@ export class Contract {
 
     @Column({ nullable: true })
     apartment_id: string;
+    @ApiProperty({
+        default: ContractRole.RENT,
+        type: "enum",
+        enum: ContractRole,
+    })
+    @IsEnum(ContractRole)
+    @Column({
+        type: "enum",
+        enum: ContractRole,
+    })
+    role: ContractRole;
+    @ApiProperty({
+        default: ContractStatusRole.INACTIVE,
+        type: "enum",
+        enum: ContractStatusRole,
+    })
+    @IsEnum(ContractStatusRole)
+    @Column({
+        type: "enum",
+        enum: ContractStatusRole,
+    })
+    status: ContractStatusRole;
 
     @CreateDateColumn()
     created_at: Date;
 
-    @Column({ nullable: true })
-    expire_at: Date;
-    
+    @Column()
+    expire_at?: Date;
+
     @DeleteDateColumn()
     deleted_at?: Date;
-    
-    @Column()
-    contract_with_signature_photo_URL: string;
+
+    @Column({ nullable: true })
+    contract_with_signature_photo_URL?: string;
 }

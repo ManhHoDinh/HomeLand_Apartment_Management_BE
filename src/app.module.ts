@@ -12,6 +12,7 @@ import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
+import { ContractModule } from './contract/contract.module';
 import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
@@ -66,6 +67,7 @@ import { AdminModule } from "./admin/admin.module";
         ApartmentModule,
         MeModule,
         TokenModule,
+        ContractModule,
         AvatarGeneratorModule,
         NestjsFormDataModule.config({
             isGlobal: true,

@@ -1,0 +1,110 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CreateContractDto } from "./dto/create-contract.dto";
+import { UpdateContractDto } from "./dto/update-contract.dto";
+import { DataSource, Repository } from "typeorm";
+import { Contract } from "./entities/contract.entity";
+import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
+import { isQueryAffected } from "src/helper/validation";
+import { IdGenerator } from "src/id-generator/id-generator.service";
+import { StorageManager } from "../storage/storage.service";
+
+@Injectable()
+export class ContractService {
+    constructor(
+        @InjectRepository(Contract)
+        private contractRepository: Repository<Contract>,
+        @InjectDataSource()
+        private dataSource: DataSource,
+        private storageManager: StorageManager,
+        private readonly idGenerate: IdGenerator,
+    ) {}
+    async create(createContract: CreateContractDto) {
+        const { image, ...rest } = createContract;
+        let contract = this.contractRepository.create(rest);
+
+        contract.contract_id = "CT" + this.idGenerate.generateId().toString();
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        try {
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
+            const imageURL = await this.storageManager.upload(
+                image.buffer,
+                `contract/${contract.contract_id}/${Date.now()}.` +
+                    (image.extension || "png"),
+                image.mimetype || "image/png",
+            );
+
+            contract.contract_with_signature_photo_URL = imageURL;
+            contract = await this.contractRepository.save(contract);
+            await queryRunner.commitTransaction();
+            return this.findOne(contract.contract_id);
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            console.error(error);
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async findAll() {
+        return await this.contractRepository.find({
+            relations: ["resident", "apartment"],
+        });
+    }
+
+    async findOne(id: string): Promise<Contract> {
+        let contract = await this.contractRepository.findOne({
+            where: {
+                contract_id: id,
+            },
+            cache: true,
+            relations: ["resident", "apartment"],
+        });
+        if (contract == null) throw new NotFoundException();
+        return contract;
+    }
+
+    async update(id: string, updateContractDto: UpdateContractDto) {
+        const { imageUpdate, ...rest } = updateContractDto;
+        let contract = this.contractRepository.create(rest);
+
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        if (imageUpdate) {
+            try {
+                await queryRunner.connect();
+                await queryRunner.startTransaction();
+                const imageURL = await this.storageManager.upload(
+                    imageUpdate.buffer,
+                    `contract/${id}/${Date.now()}.` +
+                        (imageUpdate.extension || "png"),
+                    imageUpdate.mimetype || "image/png",
+                );
+                contract.contract_id = id;
+                contract.contract_with_signature_photo_URL = imageURL;
+                contract = await this.contractRepository.save(contract);
+                await queryRunner.commitTransaction();
+            } catch (error) {
+                await queryRunner.rollbackTransaction();
+                console.error(error);
+                throw error;
+            } finally {
+                await queryRunner.release();
+            }
+        }
+        let result = await this.contractRepository.update(
+            { contract_id: id },
+            { ...contract },
+        );
+
+        return await isQueryAffected(result);
+    }
+
+    async remove(id: string) {
+        return await this.contractRepository.softDelete({
+            contract_id: id,
+        });
+    }
+}

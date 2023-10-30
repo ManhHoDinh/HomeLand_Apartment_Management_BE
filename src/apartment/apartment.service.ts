@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { DataSource, In, Repository } from "typeorm";
+import { DataSource, In, Repository, TypeORMError } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageManager } from "../storage/storage.service";
@@ -44,13 +44,14 @@ export class ApartmentServiceImp extends ApartmentService {
         let apartment = this.apartmentRepository.create(rest);
         apartment.apartment_id = "APM" + this.idGenerate.generateId();
         if (id) apartment.apartment_id = id;
-
         const queryRunnder = this.dataSource.createQueryRunner();
+        let uploadedImageURLs: string[] = [];
         try {
             await queryRunnder.connect();
             await queryRunnder.startTransaction();
-            const imageURLS = await Promise.all(
-                images.map((image, index) =>
+            apartment = await this.apartmentRepository.save(apartment);
+            uploadedImageURLs = await Promise.all(
+                createApartmentDto.images.map((image, index) =>
                     this.storageManager.upload(
                         image.buffer,
                         `apartment/${apartment.apartment_id}/${
@@ -60,8 +61,8 @@ export class ApartmentServiceImp extends ApartmentService {
                     ),
                 ),
             );
-            apartment.imageURLs = imageURLS;
-            apartment = await this.apartmentRepository.save(apartment);
+
+            apartment.imageURLs = uploadedImageURLs;
 
             if (createApartmentDto.residentIds) {
                 const residents = await this.residentRepository.find({
@@ -76,6 +77,9 @@ export class ApartmentServiceImp extends ApartmentService {
             await queryRunnder.commitTransaction();
             return apartment;
         } catch (error) {
+            if (error instanceof TypeORMError) {
+                await this.storageManager.remove(uploadedImageURLs);
+            }
             await queryRunnder.rollbackTransaction();
             console.error(error);
             throw error;

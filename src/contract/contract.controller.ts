@@ -21,6 +21,7 @@ import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "src/helper/class/profile.entity";
 @ApiTags("Contract")
+@Auth(PersonRole.ADMIN)
 @Controller("contract")
 export class ContractController {
     constructor(private readonly contractService: ContractService) {}

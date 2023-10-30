@@ -7,7 +7,7 @@ import {
     OneToOne,
     PrimaryColumn,
 } from "typeorm";
-import { Profile } from "../../helper/class/profile.entity";
+import { PersonRole, Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../account/entities/account.entity";
 import { Contract } from "../../contract/entities/contract.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
@@ -43,4 +43,6 @@ export class Resident {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    role = PersonRole.RESIDENT;
 }

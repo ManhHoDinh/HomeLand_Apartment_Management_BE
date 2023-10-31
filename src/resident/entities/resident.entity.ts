@@ -28,6 +28,9 @@ export class Resident {
     @Column({ nullable: true })
     account_id?: string;
 
+    @Column({ nullable: true })
+    payment_info?: string;
+    
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 

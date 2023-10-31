@@ -33,4 +33,6 @@ export class Technician {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    role = PersonRole.TECHNICIAN;
 }

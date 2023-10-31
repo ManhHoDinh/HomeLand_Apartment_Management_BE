@@ -188,11 +188,6 @@ export class ResidentService implements ResidentRepository {
         const { payment_info, avatar_photo, email, ...rest } =
             updateResidentDto;
         if (!resident) throw new NotFoundException();
-        // if (person.password)
-        //     throw new ConflictException(
-        //         "Person profile already has account",
-        //     );
-        // resident.account?.email = updateResidentDto.email as string;
         const account = await this.accountRepository.findOne({
             where: { account_id: id },
         });
@@ -200,8 +195,6 @@ export class ResidentService implements ResidentRepository {
         resident.payment_info = payment_info;
         let profile = plainToInstance(Profile, rest);
         let avatarURL: string | undefined;
-        // const avatarPhoto = avatar_photo as MemoryStoredFile;
-
         if (avatar_photo) {
             const avataPhoto = avatar_photo as MemoryStoredFile;
             avatarURL = await this.storageManager.upload(
@@ -230,11 +223,6 @@ export class ResidentService implements ResidentRepository {
         }
 
         resident.profile = profile;
-        // resident.payment_info = updateResidentDto.payment_info as string;
-        // resident.email = updateResidentDto.email as string;
-        // resident.phone_number = updateResidentDto.phone_number as string;
-
-        //person.password = hashSync(createAccountDto.password, 10);
         return await this.residentRepository.save(resident);
     }
     findOne(id: string): Promise<Resident | null> {
@@ -269,15 +257,15 @@ export class ResidentService implements ResidentRepository {
         return isQueryAffected(result);
     }
 
-    // async hardDelete?(id: any): Promise<boolean> {
-    //     try {
-    //         const result = await this.residentRepository.delete({ id });
-    //         return isQueryAffected(result);
-    //     } catch (error) {
-    //         console.error(error);
-    //         throw error;
-    //     }
-    // }
+    async hardDelete?(id: any): Promise<boolean> {
+        try {
+            const result = await this.residentRepository.delete({ id });
+            return isQueryAffected(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
     async findAll(): Promise<Resident[]> {
         const residents = await this.residentRepository.find({
             relations: ["account"],

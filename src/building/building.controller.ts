@@ -35,12 +35,6 @@ export class BuildingController {
         const result = await this.buildingRepository.search(query);
         return result;
     }
-    //get all building
-    // @Get()
-    // findAll(@Query("page") page: number) {
-    //     if (Number.isNaN(page)) return this.buildingRepository.findAll();
-    //     else return this.buildingRepository.findAll(page);
-    // }
     @ApiQuery({
         name: "page",
         required: false,

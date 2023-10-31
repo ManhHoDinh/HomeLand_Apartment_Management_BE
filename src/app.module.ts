@@ -17,7 +17,8 @@ import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.modul
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
-
+import { BuildingModule } from "./building/building.module";
+import { ResidentModule } from "./resident/resident.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -62,9 +63,13 @@ import { AdminModule } from "./admin/admin.module";
         AuthModule,
         IdGeneratorModule,
         StorageModule,
+        AccountModule,
+        AdminModule,
         HashModule,
         SeedModule,
+        ResidentModule,
         ApartmentModule,
+        BuildingModule,
         MeModule,
         TokenModule,
         ContractModule,
@@ -72,8 +77,7 @@ import { AdminModule } from "./admin/admin.module";
         NestjsFormDataModule.config({
             isGlobal: true,
         }),
-        AccountModule,
-        AdminModule,
+       
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -30,7 +30,6 @@ import { EmployeeRepository, EmployeeService } from "./employee.service";
 @UseGuards(JWTAuthGuard)
 @ApiBearerAuth()
 @Controller("employee")
-@Auth(PersonRole.ADMIN)
 export class EmployeeController {
         constructor(private readonly employeeRepository: EmployeeRepository) { }
         @ApiOperation({ summary: "Create person profile" })

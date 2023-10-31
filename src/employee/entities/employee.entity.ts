@@ -18,6 +18,8 @@ import {
 } from "class-validator";
 @Entity()
 export class Employee {
+    @ApiProperty({ example: "BLD0/FLR0" })
+    
     @PrimaryColumn()
     id: string;
 
@@ -64,7 +66,7 @@ export class Employee {
     @Column({ nullable: true })
     activated_at?: Date;
 
-    @ApiProperty({ required: false, default: "admin@gmail.com" })
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsEmail()
     @Column({ nullable: true, unique: true })
@@ -73,9 +75,6 @@ export class Employee {
     @ApiHideProperty()
     @Column({ nullable: true })
     avatarURL?: string;
-
-    @Column(() => Profile)
-    profile: Profile;
 
     @CreateDateColumn()
     created_at: Date;

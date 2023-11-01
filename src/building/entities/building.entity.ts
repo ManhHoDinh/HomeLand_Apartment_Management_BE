@@ -17,8 +17,8 @@ export class Building {
     name: string;
 
     @ApiProperty({ example: 15 })
-    @IsNumber()
-    @Column()
+    @IsNumberString()
+    @Column({nullable: false, type: 'int', default: 0})
     max_floor: number;
 
     @OneToMany(() => Floor, (floor) => floor.building)

@@ -2,17 +2,18 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { HashService } from "../hash/hash.service";
 import { SignInDto } from "./dto/signin.dto";
-import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 import { PersonRole } from "../helper/class/profile.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
 import { Resident } from "../resident/entities/resident.entity";
 import { Admin } from "../admin/entities/admin.entity";
-import { DataSource, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Account } from "../account/entities/account.entity";
 
 export class TokenPayload {
     id: string;
+    role: PersonRole;
 }
 
 export abstract class AuthService {
@@ -33,8 +34,6 @@ export class AuthServiceImp extends AuthService {
     constructor(
         @InjectRepository(Account)
         private readonly accountRepository: Repository<Account>,
-        @InjectDataSource()
-        private readonly dataSource: DataSource,
         private readonly jwtService: JwtService,
         private readonly hashService: HashService,
     ) {
@@ -55,6 +54,7 @@ export class AuthServiceImp extends AuthService {
         }
         const payload: TokenPayload = {
             id: person.id,
+            role: person.role,
         };
         return {
             access_token: this.jwtService.sign(payload, {

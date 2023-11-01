@@ -61,7 +61,7 @@ export class AuthServiceImp extends AuthService {
             access_token: this.jwtService.sign(payload, {
                 expiresIn,
             }),
-            role: PersonRole.ADMIN,
+            role: person.role,
         };
     }
 

@@ -79,6 +79,7 @@ export class ResidentService implements ResidentRepository {
             email,
             ...rest
         } = createResidentDto;
+        
         const profile = plainToInstance(Profile, rest);
         let resident = new Resident();
         resident.payment_info = payment_info;

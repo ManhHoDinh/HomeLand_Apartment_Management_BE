@@ -55,6 +55,7 @@ export class ResidentController {
     @Post()
     @FormDataRequest()
     async create(@Body() createResidentDto: CreateResidentDto) {
+      
         return await this.residentRepository.create(createResidentDto);
     }
     @Get("/search")

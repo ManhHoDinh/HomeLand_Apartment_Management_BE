@@ -26,6 +26,7 @@ export class CreateResidentDto extends PickType(Profile, [
 
     @ApiProperty({required: false})
     @IsString()
+    @IsOptional()
     @Column()
     email?: string
 

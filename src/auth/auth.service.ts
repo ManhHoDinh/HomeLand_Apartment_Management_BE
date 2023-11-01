@@ -101,6 +101,20 @@ export class AuthServiceImp extends AuthService {
     ): Promise<Admin | Manager | Technician | Resident | null> {
         const account = await this.accountRepository.findOne({
             where: { owner_id: id },
+            relations: {
+                admin: {
+                    account: true,
+                },
+                resident: {
+                    account: true,
+                },
+                technician: {
+                    account: true,
+                },
+                manager: {
+                    account: true,
+                },
+            },
         });
 
         if (!account) return null;

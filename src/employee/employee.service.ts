@@ -4,6 +4,7 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from "@nestjs/common";
+import { DeepPartial } from 'typeorm';
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -16,22 +17,24 @@ import { HashService } from "../hash/hash.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
-import { PersonRole } from "../helper/class/profile.entity";
+import { PersonRole, Profile } from "../helper/class/profile.entity";
 import { IdGenerator } from "../id-generator/id-generator.service";
-
+import { plainToClass, plainToInstance } from "class-transformer";
+import { Account } from "src/account/entities/account.entity";
 export abstract class EmployeeRepository implements IRepository<Employee> {
     abstract findOne(id: string): Promise<Employee | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
     abstract delete(id: string): Promise<boolean>;
-    abstract findOneByEmail(email: string): Promise<Employee | null>;
+    // abstract findOneByEmail(email: string): Promise<Employee | null>;
     abstract create(
         createPersonDto: CreateEmployeeDto,
         id?: string,
     ): Promise<Employee>;
-    // abstract createAccount(
-    //     id: string,
-    //     createAccountDto: CreateEmployeeDto,
-    // ): Promise<Employee>;
+    abstract updateEmployee(
+        id: string,
+        updateResidentDto: UpdateEmployeeDto,
+    ): Promise<Employee>;
+    
     abstract findAll(role?: PersonRole): Promise<Employee[]>;
 }
 
@@ -66,8 +69,9 @@ export class EmployeeService implements EmployeeRepository {
             avatar_photo,
             ...rest
         } = createEmployeeDto;
-
-        let employee = this.employeeRepository.create(rest);
+        const profile = plainToInstance(Profile, rest);
+        // let employee = this.employeeRepository.create(rest);
+        let employee = new Employee();
         employee.id = "EMP" + this.idGenerate.generateId();
         if (id) employee.id = id;
 
@@ -86,27 +90,27 @@ export class EmployeeService implements EmployeeRepository {
                 backPhoto.mimetype || "image/png",
             );
 
-            let avatarURL: string | undefined = undefined;
+            let profilePictureURL: string | undefined = undefined;
             const avatarPhoto = createEmployeeDto.avatar_photo;
             if (avatarPhoto) {
-                avatarURL = await this.storageManager.upload(
+                profilePictureURL = await this.storageManager.upload(
                     avatarPhoto.buffer,
                     "employee/" + employee.id + "/avatarURL." + (avatarPhoto.extension || "png"),
                     avatarPhoto.mimetype || "image/png",
                 );
             } else {
-                const avatar = await this.avatarGenerator.generateAvatar(employee.name);
-                avatarURL = await this.storageManager.upload(
+                const avatar = await this.avatarGenerator.generateAvatar(profile.name);
+                profilePictureURL = await this.storageManager.upload(
                     avatar,
                     "employee/" + employee.id + "/avatarURL.svg",
                     "image/svg+xml",
                 );
             }
 
-            employee.avatarURL = avatarURL;
-            employee.front_identify_card_photo_URL = frontURL;
-            employee.back_identify_card_photo_URL = backURL;
-
+            employee.profilePictureURL = profilePictureURL;
+            profile.front_identify_card_photo_URL = frontURL;
+            profile.back_identify_card_photo_URL = backURL;
+            employee.profile = profile;
             return await this.employeeRepository.save(employee);
         } catch (error) {
             if (error instanceof TypeORMError) {
@@ -122,7 +126,45 @@ export class EmployeeService implements EmployeeRepository {
             throw error;
         }
     }
+    async updateEmployee(
+        id: string,
+        UpdateEmployeeDto: UpdateEmployeeDto,
+    ): Promise<Employee> {
+        let employee = await this.employeeRepository.findOne({
+            where: { id },
+        });
+        console.log(UpdateEmployeeDto)
+        const {  avatar_photo, ...rest } =
+            UpdateEmployeeDto; 
+        if (!employee) throw new NotFoundException();
+       
+        let profile = plainToInstance(Profile, rest);
+        let avatarURL: string | undefined;
+     
+        if (avatar_photo) {
+            const avataPhoto = avatar_photo as MemoryStoredFile;
+            avatarURL = await this.storageManager.upload(
+                avataPhoto.buffer,
+                "employee/" +
+                employee.id +
+                "/avatarURL." +
+                (avataPhoto.extension || "png"),
+                avataPhoto.mimetype || "image/png",
+            );
+        } else {
+            const avatar = await this.avatarGenerator.generateAvatar(
+                profile.name,
+            );
+            avatarURL = await this.storageManager.upload(
+                avatar,
+                "employee/" + employee.id + "/avatarURL.svg",
+                "image/svg+xml",
+            );
+        }
 
+        employee.profile = profile;
+        return await this.employeeRepository.save(employee);
+    }
     findOne(id: string): Promise<Employee | null> {
         return this.employeeRepository.findOne({
             where: {
@@ -131,26 +173,17 @@ export class EmployeeService implements EmployeeRepository {
             cache: true,
         });
     }
-
-    findOneByEmail(email: string): Promise<Employee | null> {
-        return this.employeeRepository.findOne({
-            where: {
-                email,
-            },
-            cache: true,
-        });
-    }
-
     findAll(role?: PersonRole): Promise<Employee[]> {
         return this.employeeRepository.find({
             where: role ? {} : {},
             cache: true,
         });
     }
-
-    async update(id: string, updatePersonDto: UpdateEmployeeDto) {
-        let result = await this.employeeRepository.update(id, updatePersonDto);
-        return isQueryAffected(result);
+    async update(
+        id: string,
+        UpdateEmployeeDto: UpdateEmployeeDto,
+    ): Promise<boolean> {
+        throw new Error("Method not implemented.");
     }
 
     async delete(id: string): Promise<boolean> {

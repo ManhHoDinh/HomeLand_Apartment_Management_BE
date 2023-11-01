@@ -26,6 +26,7 @@ import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
 import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { EmployeeRepository, EmployeeService } from "./employee.service";
+import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 @ApiTags("Employee")
 @UseGuards(JWTAuthGuard)
 @ApiBearerAuth()
@@ -49,6 +50,24 @@ export class EmployeeController {
                 summary: "Get all person profile"
 
         })
+
+        @ApiOperation({ summary: "update employee" })
+        @Patch("/:id")
+        async update(
+            @Param("id") id: string,
+            @Body() updateEmployeeDto: UpdateEmployeeDto,
+        ): Promise<Employee | boolean> {
+            const updatedEmployee = await this.employeeRepository.update(id, updateEmployeeDto);
+            
+            if (updatedEmployee) {
+              
+                return updatedEmployee;
+            } else {
+              
+                return false;
+            }
+        }
+        
         @Get()
         findAll(){
         //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))

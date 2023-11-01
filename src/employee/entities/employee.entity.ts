@@ -18,67 +18,27 @@ import {
 } from "class-validator";
 @Entity()
 export class Employee {
-    @ApiProperty({ example: "BLD0/FLR0" })
+    
     
     @PrimaryColumn()
     id: string;
 
-    @ApiProperty({
-        example: "Nguyen Van A",
-    })
-    @IsString()
-    @Column()
-    name: string;
-
-    @ApiProperty({
-        default: "1990-01-01",
-    })
-    @IsDateString()
-    @Column()
-    date_of_birth: Date;
-
-
-    @ApiProperty({
-        default: Gender.MALE,
-        type: "enum",
-        enum: Gender,
-    })
-    @IsEnum(Gender)
-    @Column({
-        type: "enum",
-        enum: Gender,
-    })
-    gender: Gender;
-
-    @Column()
-    front_identify_card_photo_URL: string;
-
-    @Column()
-    back_identify_card_photo_URL: string;
-
-    @ApiProperty({
-        default: "0999999999",
-    })
-    @IsPhoneNumber("VN")
-    @Column({ unique: true })
-    phone_number: string;
+    @Column(() => Profile)
+    profile: Profile;
+  
 
     @Column({ nullable: true })
     activated_at?: Date;
 
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsEmail()
-    @Column({ nullable: true, unique: true })
-    email?: string;
-
     @ApiHideProperty()
     @Column({ nullable: true })
-    avatarURL?: string;
+    profilePictureURL?: string;
 
     @CreateDateColumn()
     created_at: Date;
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    role = PersonRole.EMPLOYEE;
 }

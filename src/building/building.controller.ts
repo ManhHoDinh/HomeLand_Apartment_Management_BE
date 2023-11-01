@@ -27,8 +27,6 @@ export class BuildingController {
     create(@Body() createBuildingDto: CreateBuildingDto) {
         return this.buildingRepository.create(createBuildingDto);
     }
-
-   
     // search building
     /**
      * search building by name
@@ -39,12 +37,6 @@ export class BuildingController {
         const result = await this.buildingRepository.search(query);
         return result;
     }
-    //get all building
-    // @Get()
-    // findAll(@Query("page") page: number) {
-    //     if (Number.isNaN(page)) return this.buildingRepository.findAll();
-    //     else return this.buildingRepository.findAll(page);
-    // }
     @ApiQuery({
         name: "page",
         required: false,
@@ -56,8 +48,6 @@ export class BuildingController {
     findAll() {
         return this.buildingRepository.findAll();
     }
-    // create new building
-
     @Get(":id")
     async findOne(@Param("id") id: string) {
         const building = await this.buildingRepository.findOne(id);

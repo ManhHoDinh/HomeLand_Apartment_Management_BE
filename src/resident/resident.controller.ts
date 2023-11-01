@@ -74,15 +74,6 @@ export class ResidentController {
      *
      * Account must associate with person profile
      */
-    // @ApiOperation({ summary: "Create account" })
-    // @Auth(PersonRole.ADMIN, PersonRole.MANAGER)
-    // @Patch("/:id/account")
-    // async createAccount(
-    //     @Param("id") id: string,
-    //     @Body() createAccountDto: CreateAccountDto,
-    // ): Promise<Resdent> {
-    //     return await this.personRepository.createAccount(id, createAccountDto);
-    // }
     @ApiOperation({ summary: "update resident" })
     @Patch("/:id")
     async updateResident(
@@ -96,46 +87,19 @@ export class ResidentController {
         return resident;
     }
 
-    // @ApiOperation({ summary: "delete account" })
-    // @Auth(PersonRole.ADMIN)
-    // @Delete("/:id/account")
-    // async deleteAcount(
-    //     @Param("id") id: string,
-    // ) : Promise<boolean> {
-    //     const result = await this.personRepository.delete(
-    //         id,
-    //     );
-    //     return result;
-    // }
-
-    // @ApiOperation({
-    //     summary: "Get all person profile",
-    //     deprecated: true,
-    // })
-    // @ApiQuery({ name: "role", enum: PersonRole, required: false })
     @ApiOperation({ summary: "get all resident" })
     @Get()
-    async findAll() // @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
-    // role?: PersonRole,
+    async findAll() 
     : Promise<Resident[]> {
-        // if (role) return this.personRepository.findAll(role);
+ 
         return this.residentRepository.findAll();
     }
     @ApiOperation({ summary: "get resident by id" })
     @Get("/:id")
     async findOne(
         @Param("id") id: string,
-        // @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
-        // role?: PersonRole,
     ): Promise<Resident | null> {
-        // if (role) return this.personRepository.findAll(role);
         const resident = await this.residentRepository.findOne(id);
         return resident;
     }
-
-    // @ApiOperation({ summary: "get person by id" })
-    // @Get('/:id')
-    // findOne(@Param('id') id:string): Promise<Person |null> {
-    //     return this.personRepository.findOne(id)
-    // }
 }

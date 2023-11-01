@@ -25,7 +25,7 @@ export class Resident {
         nullable: true,
         cascade: true,
     })
-    @JoinColumn({name: "account_id"})
+    @JoinColumn()   
     account?: Account;
 
     @Column({ nullable: true })

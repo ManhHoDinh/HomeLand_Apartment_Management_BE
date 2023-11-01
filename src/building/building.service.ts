@@ -52,30 +52,8 @@ export class TypeORMBuildingService extends BuildingService {
         try {
             await queryRunnder.connect();
             await queryRunnder.startTransaction();
-            // const imageURLS = await Promise.all(
-            //     images.map((image, index) =>
-            //         this.storageManager.upload(
-            //             image,
-            //             `apartment/${apartment.apartment_id}/${
-            //                 index + Date.now() + ".png"
-            //             }`,
-            //             "image/png",
-            //         ),
-            //     ),
-            // );
-            // apartment.imageURLs = imageURLS;
+    
             building = await this.buildingRepository.save(building);
-
-            // if (createBuildingDto.residentIds) {
-            //     const residents = await this.residentRepository.find({
-            //         where: { id: In(createApartmentDto.residentIds) },
-            //     });
-            //     if (residents.length !== createApartmentDto.residentIds.length)
-            //         throw new NotFoundException("Some resident not found");
-            //     apartment.residents = residents;
-            // }
-
-            // apartment = await this.apartmentRepository.save(apartment);
             await queryRunnder.commitTransaction();
             return building;
         } catch (error) {
@@ -86,23 +64,7 @@ export class TypeORMBuildingService extends BuildingService {
             await queryRunnder.release();
         }
     }
-
-    // async findAll(page?: number) {
-    //     // if (page != undefined && page != null) {
-    //     //     return await this.buildingRepository.find({
-    //     //         skip: (page - 1) * 30,
-    //     //         take: 30,
-    //     //     });
-    //     // }
-    //     return await this.buildingRepository.find();
-    // }
       async findAll() {
-        // if (page != undefined && page != null) {
-        //     return await this.buildingRepository.find({
-        //         skip: (page - 1) * 30,
-        //         take: 30,
-        //     });
-        // }
         return await this.buildingRepository.find();
     }
 
@@ -127,7 +89,11 @@ export class TypeORMBuildingService extends BuildingService {
     delete(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    // search building
+    /**
+     * 
+     * @param query chuỗi cần tìm theo tên
+     * @returns 
+     */
     async search(query: string): Promise<Building[]> {
         const result = await this.buildingRepository.find({
             where:{

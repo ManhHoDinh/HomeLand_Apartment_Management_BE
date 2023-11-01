@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn, DeleteDateColumn } from "typeorm";
 import { Floor } from "../../floor/entities/floor.entity";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -31,4 +31,7 @@ export class Building {
     @IsString()
     @Column()
     address: string;
+    
+    @DeleteDateColumn()
+    deleted_at?: Date;
 }

@@ -8,6 +8,7 @@ import {
     Param,
     NotFoundException,
     Query,
+    Delete,
 } from "@nestjs/common";
 
 import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
@@ -15,6 +16,7 @@ import { FormDataRequest } from "nestjs-form-data";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { CreateBuildingDto } from "./dto/create-building.dto";
 import { BuildingService } from "./building.service";
+import { id_ID } from "@faker-js/faker";
 
 @ApiTags("Building")
 @Controller("building")
@@ -30,7 +32,7 @@ export class BuildingController {
     // search building
     /**
      * search building by name
-     * @param query string that admin search by name 
+     * @param query string that admin search by name
      */
     @Get("search")
     async searchBuilding(@Query("query") query: string) {
@@ -43,7 +45,6 @@ export class BuildingController {
         description:
             "Page number: Page indexed from 1, each page contain 30 items, if null then return all.",
     })
-
     @Get()
     findAll() {
         return this.buildingRepository.findAll();
@@ -66,5 +67,9 @@ export class BuildingController {
         );
         if (result) return { msg: "Building updated" };
         throw new NotFoundException("Building not found");
+    }
+    @Delete("/:id")
+    async softDeleteBuilding(@Param("id") id: string) {
+        return await this.buildingRepository.delete(id);
     }
 }

@@ -126,11 +126,11 @@ export class ResidentService implements ResidentRepository {
                     "image/svg+xml",
                 );
             }
-            // profile.avatar_photo = avatarURL;
-
+          
             profile.front_identify_card_photo_URL = frontURL;
             profile.back_identify_card_photo_URL = backURL;
             resident.profile = profile;
+            const residentData =  await this.residentRepository.save(resident);
             //set account
             if (email) {
                 resident.account_id = resident.id;
@@ -140,10 +140,10 @@ export class ResidentService implements ResidentRepository {
                 account.email = email;
                 account.password = this.hashService.hash(profile.phone_number);
                 account.avatarURL = avatarURL;
-                resident.account = account;
+                account.resident = resident;    
                 await this.accountRepository.save(account);
             }
-            return await this.residentRepository.save(resident);
+            return residentData
         } catch (error) {
             if (error instanceof TypeORMError) {
                 try {
@@ -171,24 +171,6 @@ export class ResidentService implements ResidentRepository {
 
         return result;
     }
-    // async createAccount(
-    //     id: string,
-    //     createAccountDto: CreateAccountDto,
-    // ): Promise<Resident> {
-    //     let Resident = await this.residentRepository.findOne({
-    //         where: { id },
-    //     });
-    //     if (!Resident) throw new NotFoundException();
-    //     // if (Resident.password)
-    //     //     throw new ConflictException(
-    //     //         "Resident profile already has account",
-    //     //     );
-    //     Resident.emai = createAccountDto.email;
-    //     Resident.phone_number = createAccountDto.email;
-    //     //Resident.password = hashSync(createAccountDto.password, 10);
-
-    //     return await this.ResidentRepository.save(Resident);
-    // }
     async updateResident(
         id: string,
         updateResidentDto: UpdateResidentDto,
@@ -200,11 +182,6 @@ export class ResidentService implements ResidentRepository {
         const { payment_info, avatar_photo, email, ...rest } =
             updateResidentDto;
         if (!resident) throw new NotFoundException();
-        // if (person.password)
-        //     throw new ConflictException(
-        //         "Person profile already has account",
-        //     );
-        // resident.account?.email = updateResidentDto.email as string;
         const account = await this.accountRepository.findOne({
             where: { owner_id: id },
         });
@@ -212,7 +189,6 @@ export class ResidentService implements ResidentRepository {
         resident.payment_info = payment_info;
         let profile = plainToInstance(Profile, rest);
         let avatarURL: string | undefined;
-        // const avatarPhoto = avatar_photo as MemoryStoredFile;
 
         if (avatar_photo) {
             const avataPhoto = avatar_photo as MemoryStoredFile;

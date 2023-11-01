@@ -1,4 +1,4 @@
-import { UpdateResidentDto } from "./dto/update-resident.dto";
+    import { UpdateResidentDto } from "./dto/update-resident.dto";
 import { Resident } from "./entities/resident.entity";
 
 import { Injectable, NotFoundException } from "@nestjs/common";
@@ -230,11 +230,6 @@ export class ResidentService implements ResidentRepository {
         }
 
         resident.profile = profile;
-        // resident.payment_info = updateResidentDto.payment_info as string;
-        // resident.email = updateResidentDto.email as string;
-        // resident.phone_number = updateResidentDto.phone_number as string;
-
-        //person.password = hashSync(createAccountDto.password, 10);
         return await this.residentRepository.save(resident);
     }
     findOne(id: string): Promise<Resident | null> {
@@ -269,15 +264,15 @@ export class ResidentService implements ResidentRepository {
         return isQueryAffected(result);
     }
 
-    // async hardDelete?(id: any): Promise<boolean> {
-    //     try {
-    //         const result = await this.residentRepository.delete({ id });
-    //         return isQueryAffected(result);
-    //     } catch (error) {
-    //         console.error(error);
-    //         throw error;
-    //     }
-    // }
+    async hardDelete?(id: any): Promise<boolean> {
+        try {
+            const result = await this.residentRepository.delete({ id });
+            return isQueryAffected(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
     async findAll(): Promise<Resident[]> {
         const residents = await this.residentRepository.find({
             relations: ["account"],

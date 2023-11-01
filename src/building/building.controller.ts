@@ -30,6 +30,10 @@ export class BuildingController {
 
    
     // search building
+    /**
+     * search building by name
+     * @param query string that admin search by name 
+     */
     @Get("search")
     async searchBuilding(@Query("query") query: string) {
         const result = await this.buildingRepository.search(query);

@@ -136,7 +136,7 @@ export class ResidentService implements ResidentRepository {
                 resident.account_id = resident.id;
 
                 let account = new Account();
-                account.account_id = resident.account_id;
+                account.owner_id = resident.account_id;
                 account.email = email;
                 account.password = this.hashService.hash(profile.phone_number);
                 account.avatarURL = avatarURL;
@@ -206,7 +206,7 @@ export class ResidentService implements ResidentRepository {
         //     );
         // resident.account?.email = updateResidentDto.email as string;
         const account = await this.accountRepository.findOne({
-            where: { account_id: id },
+            where: { owner_id: id },
         });
 
         resident.payment_info = payment_info;

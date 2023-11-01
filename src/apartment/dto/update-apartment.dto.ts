@@ -3,6 +3,7 @@ import { MemoryStoredFile } from "nestjs-form-data";
 import { Validate } from "class-validator";
 import { IsURLOrImageFile } from "../isURLOrImageFile";
 import { Apartment } from "../entities/apartment.entity";
+import { Transform } from "class-transformer";
 
 export class UpdateApartmentDto extends PartialType(
     OmitType(Apartment, ["apartment_id", "imageURLs"] as const),
@@ -22,6 +23,7 @@ export class UpdateApartmentDto extends PartialType(
             ],
         },
     })
+    @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
     @Validate(IsURLOrImageFile, { each: true })
     images: (string | MemoryStoredFile)[];
 }

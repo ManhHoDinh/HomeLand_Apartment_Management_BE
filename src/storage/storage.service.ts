@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { isURL } from "class-validator";
+import { isString, isURL } from "class-validator";
 
 /**
  * @classdesc Upload service interface
@@ -9,7 +9,7 @@ import { isURL } from "class-validator";
 export abstract class StorageManager {
     /**
      * Upload a file to storage and return the URL
-     * @throws {UploadError} if upload fail
+     * @throws {StorageError} if upload fail
      * @param buffer file must have buffer property
      * @param path path to upload on remote storage
      * @param mime MIME type of file
@@ -22,10 +22,18 @@ export abstract class StorageManager {
 
     /**
      * Remove files on storage
-     * @throws {RemoveError} if remove fail
+     * @throws {StorageError} if remove fail
      * @param paths path to files will be remove on bucket
      */
     abstract remove(paths: string[]): Promise<boolean>;
+
+    /**
+     * Copy file from oldPath to newPath
+     * @param oldPath path to file will be copy
+     * @param newPath path to file will be copy to
+     * @returns public url of new file
+     */
+    abstract copy(oldPath: string, newPath: string): Promise<string>;
 
     /**
      * Initiate storage if not exist
@@ -38,19 +46,14 @@ export abstract class StorageManager {
     abstract destroyStorage(): Promise<void>;
 }
 
-export type StorageError = UploadError | RemoveError;
-export class UploadError extends Error {
-    constructor(obj: Partial<UploadError>) {
-        super(obj.message);
-        Object.assign(this, obj);
-        Object.setPrototypeOf(this, UploadError.prototype);
-    }
-}
-export class RemoveError extends Error {
-    constructor(obj: Partial<RemoveError>) {
-        super(obj.message);
-        Object.assign(this, obj);
-        Object.setPrototypeOf(this, RemoveError.prototype);
+export class StorageError extends Error {
+    constructor(objOrString: Partial<StorageError> | string) {
+        if (isString(objOrString)) super(objOrString as string);
+        else {
+            super(objOrString.message);
+            Object.assign(this, objOrString);
+            Object.setPrototypeOf(this, StorageError.prototype);
+        }
     }
 }
 
@@ -59,6 +62,7 @@ export class SupabaseStorageManager extends StorageManager {
     constructor(private readonly supabaseClient: SupabaseClient) {
         super();
     }
+    private readonly BUCKET_NAME = "homeland";
     async destroyStorage() {
         await this.supabaseClient.storage.emptyBucket(this.BUCKET_NAME);
         await this.supabaseClient.storage.deleteBucket(this.BUCKET_NAME);
@@ -70,7 +74,18 @@ export class SupabaseStorageManager extends StorageManager {
         });
     }
 
-    private readonly BUCKET_NAME = "homeland";
+    async copy(oldPath: string, newPath: string): Promise<string> {
+        const { data, error } = await this.supabaseClient.storage
+            .from(this.BUCKET_NAME)
+            .copy(oldPath, newPath);
+        if (error) throw new StorageError(error);
+
+        const response = this.supabaseClient.storage
+            .from(this.BUCKET_NAME)
+            .getPublicUrl(data.path);
+
+        return response.data.publicUrl;
+    }
 
     async remove(pathsOrURLs: string[]): Promise<boolean> {
         if (pathsOrURLs.length === 0) return true;
@@ -82,7 +97,7 @@ export class SupabaseStorageManager extends StorageManager {
                 ),
             );
 
-        if (error) throw new RemoveError(error);
+        if (error) throw new StorageError(error);
         return true;
     }
 
@@ -117,7 +132,7 @@ export class SupabaseStorageManager extends StorageManager {
                 upsert: true,
             });
 
-        if (error) throw new UploadError(error);
+        if (error) throw new StorageError(error);
         const response = this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .getPublicUrl(uploadPath);

@@ -1,15 +1,19 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { DataSource, In, Repository, TypeORMError } from "typeorm";
+import { DataSource, In, Repository } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { StorageManager, UploadError } from "../storage/storage.service";
+import { StorageError, StorageManager } from "../storage/storage.service";
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
 import { Resident } from "../resident/entities/resident.entity";
-import { isQueryAffected } from "../helper/validation";
 import { MemoryStoredFile } from "nestjs-form-data";
+import { difference, isString } from "lodash";
 
 /**
  * @classdesc Represent the service that manage the apartment
@@ -71,23 +75,27 @@ export class ApartmentServiceImp extends ApartmentService {
         apartment.apartment_id = "APM" + this.idGenerate.generateId();
         if (id) apartment.apartment_id = id;
         const queryRunnder = this.dataSource.createQueryRunner();
-        let uploadedImageURLs: string[] = [];
+        let uploadResults: PromiseSettledResult<string>[] = [];
         try {
             await queryRunnder.connect();
             await queryRunnder.startTransaction();
-            uploadedImageURLs = await Promise.all(
+            uploadResults = await Promise.allSettled(
                 createApartmentDto.images.map((image, index) =>
                     this.storageManager.upload(
                         image.buffer,
                         `apartment/${apartment.apartment_id}/${
-                            index + Date.now() + ".png"
+                            index + Date.now() + (image.extension || ".png")
                         }`,
-                        "image/png",
+                        `image/${image.extension}` || "image/png",
                     ),
                 ),
             );
 
-            apartment.imageURLs = uploadedImageURLs;
+            if (!this.isPromiseFulfilledResultArray(uploadResults)) {
+                throw new StorageError("Some image upload failed");
+            }
+
+            apartment.imageURLs = uploadResults.map((result) => result.value);
 
             if (createApartmentDto.residentIds) {
                 const residents = await this.residentRepository.find({
@@ -102,15 +110,15 @@ export class ApartmentServiceImp extends ApartmentService {
             await queryRunnder.commitTransaction();
             return apartment;
         } catch (error) {
-            if (error instanceof TypeORMError) {
-                try {
-                    await this.storageManager.remove(uploadedImageURLs);
-                } catch (error) {
-                    throw error;
-                }
-                throw error;
-            }
             await queryRunnder.rollbackTransaction();
+            await this.storageManager.remove(
+                uploadResults
+                    .filter((r): r is PromiseFulfilledResult<string> =>
+                        this.isPromiseFulfilledResult(r),
+                    )
+                    .map((r) => r.value),
+            );
+
             console.error(error);
             throw error;
         } finally {
@@ -139,50 +147,79 @@ export class ApartmentServiceImp extends ApartmentService {
         id: string,
         updateApartmentDto: UpdateApartmentDto,
     ): Promise<Apartment> {
-        const { images, ...rest } = updateApartmentDto;
+        let uploadPaths: string[] = [];
         const queryRunnder = this.dataSource.createQueryRunner();
-        let uploadedImageURLs: string[] = [];
         try {
             queryRunnder.startTransaction();
-            let result = await this.apartmentRepository.update(id, rest);
-            let apartment = await this.apartmentRepository.findOne({
-                where: { apartment_id: id },
+            let { images, ...rest } = updateApartmentDto;
+            const apartment = await this.apartmentRepository.preload({
+                apartment_id: id,
+                ...rest,
             });
 
-            if (!apartment || !isQueryAffected(result))
-                throw new NotFoundException("Apartment not found");
-            let imageFiles = this.filterImageFiles(images);
-            uploadedImageURLs = await Promise.all(
-                imageFiles.map((image, index) =>
-                    this.storageManager.upload(
-                        image.buffer,
-                        `apartment/${apartment!.apartment_id}/${
-                            index + Date.now() + ".png"
-                        }`,
-                        "image/png",
-                    ),
-                ),
+            if (!apartment) throw new NotFoundException("Apartment Not found");
+
+            if (this.newImageHaveStrangeURL(images, apartment.imageURLs))
+                throw new BadRequestException("Detect strange URL");
+
+            const newImages = await Promise.allSettled(
+                images.map((element, index) => {
+                    if (isString(element)) return element;
+                    const uploadPath = `apartment/${apartment.apartment_id}/${
+                        index + Date.now() + (element.extension || ".png")
+                    }`;
+                    uploadPaths.push(uploadPath);
+                    return this.storageManager.upload(
+                        element.buffer,
+                        uploadPath,
+                        `image/${element.extension}` || ".png",
+                    );
+                }),
             );
-            return apartment;
+
+            if (!this.isPromiseFulfilledResultArray(newImages))
+                throw new StorageError("Some image upload failed");
+
+            const newImageURLS = newImages.map((result) => result.value);
+            // this task can be done in parallel, will enhance later
+            await this.storageManager.remove(
+                difference(apartment.imageURLs, newImageURLS),
+            );
+            apartment.imageURLs = newImageURLS;
+
+            return await this.apartmentRepository.save(apartment);
         } catch (error) {
             await queryRunnder.rollbackTransaction();
-            if (error instanceof UploadError) console.error(error);
-            if (error instanceof TypeORMError) {
-                await this.storageManager.remove(uploadedImageURLs);
-            }
+            await this.storageManager.remove(uploadPaths);
+            console.error(error);
             throw error;
         } finally {
             await queryRunnder.release();
         }
     }
 
-    private filterImageFiles(
-        array: (string | MemoryStoredFile)[],
-    ): MemoryStoredFile[] {
-        return array.filter(
-            (element): element is MemoryStoredFile =>
-                element instanceof MemoryStoredFile,
+    private isPromiseFulfilledResult<T>(
+        result: PromiseSettledResult<T>,
+    ): result is PromiseFulfilledResult<T> {
+        return result.status === "fulfilled";
+    }
+
+    private isPromiseFulfilledResultArray<T>(
+        results: PromiseSettledResult<T>[],
+    ): results is PromiseFulfilledResult<T>[] {
+        return results.every((result) => result.status === "fulfilled");
+    }
+
+    private newImageHaveStrangeURL(
+        newImages: (string | MemoryStoredFile)[],
+        oldImageURLS: string[],
+    ) {
+        const newImageURLS = newImages.filter((image): image is string =>
+            isString(image),
         );
+
+        if (difference(newImageURLS, oldImageURLS).length > 0) return true;
+        return false;
     }
 
     delete(id: string): Promise<boolean> {

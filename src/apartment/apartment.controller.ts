@@ -53,7 +53,7 @@ export class ApartmentController {
      * @returns
      */
     @ApiConsumes("multipart/form-data")
-    @Patch(":id/imageURLs")
+    @Patch(":id")
     @FormDataRequest()
     async update(
         @Param("id") id: string,

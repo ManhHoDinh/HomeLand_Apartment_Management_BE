@@ -1,4 +1,3 @@
-
 import {
     Controller,
     Post,
@@ -24,14 +23,12 @@ import {
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
 
-
-
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
 import { JWTAuthGuard } from "src/auth/guard/jwt-auth.guard";
-import { CreateResidentDto } from './dto/create-resident.dto';
-import { Resident } from './entities/resident.entity';
-import { UpdateResidentDto } from './dto/update-resident.dto';
+import { CreateResidentDto } from "./dto/create-resident.dto";
+import { Resident } from "./entities/resident.entity";
+import { UpdateResidentDto } from "./dto/update-resident.dto";
 
 @ApiTags("Resident")
 // @UseGuards(JWTAuthGuard)
@@ -51,7 +48,7 @@ export class ResidentController {
     @ApiConsumes("multipart/form-data")
     @ApiUnprocessableEntityResponse({
         description: "Email or phone number already exists",
-    })  
+    })
     @ApiCreatedResponse({
         description: "Create person profile successfully",
     })
@@ -60,9 +57,19 @@ export class ResidentController {
     async create(@Body() createResidentDto: CreateResidentDto) {
         return await this.residentRepository.create(createResidentDto);
     }
-
+    @Get("/search")
+    async searchResident(@Query("query") query: string) {
+        const result = await this.residentRepository.search(query);
+        return result;
+    }
+    @Delete("/:id")
+    async softDeleteResident(@Param("id") id: string) {
+    
+        const result = await this.residentRepository.delete(id);
+        
+    }
     /**
-     * 
+     *
      * Create account, only token from admin or manager can access this API
      *
      * Account must associate with person profile
@@ -77,16 +84,16 @@ export class ResidentController {
     //     return await this.personRepository.createAccount(id, createAccountDto);
     // }
     @ApiOperation({ summary: "update resident" })
-    
     @Patch("/:id")
     async updateResident(
         @Param("id") id: string,
         @Body() updateResidentDto: UpdateResidentDto,
     ): Promise<Resident> {
-        
-        const resident = await this.residentRepository.updateResident(id, updateResidentDto)
-         return resident;
-       
+        const resident = await this.residentRepository.updateResident(
+            id,
+            updateResidentDto,
+        );
+        return resident;
     }
 
     // @ApiOperation({ summary: "delete account" })
@@ -108,26 +115,26 @@ export class ResidentController {
     // @ApiQuery({ name: "role", enum: PersonRole, required: false })
     @ApiOperation({ summary: "get all resident" })
     @Get()
-    async findAll(
-        // @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
-        // role?: PersonRole,
-    ): Promise<Resident[]> {
+    async findAll() // @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
+    // role?: PersonRole,
+    : Promise<Resident[]> {
         // if (role) return this.personRepository.findAll(role);
         return this.residentRepository.findAll();
     }
     @ApiOperation({ summary: "get resident by id" })
-    @Get('/:id')
+    @Get("/:id")
     async findOne(
-        @Param ('id') id: string
+        @Param("id") id: string,
         // @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
         // role?: PersonRole,
     ): Promise<Resident | null> {
         // if (role) return this.personRepository.findAll(role);
-        const resident = await this.residentRepository.findOne(id)
+        const resident = await this.residentRepository.findOne(id);
         return resident;
     }
+
     // @ApiOperation({ summary: "get person by id" })
-    // @Get('/:id') 
+    // @Get('/:id')
     // findOne(@Param('id') id:string): Promise<Person |null> {
     //     return this.personRepository.findOne(id)
     // }

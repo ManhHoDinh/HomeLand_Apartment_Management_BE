@@ -1,9 +1,9 @@
-    import { UpdateResidentDto } from "./dto/update-resident.dto";
+import { UpdateResidentDto } from "./dto/update-resident.dto";
 import { Resident } from "./entities/resident.entity";
 
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, TypeORMError } from "typeorm";
+import { Like, Repository, TypeORMError } from "typeorm";
 import { StorageManager } from "src/storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
 import { IRepository } from "src/helper/interface/IRepository.interface";
@@ -37,12 +37,13 @@ export abstract class ResidentRepository implements IRepository<Resident> {
         updateResidentDto: UpdateResidentDto,
     ): Promise<Resident>;
     abstract findAll(): Promise<Resident[]>;
+    abstract search(query: string): Promise<Resident[]>;
 }
 
 @Injectable()
 export class ResidentService implements ResidentRepository {
     constructor(
-        @InjectRepository(Resident)
+        @InjectRepository(Resident) 
         private readonly residentRepository: Repository<Resident>,
         @InjectRepository(Account)
         private readonly accountRepository: Repository<Account>,
@@ -50,7 +51,10 @@ export class ResidentService implements ResidentRepository {
         private readonly hashService: HashService,
         private readonly idGenerate: IdGenerator,
         private readonly avatarGenerator: AvatarGenerator,
-    ) {}
+    ) {
+        
+    
+    }
     //get person by id
     //create person
 
@@ -128,8 +132,8 @@ export class ResidentService implements ResidentRepository {
             profile.back_identify_card_photo_URL = backURL;
             resident.profile = profile;
             //set account
-            if(email) {
-            resident.account_id = resident.id;
+            if (email) {
+                resident.account_id = resident.id;
 
                 let account = new Account();
                 account.account_id = resident.account_id;
@@ -158,7 +162,15 @@ export class ResidentService implements ResidentRepository {
             throw error;
         }
     }
+    async search(query: string): Promise<Resident[]> {
+        const result = await this.residentRepository.find({
+            where: {
+                profile: { name: Like(`%${query}%`) },
+            },
+        });
 
+        return result;
+    }
     // async createAccount(
     //     id: string,
     //     createAccountDto: CreateAccountDto,
@@ -184,7 +196,7 @@ export class ResidentService implements ResidentRepository {
         let resident = await this.residentRepository.findOne({
             where: { id },
         });
-        console.log(updateResidentDto)
+        console.log(updateResidentDto);
         const { payment_info, avatar_photo, email, ...rest } =
             updateResidentDto;
         if (!resident) throw new NotFoundException();
@@ -223,7 +235,7 @@ export class ResidentService implements ResidentRepository {
             );
         }
         if (account !== null) {
-            console.log(email, avatarURL)
+            console.log(email, avatarURL);
             account.email = email as string;
             account.avatarURL = avatarURL;
             await this.accountRepository.save(account);
@@ -261,6 +273,7 @@ export class ResidentService implements ResidentRepository {
 
     async delete(id: string): Promise<boolean> {
         const result = await this.residentRepository.softDelete({ id });
+        
         return isQueryAffected(result);
     }
 

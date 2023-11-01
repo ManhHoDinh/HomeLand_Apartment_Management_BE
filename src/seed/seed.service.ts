@@ -13,6 +13,9 @@ import { IdGenerator } from "../id-generator/id-generator.service";
 import { HashService } from "../hash/hash.service";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { ApartmentService } from "../apartment/apartment.service";
+import { Resident } from "../resident/entities/resident.entity";
+import { Manager } from "../manager/entities/manager.entity";
+import { Technician } from "../technician/entities/technician.entity";
 
 @Injectable()
 export class SeedService {
@@ -80,6 +83,11 @@ export class SeedService {
     ];
 
     async startSeeding() {
+        await this.createDemoAdmin();
+        await this.createDemoResident();
+        await this.createDemoManager();
+        await this.createDemoTechnician();
+
         // Create demo building
         let buildingInfo: any[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
@@ -139,48 +147,143 @@ export class SeedService {
                 );
             }
         }
+    }
 
-        // Create demo admin
-        await this.createDemoAdmin();
+    async createDemoTechnician() {
+        let id = "TEC" + this.idGenerator.generateId();
+        const technician = await this.dataSource
+            .getRepository(Technician)
+            .save({
+                id: id,
+                profile: {
+                    date_of_birth: new Date("1999-01-01"),
+                    name: "DEMO TECHNICIAN",
+                    gender: Gender.MALE,
+                    phone_number: "0896666666",
+                    front_identify_card_photo_URL:
+                        await this.storageManager.upload(
+                            this.frontIdentity.buffer,
+                            "admin/" + id + "/frontIdentifyPhoto.jpg",
+                            "image/jpeg",
+                        ),
+                    back_identify_card_photo_URL:
+                        await this.storageManager.upload(
+                            this.backIdentity.buffer,
+                            "admin/" + id + "/backIdentifyPhoto.jpg",
+                            "image/jpeg",
+                        ),
+                },
+                account: {
+                    owner_id: id,
+                    email: "technician@gmail.com",
+                    password: this.hashService.hash("password"),
+                    avatarURL: await this.storageManager.upload(
+                        await this.avatarGenerator.generateAvatar(
+                            "DEMO TECHNICIAN",
+                        ),
+                        "admin/" + id + "/avatar.svg",
+                        "image/svg+xml",
+                    ),
+                },
+            });
+    }
+
+    async createDemoManager() {
+        let id = "MNG" + this.idGenerator.generateId();
+        const manager = await this.dataSource.getRepository(Manager).save({
+            id: id,
+            profile: {
+                date_of_birth: new Date("1999-01-01"),
+                name: "DEMO MANAGER",
+                gender: Gender.MALE,
+                phone_number: "0677778787",
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "manager@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
+                    "admin/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
+            },
+        });
+    }
+
+    async createDemoResident() {
+        let id = "RES" + this.idGenerator.generateId();
+        const resident = await this.dataSource.getRepository(Resident).save({
+            id: id,
+            profile: {
+                date_of_birth: new Date("1999-01-01"),
+                name: "DEMO RESIDENT",
+                gender: Gender.MALE,
+                phone_number: "0896666666",
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "resident@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
+                    "admin/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
+            },
+        });
     }
 
     async createDemoAdmin() {
-        let admin = this.dataSource.getRepository(Admin).create();
-        admin.id = "ADM" + this.idGenerator.generateId();
-        admin.profile = {
-            date_of_birth: new Date("1999-01-01"),
-            name: "Admin",
-            gender: Gender.FEMALE,
-            phone_number: "0888888888",
-            front_identify_card_photo_URL: await this.storageManager.upload(
-                this.frontIdentity.buffer,
-                "admin/" + admin.id + "/frontIdentifyPhoto.jpg",
-                "image/jpeg",
-            ),
-            back_identify_card_photo_URL: await this.storageManager.upload(
-                this.backIdentity.buffer,
-                "admin/" + admin.id + "/backIdentifyPhoto.jpg",
-                "image/jpeg",
-            ),
-        };
-
-        const randomAvatar = await this.avatarGenerator.generateAvatar(
-            admin.profile.name,
-        );
-        let account = {
-            account_id: "ACC" + this.idGenerator.generateId(),
-            email: "admin@gmail.com",
-            password: this.hashService.hash("password"),
-            avatarURL: await this.storageManager.upload(
-                randomAvatar,
-                "admin/" + admin.id + "/avatar.svg",
-                "image/svg+xml",
-            ),
-        };
-
-        await this.dataSource.getRepository(Admin).save({
-            account,
-            ...admin,
+        let id = "ADM" + this.idGenerator.generateId();
+        const admin = await this.dataSource.getRepository(Admin).save({
+            id: id,
+            profile: {
+                date_of_birth: new Date("1999-01-01"),
+                name: "DEMO ADMIN",
+                gender: Gender.MALE,
+                phone_number: "0755555555",
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "admin@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
+                    "admin/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
+            },
         });
     }
 }

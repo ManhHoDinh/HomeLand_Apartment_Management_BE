@@ -22,7 +22,7 @@ export class Admin {
         nullable: true,
         cascade: true,
     })
-    @JoinColumn({ name: "account_id" })
+    @JoinColumn()
     account?: Account;
 
     @CreateDateColumn()

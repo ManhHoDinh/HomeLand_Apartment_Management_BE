@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { isString, isURL } from "class-validator";
+import { isString } from "class-validator";
 
 /**
  * @classdesc Upload service interface
@@ -58,11 +58,23 @@ export class StorageError extends Error {
 }
 
 @Injectable()
-export class SupabaseStorageManager extends StorageManager {
+export class SupabaseStorageManager
+    extends StorageManager
+    implements OnModuleInit
+{
     constructor(private readonly supabaseClient: SupabaseClient) {
         super();
     }
+
+    async onModuleInit() {
+        this.BUCKET_URL_PREFIX = this.supabaseClient.storage
+            .from(this.BUCKET_NAME)
+            .getPublicUrl("").data.publicUrl;
+    }
+
+    private BUCKET_URL_PREFIX = "";
     private readonly BUCKET_NAME = "homeland";
+
     async destroyStorage() {
         await this.supabaseClient.storage.emptyBucket(this.BUCKET_NAME);
         await this.supabaseClient.storage.deleteBucket(this.BUCKET_NAME);
@@ -89,16 +101,26 @@ export class SupabaseStorageManager extends StorageManager {
 
     async remove(pathsOrURLs: string[]): Promise<boolean> {
         if (pathsOrURLs.length === 0) return true;
-        const { error } = await this.supabaseClient.storage
+        console.log(
+            pathsOrURLs.map(
+                (path) => this.extractFilePathFromPublicUrl(path) || path,
+            ),
+        );
+        const { data, error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .remove(
-                pathsOrURLs.map(
-                    (path) => this.extractPathFromUrl(path) || path,
+                await Promise.all(
+                    pathsOrURLs.map(
+                        async (path) =>
+                            (await this.extractFilePathFromPublicUrl(path)) ||
+                            path,
+                    ),
                 ),
             );
 
         if (error) throw new StorageError(error);
-        return true;
+        if (data && data.length > 0) return true;
+        return false;
     }
 
     /**
@@ -106,16 +128,13 @@ export class SupabaseStorageManager extends StorageManager {
      * @param url public url of file in supabase storage
      * @returns path of file, undefined if url is not valid
      */
-    private extractPathFromUrl(url: string): string | undefined {
-        if (!isURL(url)) return undefined;
-        if (!url.startsWith("http://")) {
+    private async extractFilePathFromPublicUrl(
+        url: string,
+    ): Promise<string | undefined> {
+        if (url.indexOf(this.BUCKET_URL_PREFIX) !== 0) {
             return undefined;
         }
-        const prefix = `http://localhost:54321/storage/v1/object/public/${this.BUCKET_NAME}/`;
-        if (url.indexOf(prefix) !== 0) {
-            return undefined;
-        }
-        const restOfPath = url.slice(prefix.length);
+        const restOfPath = url.slice(this.BUCKET_URL_PREFIX.length);
         return restOfPath;
     }
 

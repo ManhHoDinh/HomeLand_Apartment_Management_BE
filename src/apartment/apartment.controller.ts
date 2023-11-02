@@ -59,6 +59,8 @@ export class ApartmentController {
         @Param("id") id: string,
         @Body() updateApartmentDto: UpdateApartmentDto,
     ) {
-        return await this.apartmentRepository.update(id, updateApartmentDto);
+        if (await this.apartmentRepository.update(id, updateApartmentDto)) {
+            return await this.findOne(id);
+        }
     }
 }

@@ -37,5 +37,5 @@ export class CreateEmployeeDto extends PickType(Profile, [
     @IsOptional()
     @MaxFileSize(10e6)
     @HasMimeType(commonImageMIMETypes)
-    avatar_photo?: MemoryStoredFile;
+    profile_picture?: MemoryStoredFile;
 }

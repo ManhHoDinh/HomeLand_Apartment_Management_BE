@@ -5,6 +5,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { DeepPartial } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -20,7 +21,7 @@ import { MemoryStoredFile } from "nestjs-form-data";
 import { PersonRole, Profile } from "../helper/class/profile.entity";
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { plainToClass, plainToInstance } from "class-transformer";
-import { Account } from "src/account/entities/account.entity";
+
 export abstract class EmployeeRepository implements IRepository<Employee> {
     abstract findOne(id: string): Promise<Employee | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
@@ -32,7 +33,7 @@ export abstract class EmployeeRepository implements IRepository<Employee> {
     ): Promise<Employee>;
     abstract updateEmployee(
         id: string,
-        updateResidentDto: UpdateEmployeeDto,
+        updateEmployeeDto: UpdateEmployeeDto,
     ): Promise<Employee>;
     
     abstract findAll(role?: PersonRole): Promise<Employee[]>;
@@ -66,7 +67,7 @@ export class EmployeeService implements EmployeeRepository {
         const {
             front_identify_card_photo,
             back_identify_card_photo,
-            avatar_photo,
+            profile_picture,
             ...rest
         } = createEmployeeDto;
         const profile = plainToInstance(Profile, rest);
@@ -91,7 +92,7 @@ export class EmployeeService implements EmployeeRepository {
             );
 
             let profilePictureURL: string | undefined = undefined;
-            const avatarPhoto = createEmployeeDto.avatar_photo;
+            const avatarPhoto = createEmployeeDto.profile_picture;
             if (avatarPhoto) {
                 profilePictureURL = await this.storageManager.upload(
                     avatarPhoto.buffer,
@@ -128,21 +129,21 @@ export class EmployeeService implements EmployeeRepository {
     }
     async updateEmployee(
         id: string,
-        UpdateEmployeeDto: UpdateEmployeeDto,
+        updateEmployeeDto: UpdateEmployeeDto,
     ): Promise<Employee> {
         let employee = await this.employeeRepository.findOne({
             where: { id },
         });
-        console.log(UpdateEmployeeDto)
-        const {  avatar_photo, ...rest } =
-            UpdateEmployeeDto; 
+        console.log(updateEmployeeDto)
+        const {  profile_picture, ...rest } =
+        updateEmployeeDto; 
         if (!employee) throw new NotFoundException();
        
         let profile = plainToInstance(Profile, rest);
         let avatarURL: string | undefined;
      
-        if (avatar_photo) {
-            const avataPhoto = avatar_photo as MemoryStoredFile;
+        if (profile_picture) {
+            const avataPhoto = profile_picture as MemoryStoredFile;
             avatarURL = await this.storageManager.upload(
                 avataPhoto.buffer,
                 "employee/" +
@@ -179,13 +180,11 @@ export class EmployeeService implements EmployeeRepository {
             cache: true,
         });
     }
-    async update(
-        id: string,
-        UpdateEmployeeDto: UpdateEmployeeDto,
-    ): Promise<boolean> {
-        throw new Error("Method not implemented.");
+   
+    async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
+        let result = await this.employeeRepository.update(id, updateEmployeeDto as any);
+        return isQueryAffected(result);
     }
-
     async delete(id: string): Promise<boolean> {
         const result = await this.employeeRepository.softDelete({ id });
         return isQueryAffected(result);

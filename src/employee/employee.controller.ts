@@ -46,34 +46,33 @@ export class EmployeeController {
         async create(@Body() createPersonDto: CreateEmployeeDto) {
                 return await this.employeeRepository.create(createPersonDto);
         }
-        @ApiOperation({
-                summary: "Get all person profile"
-
-        })
-
+        @Get(":id")
+        findOne(@Param("id") id: string) {
+                return this.employeeRepository.findOne(id);
+        }
         @ApiOperation({ summary: "update employee" })
         @Patch("/:id")
-        async update(
-            @Param("id") id: string,
-            @Body() updateEmployeeDto: UpdateEmployeeDto,
+        async updateEmployee(
+                @Param("id") id: string,
+                @Body() updateEmployeeDto: UpdateEmployeeDto,
         ): Promise<Employee | boolean> {
-            const updatedEmployee = await this.employeeRepository.update(id, updateEmployeeDto);
-            
-            if (updatedEmployee) {
-              
-                return updatedEmployee;
-            } else {
-              
-                return false;
-            }
+                const employee = await this.employeeRepository.updateEmployee(id, updateEmployeeDto);
+
+                if (employee) {
+
+                        return employee;
+                } else {
+
+                        return false;
+                }
         }
-        
+
         @Get()
-        findAll(){
-        //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
-        //         role?: PersonRole,
-        // ): Promise<Employee[]> {
-        //         if (role) return this.employeeRepository.findAll(role);
+        findAll() {
+                //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
+                //         role?: PersonRole,
+                // ): Promise<Employee[]> {
+                //         if (role) return this.employeeRepository.findAll(role);
                 return this.employeeRepository.findAll();
         }
         @Delete(":id")

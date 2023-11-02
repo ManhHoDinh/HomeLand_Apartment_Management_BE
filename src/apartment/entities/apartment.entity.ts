@@ -11,9 +11,10 @@ import {
 import { Contract } from "../../contract/entities/contract.entity";
 import { Floor } from "../../floor/entities/floor.entity";
 import { Building } from "../../building/entities/building.entity";
-import { IsNumberString, IsString } from "class-validator";
+import { IsEnum, IsInt, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Resident } from "../../resident/entities/resident.entity";
+import { Type } from "class-transformer";
 
 export enum ApartmentStatus {
     ACTIVE = "active",
@@ -21,38 +22,56 @@ export enum ApartmentStatus {
 }
 @Entity()
 export class Apartment {
+    @IsString()
     @PrimaryColumn()
     apartment_id: string;
 
+    @ApiProperty({ example: "St. Crytal" })
+    @IsString()
+    @Column()
+    name: string;
+
     @ApiProperty({ example: 15 })
-    @IsNumberString()
+    @IsNumber()
+    @Type(() => Number)
     @Column()
     width: number;
 
     @ApiProperty({ example: 20 })
-    @IsNumberString()
+    @IsNumber()
+    @Type(() => Number)
     @Column()
     length: number;
 
     @ApiProperty({ example: 1 })
-    @IsNumberString()
+    @IsInt()
+    @Type(() => Number)
     @Column({ type: "int" })
     number_of_bedroom: number;
 
     @ApiProperty({ example: 1 })
-    @IsNumberString()
+    @IsInt()
+    @Type(() => Number)
     @Column({ type: "int" })
     number_of_bathroom: number;
 
     @ApiProperty({ example: 5000000 })
-    @IsNumberString()
+    @IsNumber()
+    @Type(() => Number)
     @Column({ type: "numeric" })
     rent: number;
 
-    @Column({
+    @ApiProperty({
+        type: "enum",
         enum: ApartmentStatus,
-        default: ApartmentStatus.ACTIVE,
+        default: ApartmentStatus.INACTIVE,
     })
+    @Column({
+        type: "enum",
+        enum: ApartmentStatus,
+        default: ApartmentStatus.INACTIVE,
+    })
+    @IsEnum(ApartmentStatus)
     status: ApartmentStatus;
 
     @ApiProperty({ example: "A small apartment" })
@@ -94,9 +113,4 @@ export class Apartment {
 
     @DeleteDateColumn()
     deleted_at?: Date;
-
-    @ApiProperty({ example: "St. Crytal" })
-    @IsString()
-    @Column()
-    name: string;
 }

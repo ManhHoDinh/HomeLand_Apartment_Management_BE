@@ -84,7 +84,7 @@ export class Apartment {
     residents: Resident[];
 
     @OneToMany(() => Contract, (contract) => contract.apartment)
-    contract: Contract[];
+    contracts: Contract[];
 
     @Column("simple-array")
     imageURLs: string[];

@@ -9,6 +9,7 @@ import {
         Query,
         ParseEnumPipe,
         Delete,
+        NotFoundException,
 } from "@nestjs/common";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import {
@@ -52,27 +53,24 @@ export class EmployeeController {
         }
         @ApiOperation({ summary: "update employee" })
         @Patch("/:id")
-        async updateEmployee(
+        @ApiConsumes("multipart/form-data")
+        @FormDataRequest()
+        async update(
                 @Param("id") id: string,
                 @Body() updateEmployeeDto: UpdateEmployeeDto,
-        ): Promise<Employee | boolean> {
-                const employee = await this.employeeRepository.updateEmployee(id, updateEmployeeDto);
-
-                if (employee) {
-
-                        return employee;
-                } else {
-
-                        return false;
-                }
-        }
+            ) {
+                const result = await this.employeeRepository.update(id, updateEmployeeDto);
+                if (result)
+                    return [{ msg: "Contract updated" }, await this.findOne(id)];
+                throw new NotFoundException("Contract not found");
+            }
 
         @Get()
         findAll() {
                 //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
                 //         role?: PersonRole,
                 // ): Promise<Employee[]> {
-                //         if (role) return this.employeeRepository.findAll(role);
+                //         if (role) return this.employeeRepository.find All(role);
                 return this.employeeRepository.findAll();
         }
         @Delete(":id")

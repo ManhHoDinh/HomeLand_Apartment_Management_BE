@@ -1,5 +1,5 @@
 /**
- * Base repository interface
+ * @interface Base repository interface
  */
 export interface IRepository<Entity> {
     create(createEntityDto: any): Promise<Entity>;

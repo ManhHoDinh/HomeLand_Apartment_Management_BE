@@ -42,7 +42,7 @@ export class Contract {
     @Column({ nullable: true })
     resident_id: string;
 
-    @ManyToOne(() => Apartment, (apartment) => apartment.contract)
+    @ManyToOne(() => Apartment, (apartment) => apartment.contracts)
     @JoinColumn({ name: "apartment_id" })
     apartment: Apartment;
 

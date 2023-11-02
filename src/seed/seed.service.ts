@@ -34,7 +34,7 @@ export class SeedService {
             await this.storageManager.destroyStorage();
             await this.dataSource.dropDatabase();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw error;
         }
     }
@@ -43,7 +43,7 @@ export class SeedService {
             await this.storageManager.initiateStorage();
             await this.dataSource.synchronize();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw error;
         }
     }

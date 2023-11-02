@@ -21,13 +21,19 @@ export class Resident {
     @Column(() => Profile)
     profile: Profile;
 
-    @OneToOne(() => Account, { nullable: true, cascade: true })
-    @JoinColumn({ name: "account_id" })
+    @OneToOne(() => Account, (account) => account.resident, {
+        nullable: true,
+        cascade: true,
+    })
+    @JoinColumn()   
     account?: Account;
 
     @Column({ nullable: true })
     account_id?: string;
 
+    @Column({ nullable: true })
+    payment_info?: string;
+    
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 

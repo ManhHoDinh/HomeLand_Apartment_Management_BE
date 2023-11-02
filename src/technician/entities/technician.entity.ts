@@ -22,11 +22,8 @@ export class Technician {
         nullable: true,
         cascade: true,
     })
-    @JoinColumn({ name: "account_id" })
+    @JoinColumn()
     account?: Account;
-
-    @Column({ nullable: true })
-    account_id?: string;
 
     @CreateDateColumn()
     created_at: Date;

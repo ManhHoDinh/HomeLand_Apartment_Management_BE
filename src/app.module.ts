@@ -19,7 +19,8 @@ import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { Employee } from "./employee/entities/employee.entity";
 import { EmployeeModule } from "./employee/employee.module";
-
+import { BuildingModule } from "./building/building.module";
+import { ResidentModule } from "./resident/resident.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -70,6 +71,8 @@ import { EmployeeModule } from "./employee/employee.module";
         EmployeeModule,
         MeModule,
         TokenModule,
+        ResidentModule,
+        BuildingModule,
         ContractModule,
         AvatarGeneratorModule,
         NestjsFormDataModule.config({

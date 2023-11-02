@@ -51,7 +51,6 @@ export class IsURLOrImageFile implements ValidatorConstraintInterface {
                     message: `${validationArguments?.property} fail to validate any of the following constrains`,
                     constraints: error.errors.reduce(
                         (msg, err: ValidationError[]) => {
-                            console.log(msg, err[0].constraints);
                             msg.push(err[0].constraints);
                             return msg;
                         },

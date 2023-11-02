@@ -25,9 +25,15 @@ export class Resident {
         nullable: true,
         cascade: true,
     })
-    @JoinColumn()
+    @JoinColumn()   
     account?: Account;
 
+    @Column({ nullable: true })
+    account_id?: string;
+
+    @Column({ nullable: true })
+    payment_info?: string;
+    
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 

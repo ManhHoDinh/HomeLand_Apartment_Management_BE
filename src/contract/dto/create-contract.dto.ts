@@ -15,7 +15,7 @@ export class CreateContractDto extends PickType(Contract, ['role', 'status'] as 
     @IsString()
     previous_contract_id?: string;
     
-    @ApiProperty({ example: "Res123", description: "The resident id" })
+    @ApiProperty({ example: "RES123", description: "The resident id" })
     @IsString()
     resident_id: string;
     

@@ -18,45 +18,14 @@ export class ContractService {
         private storageManager: StorageManager,
         private readonly idGenerate: IdGenerator,
     ) {}
-    async create(createContract: CreateContractDto) {
-        const {  ...rest } = createContract;
+    async create(createContract: CreateContractDto, id?: string) {
+        const { ...rest } = createContract;
         let contract = this.contractRepository.create(rest);
 
         contract.contract_id = "CT" + this.idGenerate.generateId().toString();
+        if (id) contract.contract_id = id;
         await this.contractRepository.save(contract);
         return await this.findOne(contract.contract_id);
-       // const queryRunner = this.dataSource.createQueryRunner();
-            
-        // try {
-        //     await queryRunner.connect();
-        //     await queryRunner.startTransaction();
-        //     const imageURL = await this.storageManager.upload(
-        //         image.buffer,
-        //         `contract/${contract.contract_id}/${Date.now()}.` +
-        //             (image.extension || "png"),
-        //         image.mimetype || "image/png",
-        //     );
-
-        //     contract.contract_with_signature_photo_URL = imageURL;
-        //     await this.contractRepository.save(contract);
-        //     await queryRunner.commitTransaction();
-        //     return this.findOne(contract.contract_id);
-        // } catch (error) {
-        //     if (error instanceof TypeORMError) {
-        //         try {
-        //             await this.storageManager.remove([
-        //                 `contract/${contract.contract_id}/${Date.now()}.` +
-        //                     (image.extension || "png"),
-        //                 image.mimetype || "image/png",
-        //             ]);
-        //         } catch (error) {
-        //             console.error(error);
-        //         }
-        //     }
-        //     throw error;
-        // } finally {
-        //     await queryRunner.release();
-        // }
     }
 
     async findAll(page?: number) {
@@ -68,7 +37,6 @@ export class ContractService {
                 cache: true,
             });
         }
-        
 
         return await this.contractRepository.find({
             relations: ["resident", "apartment"],

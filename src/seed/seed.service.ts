@@ -16,6 +16,7 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
+import { Contract } from "src/contract/entities/contract.entity";
 
 @Injectable()
 export class SeedService {
@@ -87,8 +88,12 @@ export class SeedService {
         await this.createDemoResident();
         await this.createDemoManager();
         await this.createDemoTechnician();
-
-        // Create demo building
+        let buildingInfo: any[] = await this.createDemoBuildings();
+        let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
+        await this.createDemoApartments(floorInfo);
+        await this.createDemoContract();
+    }
+    async createDemoBuildings() {
         let buildingInfo: any[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
             buildingInfo.push({
@@ -103,8 +108,9 @@ export class SeedService {
             .into(Building)
             .values(buildingInfo)
             .execute();
-
-        // Create demo floors
+        return buildingInfo;
+    }
+    async createDemoFloors(buildingInfo: any[]) {
         let floorInfo: any[] = [];
         for (let building of buildingInfo) {
             for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
@@ -121,8 +127,9 @@ export class SeedService {
             .into(Floor)
             .values(floorInfo)
             .execute();
-
-        // Create demo apartments
+        return floorInfo;
+    }
+    async createDemoApartments(floorInfo: any[]) {
         let apartmentIds: any[] = [];
         for (let floor of floorInfo) {
             for (let i = 0; i < this.NUMBER_OF_APARTMENT_PER_FLOOR; i++) {
@@ -221,8 +228,10 @@ export class SeedService {
         });
     }
 
-    async createDemoResident() {
+    async createDemoResident(residentId?: string, email?: string) {
         let id = "RES" + this.idGenerator.generateId();
+        if (residentId) id = residentId;
+
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
@@ -285,5 +294,39 @@ export class SeedService {
                 ),
             },
         });
+    }
+    async createDemoApartment(id?: string) {
+        let apartmentId = "APM" + this.idGenerator.generateId();
+        if (id) apartmentId = id;
+        const floor = await this.dataSource.getRepository(Floor).find()[0];
+        await this.apartmentService.create(
+            {
+                name: "St. Crytal",
+                images: this.images,
+                length: 20,
+                building_id: floor.building_id,
+                floor_id: floor.floor_id,
+                width: 15,
+                description: faker.lorem.paragraphs({
+                    min: 3,
+                    max: 5,
+                }),
+                number_of_bathroom: 2,
+                number_of_bedroom: 1,
+                rent: 9000000,
+            },
+            apartmentId,
+        );
+    }
+    async createDemoContract() {
+        // await this.createDemoResident("RES123");
+        // await this.createDemoApartment("APM1698502960091");
+        // let contractId = "Contract" + this.idGenerator.generateId();
+        // await this.dataSource.getRepository(Contract).save({
+        //     contract_id: contractId,
+        //     resident_id: "RES123",
+        //     apartment_id: "APM1698502960091",
+        //     expired_date: new Date(),
+        // });
     }
 }

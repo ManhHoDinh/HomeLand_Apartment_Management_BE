@@ -17,7 +17,7 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
-import { ResidentRepository, ResidentService } from "src/resident/resident.service";
+import { ResidentRepository, ResidentService } from "../resident/resident.service";
 
 @Injectable()
 export class SeedService {
@@ -90,8 +90,8 @@ export class SeedService {
        await this.createDemoAdmin();
        await this.createDemoResident();
        await this.createDemoManager();
-        await this.createDemoTechnician();
-    
+       await this.createDemoTechnician();
+       await this.createDemoAccountResident();
         
 
         // Create demo building
@@ -159,6 +159,38 @@ export class SeedService {
                  await this.createDemoResident()
             }
        
+    }
+    async createDemoAccountResident() {
+        let id = "RESIDENT"; 
+        const resident = await this.dataSource.getRepository(Resident).save({
+            id: id,
+            profile: {
+                date_of_birth: faker.date.birthdate(),
+                name: faker.person.fullName(),
+                gender: Gender.MALE,
+                phone_number: faker.phone.number(),
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "resident/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "resident/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "resident@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
+                    "resident/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),  
+            } 
+        });
     }
 
     async createDemoTechnician() {

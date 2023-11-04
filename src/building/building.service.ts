@@ -1,4 +1,4 @@
-import { IdGenerator } from "src/id-generator/id-generator.service";
+import { IdGenerator } from "../id-generator/id-generator.service";
 import { CreateBuildingDto } from "./dto/create-building.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { DataSource, In, Repository, Like } from "typeorm";
@@ -6,9 +6,9 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageManager } from "../storage/storage.service";
 import { IRepository } from "../helper/interface/IRepository.interface";
 import { Building } from "./entities/building.entity";
-import { Floor } from "src/floor/entities/floor.entity";
+import { Floor } from "../floor/entities/floor.entity";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
-import { isQueryAffected } from "src/helper/validation";
+import { isQueryAffected } from "../helper/validation";
 export abstract class BuildingService implements IRepository<Building> {
     abstract findOne(id: string): Promise<Building | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;

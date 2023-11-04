@@ -12,7 +12,7 @@ import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
-import { ContractModule } from './contract/contract.module';
+import { ContractModule } from "./contract/contract.module";
 import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
@@ -48,8 +48,9 @@ import { ResidentModule } from "./resident/resident.module";
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,
-                        entities: ["dist/**/*.entity{.ts,.js}"],
+                        entities: ["**/*.entity.{ts}"],
                         duration: 5000,
+
                         cache: {
                             type: "redis",
                             options: {

@@ -4,8 +4,8 @@ import { UpdateContractDto } from "./dto/update-contract.dto";
 import { DataSource, Repository, TypeORMError } from "typeorm";
 import { Contract } from "./entities/contract.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { isQueryAffected } from "src/helper/validation";
-import { IdGenerator } from "src/id-generator/id-generator.service";
+import { isQueryAffected } from "../helper/validation";
+import { IdGenerator } from "../id-generator/id-generator.service";
 import { StorageManager } from "../storage/storage.service";
 
 @Injectable()

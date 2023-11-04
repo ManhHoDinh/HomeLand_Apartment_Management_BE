@@ -73,6 +73,7 @@
         "typescript": "^5.1.3"
     },
     "jest": {
+        "type": "module",
         "moduleFileExtensions": [
             "js",
             "json",

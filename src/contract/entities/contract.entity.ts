@@ -15,7 +15,7 @@ import { Resident } from "../../resident/entities/resident.entity";
 import {
     ContractRole,
     ContractStatusRole,
-} from "src/helper/enums/contractEnum";
+} from "../../helper/enums/contractEnum";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 

@@ -4,17 +4,17 @@ import { Resident } from "./entities/resident.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Like, Repository, TypeORMError } from "typeorm";
-import { StorageManager } from "src/storage/storage.service";
+import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
-import { IRepository } from "src/helper/interface/IRepository.interface";
+import { IRepository } from "../helper/interface/IRepository.interface";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { Profile } from "../helper/class/profile.entity";
 import { CreateResidentDto } from "./dto/create-resident.dto";
-import { IdGenerator } from "src/id-generator/id-generator.service";
+import { IdGenerator } from "../id-generator/id-generator.service";
 import { plainToInstance } from "class-transformer";
-import { Account } from "src/account/entities/account.entity";
-import { HashService } from "src/hash/hash.service";
+import { Account } from "../account/entities/account.entity";
+import { HashService } from "../hash/hash.service";
 
 /**
  * Person repository interface

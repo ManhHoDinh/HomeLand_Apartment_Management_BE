@@ -6,7 +6,7 @@ import {
     MaxFileSize,
     MemoryStoredFile,
 } from "nestjs-form-data";
-import { commonImageMIMETypes } from "src/helper/constant";
+import { commonImageMIMETypes } from "../../helper/constant";
 import { Contract } from "../entities/contract.entity";
 
 export class CreateContractDto extends PickType(Contract, ['role', 'status'] as const) {

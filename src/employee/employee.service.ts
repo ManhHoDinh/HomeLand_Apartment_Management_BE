@@ -170,27 +170,29 @@ export class EmployeeService implements EmployeeRepository {
     // }
 
     async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-        const { profile_picture, ...rest } = updateEmployeeDto;
+        const { profile_picture,date_of_birth,front_identify_card_photo, ...rest } = updateEmployeeDto;
         let employee = await this.employeeRepository.findOne({
                     where: { id },
                 });
 
-                console.log(updateEmployeeDto)
+                // console.log(updateEmployeeDto)
      
         if (!employee) throw new NotFoundException();
+    
         let profile = plainToInstance(Profile, rest);
         const queryRunner = this.dataSource.createQueryRunner();
-
         if (profile_picture) {
+           
             try {
                 await queryRunner.connect();
                 await queryRunner.startTransaction();
                 const imageURL = await this.storageManager.upload(
                     profile_picture.buffer,
-                    `contract/${id}/${Date.now()}.` +
+                    `employee/${id}/${Date.now()}.` +
                         (profile_picture.extension || "png"),
                         profile_picture.mimetype || "image/png",
                 );
+              
                 employee.profile = profile;
                 employee.profilePictureURL = imageURL;
                 employee = await this.employeeRepository.save(employee);
@@ -199,7 +201,7 @@ export class EmployeeService implements EmployeeRepository {
                 if (error instanceof TypeORMError) {
                     try {
                         await this.storageManager.remove([
-                            `contract/${id}/${Date.now()}.` +
+                            `employee/${id}/${Date.now()}.` +
                                 (profile_picture.extension || "png"),
                                 profile_picture.mimetype || "image/png",
                         ]);
@@ -234,10 +236,10 @@ export class EmployeeService implements EmployeeRepository {
         });
     }
 
-    // async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-    //     let result = await this.employeeRepository.update(id, updateEmployeeDto as any);
-    //     return isQueryAffected(result);
-    // }
+    async updateEmployee(id: string, updateEmployeeDto: UpdateEmployeeDto) {
+        let result = await this.employeeRepository.update(id, updateEmployeeDto as any);
+        return isQueryAffected(result);
+    }
     async delete(id: string): Promise<boolean> {
         const result = await this.employeeRepository.softDelete({ id });
         return isQueryAffected(result);

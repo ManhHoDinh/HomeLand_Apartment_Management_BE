@@ -11,13 +11,16 @@ export class UpdateEmployeeDto extends PartialType(
 ) { 
     @ApiProperty({ type: "file", required: false })
     @IsFile()
+    @IsOptional()
     @MaxFileSize(10e6)
     @HasMimeType(commonImageMIMETypes)
     front_identify_card_photo: MemoryStoredFile;
 
     @ApiProperty({ type: "file", required: false })
     @IsFile()
+    @IsOptional()
     @MaxFileSize(10e6)
     @HasMimeType(commonImageMIMETypes)
     back_identify_card_photo: MemoryStoredFile;
+    
 }

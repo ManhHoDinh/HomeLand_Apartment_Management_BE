@@ -10,6 +10,7 @@ import {
         ParseEnumPipe,
         Delete,
         NotFoundException,
+        BadRequestException,
 } from "@nestjs/common";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import {
@@ -28,6 +29,7 @@ import { PersonRole } from "../helper/class/profile.entity";
 import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { EmployeeRepository, EmployeeService } from "./employee.service";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
+import { IsOptional } from "class-validator";
 @ApiTags("Employee")
 @UseGuards(JWTAuthGuard)
 @ApiBearerAuth()
@@ -52,19 +54,24 @@ export class EmployeeController {
                 return this.employeeRepository.findOne(id);
         }
         @ApiOperation({ summary: "update employee" })
-        @Patch("/:id")
+        @Patch(":id")
         @ApiConsumes("multipart/form-data")
         @FormDataRequest()
         async update(
                 @Param("id") id: string,
                 @Body() updateEmployeeDto: UpdateEmployeeDto,
-            ) {
-                const result = await this.employeeRepository.update(id, updateEmployeeDto);
-                if (result)
-                    return [{ msg: "Contract updated" }, await this.findOne(id)];
-                throw new NotFoundException("Contract not found");
-            }
+        ) {
+                if (!updateEmployeeDto) {
+                        throw new BadRequestException("No data provided for update.");
+                }
 
+                const result = await this.employeeRepository.update(id, updateEmployeeDto);
+                if (result) {
+                        return [{ msg: "Employee updated" }, await this.findOne(id)];
+                }
+
+                throw new NotFoundException("Employee not found");
+        }
         @Get()
         findAll() {
                 //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))

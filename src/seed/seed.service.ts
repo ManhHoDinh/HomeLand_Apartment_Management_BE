@@ -54,7 +54,7 @@ export class SeedService {
     private readonly NUMBER_OF_BUILDING = 5;
     private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 600;
+    private readonly NUMBER_OF_RESIDENT = 50;
     private readonly NUMBER_OF_EMPLOYEE = 10;
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
@@ -155,7 +155,7 @@ export class SeedService {
         }
 
         //create demo resident
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
                  await this.createDemoResident()
             }
        

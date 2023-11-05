@@ -1,3 +1,4 @@
+
 import { Injectable } from "@nestjs/common";
 import { readFileSync } from "fs";
 import { InjectDataSource } from "@nestjs/typeorm";
@@ -16,6 +17,7 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
+import { ResidentRepository, ResidentService } from "../resident/resident.service";
 import { Contract } from "src/contract/entities/contract.entity";
 
 @Injectable()
@@ -28,6 +30,8 @@ export class SeedService {
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
+        private readonly residentService: ResidentRepository,
+        
     ) {}
 
     async dropDB() {
@@ -51,7 +55,7 @@ export class SeedService {
     private readonly NUMBER_OF_BUILDING = 5;
     private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 600;
+    private readonly NUMBER_OF_RESIDENT = 50;
     private readonly NUMBER_OF_EMPLOYEE = 10;
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
@@ -84,6 +88,14 @@ export class SeedService {
     ];
 
     async startSeeding() {
+       await this.createDemoAdmin();
+       await this.createDemoResident();
+       await this.createDemoManager();
+       await this.createDemoTechnician();
+       await this.createDemoAccountResident();
+        
+
+        // Create demo building
         await this.createDemoAdmin();
         await this.createDemoResident();
         await this.createDemoManager();
@@ -154,6 +166,44 @@ export class SeedService {
                 );
             }
         }
+
+        //create demo resident
+            for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+                 await this.createDemoResident()
+            }
+       
+    }
+    async createDemoAccountResident() {
+        let id = "RESIDENT"; 
+        const resident = await this.dataSource.getRepository(Resident).save({
+            id: id,
+            profile: {
+                date_of_birth: faker.date.birthdate(),
+                name: faker.person.fullName(),
+                gender: Gender.MALE,
+                phone_number: faker.phone.number(),
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "resident/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "resident/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "resident@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
+                    "resident/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),  
+            } 
+        });
     }
 
     async createDemoTechnician() {
@@ -230,37 +280,39 @@ export class SeedService {
 
     async createDemoResident(residentId?: string, email?: string) {
         let id = "RES" + this.idGenerator.generateId();
+        const random = Math.random() * 2;
         if (residentId) id = residentId;
 
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
-                date_of_birth: new Date("1999-01-01"),
-                name: "DEMO RESIDENT",
+                date_of_birth: faker.date.birthdate(),
+                name: faker.person.fullName(),
                 gender: Gender.MALE,
-                phone_number: "0896666666",
+                phone_number: faker.phone.number(),
                 front_identify_card_photo_URL: await this.storageManager.upload(
                     this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "resident/" + id + "/frontIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
                 back_identify_card_photo_URL: await this.storageManager.upload(
                     this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
             },
-            account: {
+            account: random === 0 ? {
                 owner_id: id,
-                email: "resident@gmail.com",
+                email: faker.internet.email(),
                 password: this.hashService.hash("password"),
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "admin/" + id + "/avatar.svg",
+                    "resident/" + id + "/avatar.svg",
                     "image/svg+xml",
-                ),
-            },
+                ),  
+            } : undefined,
         });
+        
     }
 
     async createDemoAdmin() {

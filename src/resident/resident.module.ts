@@ -26,5 +26,7 @@ import { AuthModule } from "../auth/auth.module";
             useClass: ResidentService,
         },
     ],
+    exports: [ResidentRepository],
+
 })
 export class ResidentModule {}

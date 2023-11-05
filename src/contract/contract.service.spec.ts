@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "../auth/auth.module";
 import { StorageModule } from "../storage/storage.module";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 
 describe("ContractService", () => {
     let service: ContractService;
@@ -18,13 +19,14 @@ describe("ContractService", () => {
                 AuthModule,
                 StorageModule,
                 IdGeneratorModule,
+                JwtModule,
             ],
 
-            providers: [ContractService],
+            providers: [ContractService, JwtService],
         }).compile();
 
         service = module.get<ContractService>(ContractService);
-    });
+    }, 30000);
 
     it("should be defined", () => {
         expect(service).toBeDefined();

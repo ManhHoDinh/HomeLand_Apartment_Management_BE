@@ -9,8 +9,14 @@ import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { DataSource } from "typeorm";
 
 @Module({
-    imports: [AuthModule, TypeOrmModule.forFeature([Contract]), StorageModule, IdGeneratorModule, ],
+    imports: [
+        AuthModule,
+        TypeOrmModule.forFeature([Contract]),
+        StorageModule,
+        IdGeneratorModule,
+    ],
     controllers: [ContractController],
-    providers: [ContractService, DataSource],
+    providers: [ContractService],
+    exports: [ContractService],
 })
 export class ContractModule {}

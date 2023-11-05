@@ -19,7 +19,6 @@ import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
-import { TestModule } from './test/test.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -45,11 +44,10 @@ import { TestModule } from './test/test.module';
                     };
                 } else {
                     return {
-                        logging: false,
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,
-                        entities: ["**/*.entity.{ts}"],
+                        entities: ["dist/**/*.entity{.ts,.js}"],
                         duration: 5000,
                         cache: {
                             type: "redis",
@@ -78,7 +76,6 @@ import { TestModule } from './test/test.module';
         }),
         AccountModule,
         AdminModule,
-        TestModule,
     ],
     controllers: [AppController],
     providers: [AppService],

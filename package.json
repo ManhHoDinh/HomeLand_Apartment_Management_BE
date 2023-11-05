@@ -87,6 +87,9 @@
         "collectCoverageFrom": [
             "**/*.(t|j)s"
         ],
+        "setupFiles": [
+            "../setEnvVars.js"
+        ],
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"
     },

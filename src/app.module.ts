@@ -19,6 +19,7 @@ import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
+import { TestModule } from './test/test.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -50,7 +51,6 @@ import { ResidentModule } from "./resident/resident.module";
                         synchronize: true,
                         entities: ["**/*.entity.{ts}"],
                         duration: 5000,
-
                         cache: {
                             type: "redis",
                             options: {
@@ -78,6 +78,7 @@ import { ResidentModule } from "./resident/resident.module";
         }),
         AccountModule,
         AdminModule,
+        TestModule,
     ],
     controllers: [AppController],
     providers: [AppService],

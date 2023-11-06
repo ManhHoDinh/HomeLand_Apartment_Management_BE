@@ -47,7 +47,7 @@ import { ResidentModule } from "./resident/resident.module";
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,
-                        entities: ["dist/**/*.entity{.ts,.js}"],
+                        entities: ['/../**/*.entity.{js,ts}'],
                         duration: 5000,
                         cache: {
                             type: "redis",

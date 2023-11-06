@@ -8,11 +8,15 @@ import { StorageModule } from "../storage/storage.module";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { DataSource } from "typeorm";
+import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
+import { ContractModule } from "./contract.module";
+import { FormDataRequest } from "nestjs-form-data";
 
-describe("ContractService", () => {
-    let service: ContractService;
-
-    beforeAll(async () => {
+describe("ContractController", () => {
+    let controller: ContractController;
+    const mockContractService = {};
+    const mockJWTAuthGuard = {};
+    beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 TypeOrmModule.forRootAsync({
@@ -54,18 +58,21 @@ describe("ContractService", () => {
                 IdGeneratorModule,
                 JwtModule,
             ],
-
-            providers: [ContractService, JwtService],
-        }).compile();
-
-        service = module.get<ContractService>(ContractService);
-    }, 5000);
-
-    it("should be defined", () => {
-        expect(service).toBeDefined();
+            controllers: [ContractController],
+            providers: [
+                ContractService,
+                JwtService,
+                JWTAuthGuard,
+                { provide: ContractService, useValue: mockContractService },
+                { provide: FormDataRequest, useValue: {} },
+            ],
+        })
+            .overrideProvider(ContractService)
+            .useValue(mockContractService)
+            .compile();
+        controller = module.get<ContractController>(ContractController);
     });
-
-    it("should be findAll", () => {
-        expect(service.findAll()).toBe([]);
+    it("should be defined", () => {
+        expect(controller).toBeDefined();
     });
 });

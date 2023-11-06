@@ -15,14 +15,13 @@ import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { CreateBuildingDto } from "./dto/create-building.dto";
-import { BuildingService } from "./building.service";
+import { BuildingService, TypeORMBuildingService } from "./building.service";
 import { id_ID } from "@faker-js/faker";
 
 @ApiTags("Building")
 @Controller("building")
 export class BuildingController {
-    constructor(private readonly buildingRepository: BuildingService) {}
-
+    constructor(private readonly buildingRepository: TypeORMBuildingService) {}
     @ApiConsumes("multipart/form-data")
     @Post()
     @FormDataRequest()

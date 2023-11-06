@@ -1,6 +1,10 @@
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { CreateBuildingDto } from "./dto/create-building.dto";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { DataSource, In, Repository, Like } from "typeorm";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageManager } from "../storage/storage.service";
@@ -11,8 +15,8 @@ import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { isQueryAffected } from "../helper/validation";
 export abstract class BuildingService implements IRepository<Building> {
     abstract findOne(id: string): Promise<Building | null>;
-    abstract update(id: string, updateEntityDto: any): Promise<boolean>;
-    abstract delete(id: string): Promise<boolean>;
+    abstract update(id: string, updateEntityDto: any);
+    abstract delete(id: string);
     abstract create(
         createBuildingDto: CreateBuildingDto,
         id?: string,
@@ -29,60 +33,51 @@ export class TypeORMBuildingService extends BuildingService {
         private readonly buildingRepository: Repository<Building>,
         @InjectRepository(Floor)
         private readonly floorRepository: Repository<Floor>,
-        @InjectDataSource()
-        private readonly dataSource: DataSource,
+
         private readonly idGenerate: IdGenerator,
-        private readonly storageManager: StorageManager,
     ) {
         super();
     }
 
-    async create(
-        createBuildingDto: CreateBuildingDto,
-        id?: string,
-    ): Promise<Building> {
+    async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
         let building = this.buildingRepository.create(createBuildingDto);
         building.building_id = "BD" + this.idGenerate.generateId();
-        if (id) building.building_id = id;
-
+        console.log(building);
         try {
-            building = await this.buildingRepository.save(building);
-            return building;
+            return await this.buildingRepository.save(building);
         } catch (error) {
-            console.error(error);
-            throw error;
+            throw  new BadRequestException("Create fail");
         }
     }
     async findAll() {
-        return await this.buildingRepository.find();
+        const allBuilding = await this.buildingRepository.find({});
+        return allBuilding;
     }
 
     async findOne(id: string) {
-        return await this.buildingRepository.findOne({
+        const building = await this.buildingRepository.findOne({
             where: { building_id: id },
         });
+        return building;
     }
 
-    async update(
-        id: string,
-        updateBuildingDto: UpdateBuildingDto,
-    ): Promise<boolean> {
+    async update(id: string, updateBuildingDto: UpdateBuildingDto) {
         try {
             let result = await this.buildingRepository.update(
                 id,
                 updateBuildingDto,
             );
-            return isQueryAffected(result);
+            return result;
         } catch (error) {
-            throw new Error("Method not implemented.");
+            throw new BadRequestException("Id not found.");
         }
     }
-    async delete(id: string): Promise<boolean> {
+    async delete(id: string) {
         try {
             const result = await this.buildingRepository.softDelete({
                 building_id: id,
             });
-            return isQueryAffected(result);
+            return result;
         } catch (error) {
             throw new Error("Method not implemented.");
         }

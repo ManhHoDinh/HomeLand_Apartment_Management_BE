@@ -12,16 +12,12 @@ import { Like } from "typeorm";
     imports: [
         TypeOrmModule.forFeature([Building, Floor]),
         IdGeneratorModule,
-        StorageModule,
     ],
     controllers: [BuildingController],
     providers: [        
-        {
-            provide: BuildingService,
-            useClass: TypeORMBuildingService,
-        },
+          TypeORMBuildingService
     ],
-    exports: [BuildingService],
+    exports: [TypeORMBuildingService],
   }
 )
 export class BuildingModule {}

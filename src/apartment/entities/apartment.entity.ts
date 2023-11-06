@@ -88,10 +88,6 @@ export class Apartment {
     @Column({ nullable: true })
     floor_id: string;
 
-    @ManyToOne(() => Building, (building) => building.apartments)
-    @JoinColumn({ name: "building_id" })
-    building: Building;
-
     @ApiProperty({ example: "BLD0" })
     @IsString()
     @Column({ nullable: true })

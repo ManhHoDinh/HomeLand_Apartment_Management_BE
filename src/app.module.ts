@@ -12,11 +12,13 @@ import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
-import { ContractModule } from "./contract/contract.module";
+import { ContractModule } from './contract/contract.module';
 import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
+import { Employee } from "./employee/entities/employee.entity";
+import { EmployeeModule } from "./employee/employee.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 @Module({
@@ -44,10 +46,11 @@ import { ResidentModule } from "./resident/resident.module";
                     };
                 } else {
                     return {
+                        logging: false,
                         type: "postgres",
                         url: process.env.DB_LOCAL_URL,
                         synchronize: true,
-                        entities: ['/../**/*.entity.{js,ts}'],
+                        entities: ["dist/**/*.entity{.ts,.js}"],
                         duration: 5000,
                         cache: {
                             type: "redis",
@@ -65,6 +68,7 @@ import { ResidentModule } from "./resident/resident.module";
         HashModule,
         SeedModule,
         ApartmentModule,
+        EmployeeModule,
         MeModule,
         TokenModule,
         ResidentModule,

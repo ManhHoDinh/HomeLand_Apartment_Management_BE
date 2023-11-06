@@ -1,4 +1,3 @@
-
 import { Injectable } from "@nestjs/common";
 import { readFileSync } from "fs";
 import { InjectDataSource } from "@nestjs/typeorm";
@@ -17,9 +16,19 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
-import { ResidentRepository, ResidentService } from "../resident/resident.service";
+import {
+    ResidentRepository,
+    ResidentService,
+} from "../resident/resident.service";
 import { Contract } from "src/contract/entities/contract.entity";
 
+import { Employee } from "src/employee/entities/employee.entity";
+import {
+    EmployeeRepository,
+    EmployeeService,
+} from "src/employee/employee.service";
+import { random } from "lodash";
+import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
 @Injectable()
 export class SeedService {
     constructor(
@@ -31,7 +40,6 @@ export class SeedService {
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
         private readonly residentService: ResidentRepository,
-        
     ) {}
 
     async dropDB() {
@@ -88,18 +96,13 @@ export class SeedService {
     ];
 
     async startSeeding() {
-       await this.createDemoAdmin();
-       await this.createDemoResident();
-       await this.createDemoManager();
-       await this.createDemoTechnician();
-       await this.createDemoAccountResident();
-        
-
-        // Create demo building
         await this.createDemoAdmin();
         await this.createDemoResident();
         await this.createDemoManager();
         await this.createDemoTechnician();
+        await this.createDemoAccountResident();
+
+        // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
         await this.createDemoApartments(floorInfo);
@@ -168,13 +171,12 @@ export class SeedService {
         }
 
         //create demo resident
-            for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-                 await this.createDemoResident()
-            }
-       
+        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+            await this.createDemoResident();
+        }
     }
     async createDemoAccountResident() {
-        let id = "RESIDENT"; 
+        let id = "RESIDENT";
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
@@ -201,8 +203,8 @@ export class SeedService {
                     await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
                     "resident/" + id + "/avatar.svg",
                     "image/svg+xml",
-                ),  
-            } 
+                ),
+            },
         });
     }
 
@@ -301,18 +303,55 @@ export class SeedService {
                     "image/jpeg",
                 ),
             },
-            account: random === 0 ? {
+            account:
+                random === 0
+                    ? {
+                          owner_id: id,
+                          email: faker.internet.email(),
+                          password: this.hashService.hash("password"),
+                          avatarURL: await this.storageManager.upload(
+                              await this.avatarGenerator.generateAvatar(
+                                  "DEMO RESIDENT",
+                              ),
+                              "resident/" + id + "/avatar.svg",
+                              "image/svg+xml",
+                          ),
+                      }
+                    : undefined,
+        });
+    }
+
+    async createDemoEmployee() {
+        let id = "EMP" + this.idGenerator.generateId();
+        const employee = await this.dataSource.getRepository(Resident).save({
+            id: id,
+            profile: {
+                date_of_birth: new Date("1999-01-01"),
+                name: "DEMO EMPLOYEE",
+                gender: Gender.MALE,
+                phone_number: faker.phone.number(),
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
                 owner_id: id,
-                email: faker.internet.email(),
+                email: "employee@gmail.com",
                 password: this.hashService.hash("password"),
                 avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "resident/" + id + "/avatar.svg",
+                    await this.avatarGenerator.generateAvatar("DEMO EMPOLYEE"),
+                    "admin/" + id + "/avatar.svg",
                     "image/svg+xml",
-                ),  
-            } : undefined,
+                ),
+            },
         });
-        
     }
 
     async createDemoAdmin() {
@@ -350,14 +389,13 @@ export class SeedService {
     async createDemoApartment(id?: string) {
         let apartmentId = "APM" + this.idGenerator.generateId();
         if (id) apartmentId = id;
-        const floor = await this.dataSource.getRepository(Floor).find()[0];
         await this.apartmentService.create(
             {
                 name: "St. Crytal",
                 images: this.images,
                 length: 20,
-                building_id: floor.building_id,
-                floor_id: floor.floor_id,
+                building_id: "BLD0",
+                floor_id: "BLD0/FLR0",
                 width: 15,
                 description: faker.lorem.paragraphs({
                     min: 3,
@@ -371,14 +409,16 @@ export class SeedService {
         );
     }
     async createDemoContract() {
-        // await this.createDemoResident("RES123");
-        // await this.createDemoApartment("APM1698502960091");
-        // let contractId = "Contract" + this.idGenerator.generateId();
-        // await this.dataSource.getRepository(Contract).save({
-        //     contract_id: contractId,
-        //     resident_id: "RES123",
-        //     apartment_id: "APM1698502960091",
-        //     expired_date: new Date(),
-        // });
+        await this.createDemoResident("RES123");
+        await this.createDemoApartment("APM1698502960091");
+        let contractId = "Contract" + this.idGenerator.generateId();
+        await this.dataSource.getRepository(Contract).save({
+            contract_id: contractId,
+            resident_id: "RES123",
+            apartment_id: "APM1698502960091",
+            expire_at: new Date("2030-01-01"),
+            role: ContractRole.RENT,
+            status: ContractStatusRole.INACTIVE,
+        });
     }
 }

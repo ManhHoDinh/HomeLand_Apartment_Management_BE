@@ -34,6 +34,7 @@ import { EmojiType } from "node_modules/@faker-js/faker/dist/types/modules/inter
 @ApiTags("Employee")
 // @UseGuards(JWTAuthGuard)
 // @ApiBearerAuth()
+@Auth(PersonRole.ADMIN, PersonRole.MANAGER)
 @Controller("employee")
 export class EmployeeController {
         constructor(private readonly employeeRepository: EmployeeRepository) { }

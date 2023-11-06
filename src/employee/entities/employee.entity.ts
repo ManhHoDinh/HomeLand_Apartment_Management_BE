@@ -8,14 +8,6 @@ import {
 import { Profile } from "../../helper/class/profile.entity";
 import { Gender, PersonRole } from "../../helper/class/profile.entity";
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import {
-    IsDateString,
-    IsEmail,
-    IsEnum,
-    IsOptional,
-    IsPhoneNumber,
-    IsString,
-} from "class-validator";
 @Entity()
 export class Employee {
     

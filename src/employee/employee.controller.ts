@@ -30,9 +30,10 @@ import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { EmployeeRepository, EmployeeService } from "./employee.service";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { IsOptional } from "class-validator";
+import { EmojiType } from "node_modules/@faker-js/faker/dist/types/modules/internet";
 @ApiTags("Employee")
-@UseGuards(JWTAuthGuard)
-@ApiBearerAuth()
+// @UseGuards(JWTAuthGuard)
+// @ApiBearerAuth()
 @Controller("employee")
 export class EmployeeController {
         constructor(private readonly employeeRepository: EmployeeRepository) { }
@@ -60,24 +61,25 @@ export class EmployeeController {
         async update(
                 @Param("id") id: string,
                 @Body() updateEmployeeDto: UpdateEmployeeDto,
-        ) {
-                if (!updateEmployeeDto) {
-                        throw new BadRequestException("No data provided for update.");
-                }
-
-                const result = await this.employeeRepository.update(id, updateEmployeeDto);
-                if (result) {
-                        return [{ msg: "Employee updated" }, await this.findOne(id)];
-                }
-
-                throw new NotFoundException("Employee not found");
+        ): Promise<Employee> {
+                const employee = await this.employeeRepository.updateEmployee(
+                        id,
+                        updateEmployeeDto,
+                );
+                return employee;
         }
+        // findAll() {
+        //         //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
+        //         //         role?: PersonRole,
+        //         // ): Promise<Employee[]> {
+        //         //         if (role) return this.employeeRepository.find All(role);
+        //         return this.employeeRepository.findAll();
+        // }
+        @ApiOperation({ summary: "get all employee" })
         @Get()
-        findAll() {
-                //         @Query("role", new ParseEnumPipe(PersonRole, { optional: true }))
-                //         role?: PersonRole,
-                // ): Promise<Employee[]> {
-                //         if (role) return this.employeeRepository.find All(role);
+        async findAll()
+                : Promise<Employee[]> {
+
                 return this.employeeRepository.findAll();
         }
         @Delete(":id")

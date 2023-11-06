@@ -14,7 +14,6 @@ export class CreateApartmentDto extends PickType(Apartment, [
     "width",
     "length",
     "floor_id",
-    "building_id",
     "description",
     "number_of_bathroom",
     "number_of_bedroom",

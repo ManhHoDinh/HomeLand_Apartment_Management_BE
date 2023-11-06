@@ -10,7 +10,6 @@ import {
 } from "typeorm";
 import { Contract } from "../../contract/entities/contract.entity";
 import { Floor } from "../../floor/entities/floor.entity";
-import { Building } from "../../building/entities/building.entity";
 import { IsEnum, IsInt, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Resident } from "../../resident/entities/resident.entity";
@@ -82,16 +81,6 @@ export class Apartment {
     @ManyToOne(() => Floor, (floor) => floor.apartments)
     @JoinColumn({ name: "floor_id" })
     floor: Floor;
-
-    @ApiProperty({ example: "BLD0/FLR0" })
-    @IsString()
-    @Column({ nullable: true })
-    floor_id: string;
-
-    @ApiProperty({ example: "BLD0" })
-    @IsString()
-    @Column({ nullable: true })
-    building_id: string;
 
     @OneToMany(() => Resident, (resident) => resident.stay_at, {
         cascade: true,

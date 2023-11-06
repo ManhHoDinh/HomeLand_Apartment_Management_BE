@@ -9,7 +9,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, TypeORMError,DataSource } from "typeorm";
+import { Repository, TypeORMError, DataSource } from "typeorm";
 import { Employee } from "./entities/employee.entity";
 import { hashSync } from "bcrypt";
 import { StorageManager } from "../storage/storage.service";
@@ -75,10 +75,10 @@ export class EmployeeService implements EmployeeRepository {
         const profile = plainToInstance(Profile, rest);
         // let employee = this.employeeRepository.create(rest);
         let employee = new Employee();
-       
+
         if (id) employee.id = id;
-        else  employee.id = "EMP" + this.idGenerate.generateId();
-       
+        else employee.id = "EMP" + this.idGenerate.generateId();
+
         try {
             const frontPhoto = front_identify_card_photo as MemoryStoredFile;
             const backPhoto = front_identify_card_photo as MemoryStoredFile;
@@ -115,7 +115,7 @@ export class EmployeeService implements EmployeeRepository {
             profile.front_identify_card_photo_URL = frontURL;
             profile.back_identify_card_photo_URL = backURL;
             employee.profile = profile;
-          
+
             return await this.employeeRepository.save(employee);
         } catch (error) {
             if (error instanceof TypeORMError) {
@@ -139,49 +139,56 @@ export class EmployeeService implements EmployeeRepository {
             where: { id },
         });
         console.log(updateEmployeeDto)
-        const { profile_picture, ...rest } =
-            updateEmployeeDto;
-        if (!employee) throw new NotFoundException();
 
+        if (!employee) throw new NotFoundException();
+        const { profile_picture, front_identify_card_photo, back_identify_card_photo, ...rest } =
+            updateEmployeeDto;
         let profile = plainToInstance(Profile, rest);
         const queryRunner = this.dataSource.createQueryRunner();
         let avatarURL: string | undefined;
 
-        if (profile_picture) {
-                    try {
-                        await queryRunner.connect();
-                        await queryRunner.startTransaction();
-                        const imageURL = await this.storageManager.upload(
-                            profile_picture.buffer,
-                            `employee/${id}/${Date.now()}.` +
-                                (profile_picture.extension || "png"),
-                                profile_picture.mimetype || "image/png",
-                        );
-                      
-                        employee.id = id;
-                        employee.profilePictureURL = imageURL;
-                        employee = await this.employeeRepository.save(employee);
-                        await queryRunner.commitTransaction();
-                    } catch (error) {
-                        if (error instanceof TypeORMError) {
-                            try {
-                                await this.storageManager.remove([
-                                    `employee/${id}/${Date.now()}.` +
-                                        (profile_picture.extension || "png"),
-                                        profile_picture.mimetype || "image/png",
-                                ]);
-                            } catch (error) {
-                                console.error(error);
-                            }
-                        }
-                        throw error;
-                    } finally {
-                        await queryRunner.release();
-                    }
-                }
+        try {
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
+            if (profile_picture) {
+                const imageURL = await this.storageManager.upload(
+                    profile_picture.buffer,
+                    `employee/${id}/${Date.now()}.${profile_picture.extension || "png"}`,
+                    profile_picture.mimetype || "image/png",
+                );
+                employee.profilePictureURL = imageURL;
+            }
 
-        employee.profile = profile;
-        return await this.employeeRepository.save(employee);
+            if (front_identify_card_photo) {
+                const imageURL = await this.storageManager.upload(
+                    front_identify_card_photo.buffer,
+                    `employee/${id}/${Date.now()}.${front_identify_card_photo.extension || "png"}`,
+                    front_identify_card_photo.mimetype || "image/png",
+                );
+                profile.front_identify_card_photo_URL = imageURL;
+            }
+
+            if (back_identify_card_photo) {
+                const imageURL = await this.storageManager.upload(
+                    back_identify_card_photo.buffer,
+                    `employee/${id}/${Date.now()}.${back_identify_card_photo.extension || "png"}`,
+                    back_identify_card_photo.mimetype || "image/png",
+                );
+                profile.back_identify_card_photo_URL = imageURL;
+            }
+            employee.id = id;
+            employee.profile = profile;
+            await this.employeeRepository.save(employee);
+            await queryRunner.commitTransaction();
+        } catch (error) {
+
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+
+            await queryRunner.release();
+        }
+        return employee;
     }
 
     // async updateEmployee(id: string, updateEmployeeDto: UpdateEmployeeDto) {
@@ -191,13 +198,13 @@ export class EmployeeService implements EmployeeRepository {
     //             });
 
     //             console.log(updateEmployeeDto)
-     
+
     //     if (!employee) throw new NotFoundException();
-      
+
     //     let profile = plainToInstance(Profile, rest);
     //     const queryRunner = this.dataSource.createQueryRunner();
     //     if (profile_picture) {
-           
+
     //         try {
     //             await queryRunner.connect();
     //             await queryRunner.startTransaction();
@@ -207,7 +214,7 @@ export class EmployeeService implements EmployeeRepository {
     //                     (profile_picture.extension || "png"),
     //                     profile_picture.mimetype || "image/png",
     //             );
-              
+
     //             employee.id = id;
     //             employee.profilePictureURL = imageURL;
     //             employee = await this.employeeRepository.save(employee);

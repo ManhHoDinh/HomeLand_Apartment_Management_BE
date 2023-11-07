@@ -29,6 +29,8 @@ describe("ContractService", () => {
         generatedMaps: [],
     };
     const image = {
+        extension:"jpg",
+        mimetype:"image/jpeg",
         buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
     } as MemoryStoredFile;
 
@@ -111,7 +113,7 @@ describe("ContractService", () => {
             const result = await service.findOne(mockContract.contract_id);
             expect(result).toEqual(mockContract);
         });
-        
+
         it("should find all contract", async () => {
             jest.spyOn(repository, "find").mockImplementation(async () => [
                 mockContract,
@@ -203,9 +205,10 @@ describe("ContractService", () => {
             jest.spyOn(repository, "update").mockImplementation(async () => {
                 return mockUpdateResult;
             });
+            console.log(image);
             const result = await service.update(mockContract.contract_id, {
+                ...(mockContract as CreateContractDto),
                 imageUpdate: image,
-                ...mockContract 
             } as UpdateContractDto);
             expect(result).toEqual(true);
         });

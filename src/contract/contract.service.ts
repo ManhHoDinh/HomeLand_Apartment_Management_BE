@@ -68,9 +68,8 @@ export class ContractService {
                 await queryRunner.startTransaction();
                 const imageURL = await this.storageManager.upload(
                     imageUpdate.buffer,
-                    `contract/${id}/${Date.now()}.` +
-                        (imageUpdate.extension || "png"),
-                    imageUpdate.mimetype || "image/png",
+                    `contract/${id}/${Date.now()}.png`,
+                    "image/png",
                 );
                 contract.contract_id = id;
                 contract.contract_with_signature_photo_URL = imageURL;

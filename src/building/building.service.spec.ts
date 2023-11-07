@@ -32,9 +32,9 @@ describe("BuildingController", () => {
     let buildingRepository: Repository<Building>;
 
     const mockBuilding = {
-        building_id: "BLD3",
+        building_id: "BLD4",
         max_floor: 0,
-        name: "Building 3",
+         name: "Building 3",
         address: "996 Daugherty Extension",
     } as Building;
     const addBuilding = {
@@ -43,15 +43,15 @@ describe("BuildingController", () => {
         address: "996 Daugherty Extension",
     } as CreateBuildingDto;
     const mockDeleteResult: DeleteResult = {
-          raw: [],
-          affected: 1
-    }
-    const mockUpdateResult: UpdateResult ={
         raw: [],
         affected: 1,
-        generatedMaps: []
-    }
-    
+    };
+    const mockUpdateResult: UpdateResult = {
+        raw: [],
+        affected: 1,
+        generatedMaps: [],
+    };
+
     const BUILDING_REPOSITORY_TOKEN = getRepositoryToken(Building);
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -96,12 +96,9 @@ describe("BuildingController", () => {
                 IdGeneratorModule,
                 Repository<Building>,
             ],
-            providers: [
-                TypeORMBuildingService,
-            ],
+            providers: [TypeORMBuildingService],
         }).compile();
-        // app = module.createNestApplication();
-        // await app.init();
+
         buildingRepository = module.get<Repository<Building>>(
             BUILDING_REPOSITORY_TOKEN,
         );
@@ -134,25 +131,24 @@ describe("BuildingController", () => {
         });
     });
     it("should create new building", async () => {
-        jest.spyOn(buildingRepository, "create").mockImplementation(
-            (dto) => {
-                return {
-                    building_id: faker.string.binary(),
-                    name: dto.name,
-                    max_floor: dto.max_floor,
-                    address: dto.address,
-                } as Building
-            }
-        );
-        jest.spyOn(buildingRepository, "save").mockImplementation(async(dto) => {
+        jest.spyOn(buildingRepository, "create").mockImplementation((dto) => {
             return {
                 building_id: faker.string.binary(),
                 name: dto.name,
                 max_floor: dto.max_floor,
                 address: dto.address,
-            } as Building
-           
-        })
+            } as Building;
+        });
+        jest.spyOn(buildingRepository, "save").mockImplementation(
+            async (dto) => {
+                return {
+                    building_id: faker.string.binary(),
+                    name: dto.name,
+                    max_floor: dto.max_floor,
+                    address: dto.address,
+                } as Building;
+            },
+        );
         const result = await service.create({
             name: mockBuilding.name,
             max_floor: mockBuilding.max_floor,
@@ -166,36 +162,37 @@ describe("BuildingController", () => {
         });
     });
     it("should create new building fail", async () => {
-        
-       try {
-        const result = await service.create({
-            name: mockBuilding.name,
-            max_floor: mockBuilding.max_floor,
-            address: mockBuilding.address,
-        });
-       }
-       catch (err) {
-        expect(err.message).toBe('No metadata for \"Building\" was found.')
-       }
+        try {
+            const result = await service.create({
+                name: mockBuilding.name,
+                max_floor: mockBuilding.max_floor,
+                address: mockBuilding.address,
+            });
+        } catch (err) {
+            expect(err.message).toBe('No metadata for "Building" was found.');
+        }
     });
 
     it("should update success building", async () => {
-        jest.spyOn(buildingRepository, "update").mockImplementation(async() => {
-           return mockUpdateResult;
-        })
+        jest.spyOn(buildingRepository, "update").mockImplementation(
+            async () => {
+                return mockUpdateResult;
+            },
+        );
         const result = await service.update("BLD3", mockBuilding);
         expect(result).toEqual(mockUpdateResult);
     });
     it("should update building fail because id not found", async () => {
-       try {
-        const result = await service.update("", mockBuilding);
-       }
-       catch(e) {
-        expect(e.message).toBe('Id not found.');
-       }
+        try {
+            const result = await service.update("", mockBuilding);
+        } catch (e) {
+            expect(e.message).toBe("Id not found.");
+        }
     });
     it("should search building", async () => {
-        jest.spyOn(buildingRepository, "find").mockImplementation(async() => [mockBuilding])
+        jest.spyOn(buildingRepository, "find").mockImplementation(async () => [
+            mockBuilding,
+        ]);
         const result = await service.search("binh");
         expect(result).toEqual([mockBuilding]);
     });

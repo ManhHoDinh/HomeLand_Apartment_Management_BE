@@ -13,25 +13,16 @@ import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
 import { CreateContractDto } from "./dto/create-contract.dto";
 import { readFileSync } from "fs";
 import { UpdateContractDto } from "./dto/update-contract.dto";
-import { NotFoundException } from "@nestjs/common";
 
 describe("ContractService", () => {
     let service: ContractService;
-    let repository: Repository<Contract>;
+    let controller: ContractController;
+
     const mockDeleteResult: UpdateResult = {
         raw: [],
         affected: 1,
         generatedMaps: [],
     };
-    const mockUpdateResult: UpdateResult = {
-        raw: [],
-        affected: 1,
-        generatedMaps: [],
-    };
-    const image = {
-        buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
-    } as MemoryStoredFile;
-
     const mockContract = {
         contract_id: "CT001",
         apartment_id: "123",
@@ -40,7 +31,28 @@ describe("ContractService", () => {
         status: ContractStatusRole.INACTIVE,
         expire_at: new Date("2030-01-01"),
     } as Contract;
-    const CONTRACT_REPOSITORY_TOKEN = getRepositoryToken(Contract);
+    function findAllResult(page?: Number, total?: Number) {
+        return {
+            current_page: page,
+            data: mockContract,
+            per_page: 30,
+            total: total,
+        };
+    }
+    const mockUpdateResult = [
+        { msg: "Contract updated" },
+        {
+            apartment_id: mockContract.apartment_id,
+            contract_id: mockContract.contract_id,
+            expire_at: mockContract.expire_at,
+            resident_id: mockContract.resident_id,
+            role: mockContract.role,
+            status: mockContract.status,
+        },
+    ];
+    const image = {
+        buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
+    } as MemoryStoredFile;
 
     beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -89,76 +101,69 @@ describe("ContractService", () => {
                 JwtModule,
                 Repository<Contract>,
             ],
+            controllers: [ContractController],
 
-            providers: [ContractService, JwtService],
+            providers: [
+                ContractService,
+                {
+                    provide: ContractService,
+                    useValue: {
+                        create: jest
+                            .fn()
+                            .mockImplementation(() => mockContract),
+                        findOne: jest
+                            .fn()
+                            .mockImplementation(async () => mockContract),
+                        findAll: jest
+                            .fn()
+                            .mockImplementation(async () => mockContract),
+                        update: jest.fn().mockImplementation(async () => {
+                            return mockUpdateResult;
+                        }),
+                        remove: jest.fn().mockImplementation(async () => {
+                            return mockDeleteResult;
+                        }),
+                    },
+                },
+                JwtService,
+            ],
         }).compile();
-        repository = module.get<Repository<Contract>>(
-            CONTRACT_REPOSITORY_TOKEN,
-        );
-
+        controller = module.get<ContractController>(ContractController);
         service = module.get<ContractService>(ContractService);
     }, 30000);
 
     it("should be defined", () => {
-        expect(service).toBeDefined();
+        expect(controller).toBeDefined();
     });
 
     describe("get Contracts", () => {
         it("should find contract by id", async () => {
-            jest.spyOn(repository, "findOne").mockImplementation(
-                async () => mockContract,
-            );
-            const result = await service.findOne(mockContract.contract_id);
+            const result = await controller.findOne(mockContract.contract_id);
             expect(result).toEqual(mockContract);
+            expect(service.findOne).toHaveBeenCalledWith(
+                mockContract.contract_id,
+            );
         });
-        
+
         it("should find all contract", async () => {
-            jest.spyOn(repository, "find").mockImplementation(async () => [
-                mockContract,
-            ]);
-            const result = await service.findAll();
-            expect(result).toEqual([mockContract]);
+            const result = await controller.findAll();
+            expect(result).toEqual(findAllResult());
         });
         it("should find all contract with page", async () => {
-            jest.spyOn(repository, "find").mockImplementation(async () => [
-                mockContract,
-            ]);
-            const result = await service.findAll(1);
-            expect(result).toEqual([mockContract]);
+            const result = await controller.findAll(1);
+            expect(result).toEqual(findAllResult(1));
+            expect(service.findAll).toHaveBeenCalledWith(1);
         });
     });
     describe("create contract", () => {
         it("should create new Contract success", async () => {
-            jest.spyOn(repository, "create").mockImplementation((dto) => {
-                return {
-                    contract_id: dto.contract_id,
-                    apartment_id: dto.apartment_id,
-                    resident_id: dto.resident_id,
-                    expire_at: dto.expire_at,
-                    role: dto.role,
-                    status: dto.status,
-                } as Contract;
-            });
-            jest.spyOn(repository, "save").mockImplementation(async (dto) => {
-                return {
-                    contract_id: dto.contract_id,
-                    apartment_id: dto.apartment_id,
-                    resident_id: dto.resident_id,
-                    expire_at: dto.expire_at,
-                    role: dto.role,
-                    status: dto.status,
-                } as Contract;
-            });
-            const result = await service.create(
-                {
-                    apartment_id: mockContract.apartment_id,
-                    resident_id: mockContract.resident_id,
-                    expire_at: mockContract.expire_at,
-                    role: mockContract.role,
-                    status: mockContract.status,
-                } as CreateContractDto,
-                mockContract.contract_id,
-            );
+            const result = await controller.create({
+                apartment_id: mockContract.apartment_id,
+                resident_id: mockContract.resident_id,
+                expire_at: mockContract.expire_at,
+                role: mockContract.role,
+                status: mockContract.status,
+            } as CreateContractDto);
             expect(result).toEqual({
                 contract_id: expect.any(String),
                 apartment_id: mockContract.apartment_id,
@@ -167,20 +172,18 @@ describe("ContractService", () => {
                 role: mockContract.role,
                 status: mockContract.status,
             });
+            expect(service.create).toHaveBeenCalled();
         });
 
         it("should create new contract fail", async () => {
             try {
-                const result = await service.create(
-                    {
-                        apartment_id: mockContract.apartment_id,
-                        resident_id: mockContract.resident_id,
-                        expire_at: mockContract.expire_at,
-                        role: mockContract.role,
-                        status: mockContract.status,
-                    } as CreateContractDto,
-                    mockContract.contract_id,
-                );
+                const result = await controller.create({
+                    apartment_id: mockContract.apartment_id,
+                    resident_id: mockContract.resident_id,
+                    expire_at: mockContract.expire_at,
+                    role: mockContract.role,
+                    status: mockContract.status,
+                } as CreateContractDto);
             } catch (err) {
                 expect(err.message).toBe(
                     'No metadata for "Contract" was found.',
@@ -190,34 +193,33 @@ describe("ContractService", () => {
     });
     describe("Update contract", () => {
         it("should update Contract success", async () => {
-            jest.spyOn(repository, "update").mockImplementation(async () => {
-                return mockUpdateResult;
-            });
-            const result = await service.update(
+            const result = await controller.update(
                 mockContract.contract_id,
                 mockContract as CreateContractDto,
             );
-            expect(result).toEqual(true);
+            expect(result).toEqual(mockUpdateResult);
         });
         it("should update Contract success with image", async () => {
-            jest.spyOn(repository, "update").mockImplementation(async () => {
-                return mockUpdateResult;
-            });
-            const result = await service.update(mockContract.contract_id, {
+            const result = await controller.update(mockContract.contract_id, {
                 imageUpdate: image,
-                ...mockContract 
+                ...mockContract,
             } as UpdateContractDto);
-            expect(result).toEqual(true);
+            expect(result).toEqual(mockUpdateResult);
+        });
+        it("should update Contract success with invalid id", async () => {
+            try {
+                const result = await controller.update("in-val", {
+                    imageUpdate: image,
+                    ...mockContract,
+                } as UpdateContractDto);
+            } catch (err) {
+                expect(err.message).toBe("Contract not found");
+            }
         });
     });
     describe("Delete contract", () => {
         it("should delete Contract success", async () => {
-            jest.spyOn(repository, "softDelete").mockImplementation(
-                async () => {
-                    return mockDeleteResult;
-                },
-            );
-            const result = await service.remove(mockContract.contract_id);
+            const result = await controller.remove(mockContract.contract_id);
             expect(result).toEqual(mockDeleteResult);
         });
     });

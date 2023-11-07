@@ -21,11 +21,11 @@ export class ContractService {
     async create(createContract: CreateContractDto, id?: string) {
         const { ...rest } = createContract;
         let contract = this.contractRepository.create(rest);
-
+        console.log(contract);
         contract.contract_id = "CT" + this.idGenerate.generateId().toString();
         if (id) contract.contract_id = id;
-        await this.contractRepository.save(contract);
-        return await this.findOne(contract.contract_id);
+        return await this.contractRepository.save(contract);
+        //await this.findOne(contract.contract_id);
     }
 
     async findAll(page?: number) {

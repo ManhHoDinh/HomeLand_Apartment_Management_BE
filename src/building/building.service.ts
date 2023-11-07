@@ -13,6 +13,7 @@ import { Building } from "./entities/building.entity";
 import { Floor } from "../floor/entities/floor.entity";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { isQueryAffected } from "../helper/validation";
+import { th } from "@faker-js/faker";
 export abstract class BuildingService implements IRepository<Building> {
     abstract findOne(id: string): Promise<Building | null>;
     abstract update(id: string, updateEntityDto: any);
@@ -46,7 +47,7 @@ export class TypeORMBuildingService extends BuildingService {
         try {
             return await this.buildingRepository.save(building);
         } catch (error) {
-            throw  new BadRequestException("Create fail");
+            throw new BadRequestException("Create fail");
         }
     }
     async findAll() {
@@ -55,12 +56,15 @@ export class TypeORMBuildingService extends BuildingService {
     }
 
     async findOne(id: string) {
-        const building = await this.buildingRepository.findOne({
-            where: { building_id: id },
-        });
-        return building;
+        try {
+            const building = await this.buildingRepository.findOne({
+                where: { building_id: id },
+            });
+            return building;
+        } catch (e) {
+            throw new NotFoundException("Not found building");
+        }
     }
-
     async update(id: string, updateBuildingDto: UpdateBuildingDto) {
         try {
             let result = await this.buildingRepository.update(
@@ -79,7 +83,7 @@ export class TypeORMBuildingService extends BuildingService {
             });
             return result;
         } catch (error) {
-            throw new Error("Method not implemented.");
+            throw new Error("can not delete");
         }
     }
     /**

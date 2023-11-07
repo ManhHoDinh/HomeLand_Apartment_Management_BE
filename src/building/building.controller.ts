@@ -50,9 +50,14 @@ export class BuildingController {
     }
     @Get(":id")
     async findOne(@Param("id") id: string) {
-        const building = await this.buildingRepository.findOne(id);
-        if (building) return building;
-        throw new NotFoundException("Building not found");
+        try {
+            const building = await this.buildingRepository.findOne(id);
+            if (building) return building;
+        }
+        catch(e) {
+            throw new Error("Building not found");
+        }
+        
     }
 
     @Patch(":id")
@@ -60,15 +65,26 @@ export class BuildingController {
         @Param("id") id: string,
         @Body() updateBuildingDto: UpdateBuildingDto,
     ) {
-        const result = await this.buildingRepository.update(
-            id,
-            updateBuildingDto,
-        );
-        if (result) return { msg: "Building updated" };
-        throw new NotFoundException("Building not found");
+        try {
+            const result = await this.buildingRepository.update(
+                id,
+                updateBuildingDto,
+            );
+            return result;
+        } catch(e) {
+            throw new Error("Building not found");
+
+        }
     }
     @Delete("/:id")
     async softDeleteBuilding(@Param("id") id: string) {
-        return await this.buildingRepository.delete(id);
+        try {
+            const result = await this.buildingRepository.delete(id);
+            return result;
+        }
+        catch (error) {
+            throw new Error("Building not found to delete");
+            
+        }
     }
 }

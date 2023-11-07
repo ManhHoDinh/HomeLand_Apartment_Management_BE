@@ -25,7 +25,8 @@ export class Building {
     floors: Floor[];
 
     @OneToMany(() => Apartment, (apartment) => apartment.building)
-    apartments: Apartment[];
+    apartments?
+    : Apartment[];
 
     @ApiProperty({ example: "Linh Trung, Thu Duc" })
     @IsString()

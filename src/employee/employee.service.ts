@@ -191,58 +191,7 @@ export class EmployeeService implements EmployeeRepository {
         return employee;
     }
 
-    // async updateEmployee(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-    //     const { profile_picture, ...rest } = updateEmployeeDto;
-    //     let employee = await this.employeeRepository.findOne({
-    //                 where: { id },
-    //             });
-
-    //             console.log(updateEmployeeDto)
-
-    //     if (!employee) throw new NotFoundException();
-
-    //     let profile = plainToInstance(Profile, rest);
-    //     const queryRunner = this.dataSource.createQueryRunner();
-    //     if (profile_picture) {
-
-    //         try {
-    //             await queryRunner.connect();
-    //             await queryRunner.startTransaction();
-    //             const imageURL = await this.storageManager.upload(
-    //                 profile_picture.buffer,
-    //                 `employee/${id}/${Date.now()}.` +
-    //                     (profile_picture.extension || "png"),
-    //                     profile_picture.mimetype || "image/png",
-    //             );
-
-    //             employee.id = id;
-    //             employee.profilePictureURL = imageURL;
-    //             employee = await this.employeeRepository.save(employee);
-    //             await queryRunner.commitTransaction();
-    //         } catch (error) {
-    //             if (error instanceof TypeORMError) {
-    //                 try {
-    //                     await this.storageManager.remove([
-    //                         `employee/${id}/${Date.now()}.` +
-    //                             (profile_picture.extension || "png"),
-    //                             profile_picture.mimetype || "image/png",
-    //                     ]);
-    //                 } catch (error) {
-    //                     console.error(error);
-    //                 }
-    //             }
-    //             throw error;
-    //         } finally {
-    //             await queryRunner.release();
-    //         }
-    //     }
-    //     let result = await this.employeeRepository.update(
-    //         { id: id },
-    //         { ...employee },
-    //     );
-
-    //     return await isQueryAffected(result);
-    // }
+  
     findOne(id: string): Promise<Employee | null> {
         return this.employeeRepository.findOne({
             where: {

@@ -14,7 +14,6 @@ import {
 } from "@nestjs/common";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import {
-        ApiBearerAuth,
         ApiConsumes,
         ApiCreatedResponse,
         ApiOperation,
@@ -26,15 +25,12 @@ import { Employee } from "./entities/employee.entity";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
-import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { EmployeeRepository, EmployeeService } from "./employee.service";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { IsOptional } from "class-validator";
 import { EmojiType } from "node_modules/@faker-js/faker/dist/types/modules/internet";
 @ApiTags("Employee")
-// @UseGuards(JWTAuthGuard)
-// @ApiBearerAuth()
-@Auth(PersonRole.ADMIN, PersonRole.MANAGER)
+// @Auth(PersonRole.ADMIN, PersonRole.MANAGER)
 @Controller("employee")
 export class EmployeeController {
         constructor(private readonly employeeRepository: EmployeeRepository) { }

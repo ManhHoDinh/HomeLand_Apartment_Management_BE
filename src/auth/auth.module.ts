@@ -5,7 +5,6 @@ import { AuthService, AuthServiceImp } from "./auth.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Account } from "../account/entities/account.entity";
 import { JWTAuthGuard } from "./guard/jwt-auth.guard";
-import { JwtService } from "@nestjs/jwt";
 
 @Module({
     imports: [HashModule, TypeOrmModule.forFeature([Account])],
@@ -15,9 +14,8 @@ import { JwtService } from "@nestjs/jwt";
             useClass: AuthServiceImp,
         },
         JWTAuthGuard,
-        JwtService
     ],
     controllers: [AuthController],
-    exports: [AuthService, JWTAuthGuard, AuthModule],
+    exports: [AuthService, JWTAuthGuard],
 })
 export class AuthModule {}

@@ -21,6 +21,7 @@ import { Employee } from "./employee/entities/employee.entity";
 import { EmployeeModule } from "./employee/employee.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
+import { ServiceModule } from './service/service.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -80,6 +81,7 @@ import { ResidentModule } from "./resident/resident.module";
         }),
         AccountModule,
         AdminModule,
+        ServiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],

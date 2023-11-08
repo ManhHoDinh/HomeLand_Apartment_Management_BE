@@ -1,12 +1,12 @@
 import { Body, Controller, Get, HttpStatus, Post } from "@nestjs/common";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { SignInDto } from "../auth/dto/signin.dto";
-import { AuthService } from "../auth/auth.service";
+import { AuthService, AuthServiceImp } from "../auth/auth.service";
 import { ApiForbiddenResponse, ApiResponse } from "@nestjs/swagger";
 
 @Controller("token")
 export class TokenController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthServiceImp) {}
 
     @Auth()
     @Get("/validate")

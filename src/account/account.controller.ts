@@ -18,11 +18,11 @@ export class AccountController {
 
     @Get(":id")
     findOne(@Param("id") id: string) {
-        return this.accountService.findOne(+id);
+        return this.accountService.findOne(id);
     }
 
     @Delete(":id")
     remove(@Param("id") id: string) {
-        return this.accountService.remove(+id);
+        return this.accountService.remove(id);
     }
 }

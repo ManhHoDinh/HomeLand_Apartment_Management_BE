@@ -42,6 +42,7 @@ export class AuthServiceImp extends AuthService {
 
     async signIn(signInDto: SignInDto, expiresIn: string = "30d") {
         let person = await this.findOwnerByAccountEmail(signInDto.email);
+        console.log(person);
         if (
             !person ||
             !person.account ||
@@ -85,9 +86,9 @@ export class AuthServiceImp extends AuthService {
             },
         });
 
-        if (!account) return null;
+        if (account === null) return null;
 
-        return (
+        else return (
             account.resident ||
             account.admin ||
             account.technician ||
@@ -117,7 +118,7 @@ export class AuthServiceImp extends AuthService {
             },
         });
 
-        if (!account) return null;
+        if (account === null) return null;
 
         return (
             account.resident ||

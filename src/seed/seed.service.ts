@@ -30,7 +30,7 @@ export class SeedService {
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
-        private readonly residentService: ResidentRepository,
+        private readonly residentService: ResidentService,
         
     ) {}
 

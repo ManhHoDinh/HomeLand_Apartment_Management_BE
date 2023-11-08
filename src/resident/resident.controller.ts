@@ -12,7 +12,7 @@ import {
     Query,
     ParseEnumPipe,
 } from "@nestjs/common";
-import { ResidentRepository } from "./resident.service";
+import { ResidentRepository, ResidentService } from "./resident.service";
 import {
     ApiBearerAuth,
     ApiConsumes,
@@ -35,7 +35,7 @@ import { UpdateResidentDto } from "./dto/update-resident.dto";
 // @ApiBearerAuth()
 @Controller("resident")
 export class ResidentController {
-    constructor(private readonly residentRepository: ResidentRepository) {}
+    constructor(private readonly residentRepository: ResidentService) {}
 
     // /**
     //  * @deprecated
@@ -55,7 +55,6 @@ export class ResidentController {
     @Post()
     @FormDataRequest()
     async create(@Body() createResidentDto: CreateResidentDto) {
-      
         return await this.residentRepository.create(createResidentDto);
     }
     @Get("/search")
@@ -65,9 +64,12 @@ export class ResidentController {
     }
     @Delete("/:id")
     async softDeleteResident(@Param("id") id: string) {
-    
-        const result = await this.residentRepository.delete(id);
-        
+        try {
+            const result = await this.residentRepository.delete(id);
+            return result;
+        } catch (error) {
+            throw new Error("Resident not found to delete");
+        }
     }
     /**
      *
@@ -81,26 +83,30 @@ export class ResidentController {
         @Param("id") id: string,
         @Body() updateResidentDto: UpdateResidentDto,
     ): Promise<Resident> {
-        const resident = await this.residentRepository.updateResident(
-            id,
-            updateResidentDto,
-        );
-        return resident;
+        try {
+            const resident = await this.residentRepository.updateResident(
+                id,
+                updateResidentDto,
+            );
+            return resident;
+        } catch (e) {
+            throw new Error("Resident not found");
+        }
     }
 
     @ApiOperation({ summary: "get all resident" })
     @Get()
-    async findAll() 
-    : Promise<Resident[]> {
- 
+    async findAll(): Promise<Resident[]> {
         return this.residentRepository.findAll();
     }
     @ApiOperation({ summary: "get resident by id" })
     @Get("/:id")
-    async findOne(
-        @Param("id") id: string,
-    ): Promise<Resident | null> {
-        const resident = await this.residentRepository.findOne(id);
-        return resident;
+    async findOne(@Param("id") id: string): Promise<Resident | null> {
+        try {
+            const resident = await this.residentRepository.findOne(id);
+            return resident;
+        } catch (e) {
+            throw new Error("Resident not found");
+        }
     }
 }

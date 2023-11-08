@@ -100,7 +100,9 @@ describe("BuildingController", () => {
             .compile();
         controller = module.get<BuildingController>(BuildingController);
     }, 30000);
-
+    it("should be defined", () => {
+        expect(module).toBeDefined();
+    });
     it("should be defined", () => {
         expect(controller).toBeDefined();
     });

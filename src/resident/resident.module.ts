@@ -21,12 +21,10 @@ import { AuthModule } from "../auth/auth.module";
     ],
     controllers: [ResidentController],
     providers: [
-        {
-            provide: ResidentRepository,
-            useClass: ResidentService,
-        },
+        ResidentService,
+        
     ],
-    exports: [ResidentRepository],
+    exports: [ResidentService],
 
 })
 export class ResidentModule {}

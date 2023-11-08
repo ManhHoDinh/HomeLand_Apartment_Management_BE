@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { Injectable, OnModuleInit } from "@nestjs/common";
-
 export abstract class AvatarGenerator {
     abstract generateAvatar(seed: any): Promise<ArrayBuffer>;
 }
@@ -22,6 +21,7 @@ export class DiceBearAvatarGenerator
             {
                 seed,
             },
+
         ).toArrayBuffer();
     }
 }

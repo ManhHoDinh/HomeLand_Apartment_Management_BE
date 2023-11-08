@@ -28,9 +28,9 @@ describe("BuildingService", () => {
     let buildingRepository: Repository<Building>;
 
     const mockBuilding = {
-        building_id: "BLD3",
+        building_id: "BLD4",
         max_floor: 0,
-        name: "Building 3",
+         name: "Building 3",
         address: "996 Daugherty Extension",
     } as Building;
     const mockUpdateResult: UpdateResult = {

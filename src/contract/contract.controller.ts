@@ -40,7 +40,7 @@ export class ContractController {
             "Page number: Page indexed from 1, each page contain 30 items, if null then return all.",
     })
     @Get()
-   async findAll(@Query("page") page: number) {
+   async findAll(@Query("page") page?: number) {
         var data;
         if (Number.isNaN(page)) data = await this.contractService.findAll();
         else data = await this.contractService.findAll(page);

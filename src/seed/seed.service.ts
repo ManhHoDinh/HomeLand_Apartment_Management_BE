@@ -96,10 +96,6 @@ export class SeedService {
         
 
         // Create demo building
-        await this.createDemoAdmin();
-        await this.createDemoResident();
-        await this.createDemoManager();
-        await this.createDemoTechnician();
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
         await this.createDemoApartments(floorInfo);

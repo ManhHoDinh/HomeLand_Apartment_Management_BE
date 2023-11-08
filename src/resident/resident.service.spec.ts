@@ -135,7 +135,6 @@ describe("ResidentController", () => {
                 async () => mockResidentaHasAccount,
             );
             const result = await service.findOne(mockResidentaHasAccount.id);
-            console.log(result);
             expect(result).toEqual(mockResidentaHasAccount);
         });
         it("should find all resident", async () => {
@@ -143,10 +142,9 @@ describe("ResidentController", () => {
                 async () => [mockResidentaHasAccount],
             );
             const result = await service.findAll();
-            console.log(result);
             expect(result).toEqual([mockResidentaHasAccount]);
         });
-        it("should create new resident with avata photo", async () => {
+        it("should create new resident with avatar photo", async () => {
             jest.spyOn(residentRepository, "create").mockImplementation(
                 (dto: CreateResidentDto) => {
                     return {

@@ -1,3 +1,4 @@
+
 import {
     Controller,
     Post,
@@ -12,13 +13,10 @@ import {
     Query,
     ParseEnumPipe,
 } from "@nestjs/common";
-import { ResidentRepository } from "./resident.service";
 import {
-    ApiBearerAuth,
     ApiConsumes,
     ApiCreatedResponse,
     ApiOperation,
-    ApiQuery,
     ApiTags,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
@@ -26,18 +24,18 @@ import {
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
 import { JWTAuthGuard } from "src/auth/guard/jwt-auth.guard";
-import { CreateResidentDto } from "./dto/create-resident.dto";
-import { Resident } from "./entities/resident.entity";
-import { UpdateResidentDto } from "./dto/update-resident.dto";
 import { Auth } from "src/helper/decorator/auth.decorator";
+import { TechnicianService } from './technician.service';
+import { CreateTechnicianDto } from './dto/create-technician.dto';
+import { UpdateTechnicianDto } from './dto/update-technician.dto';
+import { Technician } from './entities/technician.entity';
 
-@ApiTags("Resident")
+@ApiTags("Technician")
 // @UseGuards(JWTAuthGuard)
 // @ApiBearerAuth()
-@Auth()
-@Controller("resident")
-export class ResidentController {
-    constructor(private readonly residentRepository: ResidentRepository) {}
+@Controller("Technician")
+export class TechnicianController {
+    constructor(private readonly technicianRepository:TechnicianService) {}
 
     // /**
     //  * @deprecated
@@ -46,7 +44,7 @@ export class ResidentController {
     //  * - Manager can create resident and technician
     //  *
     //  * Other role can not create person profile */
-    @ApiOperation({ summary: "Create resident profile" })
+    @ApiOperation({ summary: "Create technician profile" })
     @ApiConsumes("multipart/form-data")
     @ApiUnprocessableEntityResponse({
         description: "Email or phone number already exists",
@@ -56,19 +54,19 @@ export class ResidentController {
     })
     @Post()
     @FormDataRequest()
-    async create(@Body() createResidentDto: CreateResidentDto) {
+    async create(@Body() createTechnicianDto: CreateTechnicianDto) {
       
-        return await this.residentRepository.create(createResidentDto);
+        return await this.technicianRepository.create(createTechnicianDto);
     }
     @Get("/search")
-    async searchResident(@Query("query") query: string) {
-        const result = await this.residentRepository.search(query);
+    async search(@Query("query") query: string) {
+        const result = await this.technicianRepository.search(query);
         return result;
     }
     @Delete("/:id")
-    async softDeleteResident(@Param("id") id: string) {
+    async softDelete(@Param("id") id: string) {
     
-        const result = await this.residentRepository.delete(id);
+        const result = await this.technicianRepository.delete(id);
         
     }
     /**
@@ -77,32 +75,36 @@ export class ResidentController {
      *
      * Account must associate with person profile
      */
-    @ApiOperation({ summary: "update resident" })
+    @ApiOperation({ summary: "update technician" })
+    @ApiConsumes("multipart/form-data")
+    @Patch(":id")
+    @FormDataRequest()
     @Patch("/:id")
-    async updateResident(
+    async update(
         @Param("id") id: string,
-        @Body() updateResidentDto: UpdateResidentDto,
-    ): Promise<Resident> {
-        const resident = await this.residentRepository.updateResident(
+        @Body() updateTechnicianDto: UpdateTechnicianDto,
+    ): Promise<Technician | null> {
+
+        const technician = await this.technicianRepository.update(
             id,
-            updateResidentDto,
+            updateTechnicianDto,
         );
-        return resident;
+        return technician;
     }
 
-    @ApiOperation({ summary: "get all resident" })
+    @ApiOperation({ summary: "get all technician" })
     @Get()
     async findAll() 
-    : Promise<Resident[]> {
+    : Promise<Technician[]> {
  
-        return this.residentRepository.findAll();
+        return this.technicianRepository.findAll();
     }
-    @ApiOperation({ summary: "get resident by id" })
+    @ApiOperation({ summary: "get technician by id" })
     @Get("/:id")
     async findOne(
         @Param("id") id: string,
-    ): Promise<Resident | null> {
-        const resident = await this.residentRepository.findOne(id);
-        return resident;
+    ): Promise<Technician | null> {
+        const technician = await this.technicianRepository.findOne(id);
+        return technician;
     }
 }

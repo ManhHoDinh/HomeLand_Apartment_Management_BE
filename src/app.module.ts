@@ -19,6 +19,8 @@ import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
+import { ManagerModule } from "./manager/manager.module";
+import { TechnicianModule } from "./technician/technician.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -70,7 +72,9 @@ import { ResidentModule } from "./resident/resident.module";
         TokenModule,
         ResidentModule,
         BuildingModule,
+        ManagerModule,
         ContractModule,
+        TechnicianModule,
         AvatarGeneratorModule,
         NestjsFormDataModule.config({
             isGlobal: true,

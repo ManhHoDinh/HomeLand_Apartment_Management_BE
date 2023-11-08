@@ -1,3 +1,4 @@
+import { Manager } from './entities/manager.entity';
 import {
     Controller,
     Post,
@@ -12,13 +13,10 @@ import {
     Query,
     ParseEnumPipe,
 } from "@nestjs/common";
-import { ResidentRepository } from "./resident.service";
 import {
-    ApiBearerAuth,
     ApiConsumes,
     ApiCreatedResponse,
     ApiOperation,
-    ApiQuery,
     ApiTags,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
@@ -26,18 +24,17 @@ import {
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
 import { JWTAuthGuard } from "src/auth/guard/jwt-auth.guard";
-import { CreateResidentDto } from "./dto/create-resident.dto";
-import { Resident } from "./entities/resident.entity";
-import { UpdateResidentDto } from "./dto/update-resident.dto";
 import { Auth } from "src/helper/decorator/auth.decorator";
+import { ManagerService } from './manager.service';
+import { CreateManagerDto } from './dto/create-manager.dto';
+import { UpdateManagerDto } from './dto/update-manager.dto';
 
-@ApiTags("Resident")
+@ApiTags("Manager")
 // @UseGuards(JWTAuthGuard)
 // @ApiBearerAuth()
-@Auth()
-@Controller("resident")
-export class ResidentController {
-    constructor(private readonly residentRepository: ResidentRepository) {}
+@Controller("Manager")
+export class ManagerController {
+    constructor(private readonly managerRepository: ManagerService) {}
 
     // /**
     //  * @deprecated
@@ -46,7 +43,7 @@ export class ResidentController {
     //  * - Manager can create resident and technician
     //  *
     //  * Other role can not create person profile */
-    @ApiOperation({ summary: "Create resident profile" })
+    @ApiOperation({ summary: "Create manager profile" })
     @ApiConsumes("multipart/form-data")
     @ApiUnprocessableEntityResponse({
         description: "Email or phone number already exists",
@@ -56,19 +53,19 @@ export class ResidentController {
     })
     @Post()
     @FormDataRequest()
-    async create(@Body() createResidentDto: CreateResidentDto) {
+    async create(@Body() createManagerDto: CreateManagerDto) {
       
-        return await this.residentRepository.create(createResidentDto);
+        return await this.managerRepository.create(createManagerDto);
     }
     @Get("/search")
-    async searchResident(@Query("query") query: string) {
-        const result = await this.residentRepository.search(query);
+    async search(@Query("query") query: string) {
+        const result = await this.managerRepository.search(query);
         return result;
     }
     @Delete("/:id")
-    async softDeleteResident(@Param("id") id: string) {
+    async softDelete(@Param("id") id: string) {
     
-        const result = await this.residentRepository.delete(id);
+        const result = await this.managerRepository.delete(id);
         
     }
     /**
@@ -77,32 +74,36 @@ export class ResidentController {
      *
      * Account must associate with person profile
      */
-    @ApiOperation({ summary: "update resident" })
+    @ApiOperation({ summary: "update manager" })
+    @ApiConsumes("multipart/form-data")
+    @Patch(":id")
+    @FormDataRequest()
     @Patch("/:id")
-    async updateResident(
+    async update(
         @Param("id") id: string,
-        @Body() updateResidentDto: UpdateResidentDto,
-    ): Promise<Resident> {
-        const resident = await this.residentRepository.updateResident(
+        @Body() updateManagerDto: UpdateManagerDto,
+    ): Promise<Manager | null> {
+
+        const manager = await this.managerRepository.update(
             id,
-            updateResidentDto,
+            updateManagerDto,
         );
-        return resident;
+        return manager;
     }
 
-    @ApiOperation({ summary: "get all resident" })
+    @ApiOperation({ summary: "get all manager" })
     @Get()
     async findAll() 
-    : Promise<Resident[]> {
+    : Promise<Manager[]> {
  
-        return this.residentRepository.findAll();
+        return this.managerRepository.findAll();
     }
-    @ApiOperation({ summary: "get resident by id" })
+    @ApiOperation({ summary: "get manager by id" })
     @Get("/:id")
     async findOne(
         @Param("id") id: string,
-    ): Promise<Resident | null> {
-        const resident = await this.residentRepository.findOne(id);
-        return resident;
+    ): Promise<Manager | null> {
+        const manager = await this.managerRepository.findOne(id);
+        return manager;
     }
 }

@@ -17,9 +17,9 @@ export class AppController {
         return this.appService.getHello();
     }
 
-    /**
-     * Create account without need send token in header
-     */
+    // /**
+    //  * Create account without need send token in header
+    //  */
     // @Post("/demo_account/:id")
     // createAccount(
     //     @Param("id") id: string,

@@ -18,6 +18,9 @@ import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
 import { ResidentRepository, ResidentService } from "../resident/resident.service";
+import { Employee } from "src/employee/entities/employee.entity";
+import { EmployeeRepository, EmployeeService } from "src/employee/employee.service";
+import { random } from "lodash";
 import { Contract } from "src/contract/entities/contract.entity";
 
 @Injectable()
@@ -309,6 +312,40 @@ export class SeedService {
             } : undefined,
         });
         
+    }
+
+  
+    async createDemoEmployee() {
+        let id = "EMP" + this.idGenerator.generateId();
+        const employee = await this.dataSource.getRepository(Resident).save({
+            id: id,
+            profile: {
+                date_of_birth: new Date("1999-01-01"),
+                name: "DEMO EMPLOYEE",
+                gender: Gender.MALE,
+                phone_number: faker.phone.number(),
+                front_identify_card_photo_URL: await this.storageManager.upload(
+                    this.frontIdentity.buffer,
+                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+                back_identify_card_photo_URL: await this.storageManager.upload(
+                    this.backIdentity.buffer,
+                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "image/jpeg",
+                ),
+            },
+            account: {
+                owner_id: id,
+                email: "employee@gmail.com",
+                password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO EMPOLYEE"),
+                    "admin/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
+            },
+        });
     }
 
     async createDemoAdmin() {

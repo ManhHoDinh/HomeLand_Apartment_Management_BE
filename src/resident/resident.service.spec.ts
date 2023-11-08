@@ -62,7 +62,7 @@ describe("ResidentController", () => {
         password: "0978754723",
         avatarURL: "resident/avatar.svg",
     } as Account
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 ConfigModule.forRoot({ isGlobal: true }),

@@ -7,7 +7,8 @@ import { HashModule } from "../hash/hash.module";
 import { AvatarGeneratorModule } from "../avatar-generator/avatar-generator.module";
 import { EmployeeController } from "./employee.controller";
 import { EmployeeRepository,EmployeeService } from "./employee.service";
-import { AuthModule } from "src/auth/auth.module";
+import { AuthModule } from "../auth/auth.module";
+import { JwtService } from "@nestjs/jwt";
 
 @Global()
 @Module({
@@ -25,7 +26,8 @@ import { AuthModule } from "src/auth/auth.module";
             provide: EmployeeRepository,
             useClass: EmployeeService,
         },
+        JwtService
     ],
-       
+      exports: [EmployeeRepository], 
 })
 export class EmployeeModule {}

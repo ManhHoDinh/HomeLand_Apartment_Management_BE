@@ -34,7 +34,7 @@ import { Auth } from "src/helper/decorator/auth.decorator";
 @ApiTags("Resident")
 // @UseGuards(JWTAuthGuard)
 // @ApiBearerAuth()
-@Auth()
+// @Auth()
 @Controller("resident")
 export class ResidentController {
     constructor(private readonly residentRepository: ResidentRepository) {}
@@ -78,6 +78,8 @@ export class ResidentController {
      * Account must associate with person profile
      */
     @ApiOperation({ summary: "update resident" })
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
     @Patch("/:id")
     async updateResident(
         @Param("id") id: string,

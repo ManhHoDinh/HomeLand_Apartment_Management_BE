@@ -176,16 +176,18 @@ export class ResidentService implements ResidentRepository {
         id: string,
         updateResidentDto: UpdateResidentDto,
     ): Promise<Resident> {
+        console.log(id)
         let resident = await this.residentRepository.findOne({
             where: { id },
         });
-        console.log(updateResidentDto);
+        console.log(resident)
         const { payment_info, avatar_photo, email, ...rest } =
             updateResidentDto;
         if (!resident) throw new NotFoundException();
         const account = await this.accountRepository.findOne({
             where: { owner_id: id },
         });
+        
 
         resident.payment_info = payment_info;
         let profile = plainToInstance(Profile, rest);
@@ -201,21 +203,14 @@ export class ResidentService implements ResidentRepository {
                     (avataPhoto.extension || "png"),
                 avataPhoto.mimetype || "image/png",
             );
-        } else {
-            const avatar = await this.avatarGenerator.generateAvatar(
-                profile.name,
-            );
-            avatarURL = await this.storageManager.upload(
-                avatar,
-                "resident/" + resident.id + "/avatarURL.svg",
-                "image/svg+xml",
-            );
         }
         if (account !== null) {
-            console.log(email, avatarURL);
-            account.email = email as string;
-            account.avatarURL = avatarURL;
-            await this.accountRepository.save(account);
+            // account.email = email as string;
+            // account.avatarURL = avatarURL;
+            await this.accountRepository.update(id, {
+                email,
+                avatarURL
+            });
         }
 
         resident.profile = profile;

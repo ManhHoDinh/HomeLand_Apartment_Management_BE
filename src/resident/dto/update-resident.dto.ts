@@ -5,5 +5,7 @@ export class UpdateResidentDto extends PartialType(
     OmitType(CreateResidentDto, [
         "back_identify_card_photo",
         "front_identify_card_photo",
+        "name",
+        "date_of_birth",
     ] as const),
 ) {}

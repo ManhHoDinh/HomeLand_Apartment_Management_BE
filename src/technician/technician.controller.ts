@@ -77,7 +77,6 @@ export class TechnicianController {
      */
     @ApiOperation({ summary: "update technician" })
     @ApiConsumes("multipart/form-data")
-    @Patch(":id")
     @FormDataRequest()
     @Patch("/:id")
     async update(

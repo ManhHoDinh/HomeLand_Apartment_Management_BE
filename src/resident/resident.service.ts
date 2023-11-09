@@ -9,10 +9,10 @@ import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { Profile } from "../helper/class/profile.entity";
 import { CreateResidentDto } from "./dto/create-resident.dto";
-import { IdGenerator } from "src/id-generator/id-generator.service";
+import { IdGenerator } from "../id-generator/id-generator.service";
 import { plainToInstance } from "class-transformer";
-import { Account } from "src/account/entities/account.entity";
-import { HashService } from "src/hash/hash.service";
+import { Account } from "../account/entities/account.entity";
+import { HashService } from "../hash/hash.service";
 
 /**
  * Person repository interface

@@ -49,7 +49,7 @@ describe("BuildingController", () => {
             return mockUpdateResult;
         }),
     };
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 NestjsFormDataModule.config({

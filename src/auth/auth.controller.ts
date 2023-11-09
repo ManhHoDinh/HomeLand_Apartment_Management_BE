@@ -1,12 +1,12 @@
 import { Controller, Post, Body } from "@nestjs/common";
 import { SignInDto } from "./dto/signin.dto";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { AuthService } from "./auth.service";
+import { AuthService, AuthServiceImp } from "./auth.service";
 
 @ApiTags("Authentication")
 @Controller("auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthServiceImp) {}
 
     @ApiOperation({
         summary: "Sign in to get access token and account role",

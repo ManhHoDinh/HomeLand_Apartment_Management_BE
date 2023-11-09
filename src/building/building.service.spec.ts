@@ -39,7 +39,7 @@ describe("BuildingService", () => {
         generatedMaps: [],
     };
     const BUILDING_REPOSITORY_TOKEN = getRepositoryToken(Building);
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 NestjsFormDataModule.config({

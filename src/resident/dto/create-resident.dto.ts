@@ -11,7 +11,7 @@ import {
 import { commonImageMIMETypes } from "../../helper/constant";
 import { Transform } from "class-transformer";
 import { Column } from "typeorm";
-import { Profile } from "src/helper/class/profile.entity";
+import { Profile } from "../../helper/class/profile.entity";
 
 export class CreateResidentDto extends PickType(Profile, [
     "name",
@@ -19,16 +19,16 @@ export class CreateResidentDto extends PickType(Profile, [
     "gender",
     "phone_number",
 ] as const) {
-    @ApiProperty({required: false})
+    @ApiProperty({ required: false })
     @IsString()
     @Column()
-    payment_info: string
+    payment_info: string;
 
-    @ApiProperty({required: false})
+    @ApiProperty({ required: false })
     @IsString()
     @IsOptional()
     @Column()
-    email?: string
+    email?: string;
 
     @ApiProperty({ type: "file", required: true })
     @IsFile()

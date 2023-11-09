@@ -16,10 +16,10 @@ import {
 import { ContractService } from "./contract.service";
 import { CreateContractDto } from "./dto/create-contract.dto";
 import { UpdateContractDto } from "./dto/update-contract.dto";
-import { Auth } from "src/helper/decorator/auth.decorator";
+import { Auth } from "../helper/decorator/auth.decorator";
 import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
-import { PersonRole } from "src/helper/class/profile.entity";
+import { PersonRole } from "../helper/class/profile.entity";
 @ApiTags("Contract")
 @Auth(PersonRole.ADMIN)
 @Controller("contract")

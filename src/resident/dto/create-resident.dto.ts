@@ -22,7 +22,7 @@ export class CreateResidentDto extends PickType(Profile, [
     @ApiProperty({ required: false })
     @IsString()
     @Column()
-    payment_info: string;
+    payment_info?: string;
 
     @ApiProperty({ required: false })
     @IsString()

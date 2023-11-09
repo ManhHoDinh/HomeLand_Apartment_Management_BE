@@ -34,3 +34,4 @@ export class Employee {
 
     role = PersonRole.EMPLOYEE;
 }
+

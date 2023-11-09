@@ -21,8 +21,8 @@ import { HashService } from "../hash/hash.service";
  */
 export abstract class ResidentRepository implements IRepository<Resident> {
     abstract findOne(id: string): Promise<Resident | null>;
-    abstract update(id: string, updateEntityDto: any): Promise<boolean>;
-    abstract delete(id: string): Promise<boolean>;
+    abstract update(id: string, updateEntityDto: any);
+    abstract delete(id: string);
     // abstract findOneByEmail(email: string): Promise<Resident | null>;
     abstract create(
         createResidentDto: CreateResidentDto,
@@ -88,6 +88,7 @@ export class ResidentService implements ResidentRepository {
         try {
             const frontPhoto = front_identify_card_photo as MemoryStoredFile;
             const backPhoto = front_identify_card_photo as MemoryStoredFile;
+            console.log(front_identify_card_photo)
             const frontURL = await this.storageManager.upload(
                 frontPhoto.buffer,
                 "resident/" +
@@ -118,6 +119,7 @@ export class ResidentService implements ResidentRepository {
                     avataPhoto.mimetype || "image/png",
                 );
             } else {
+
                 const avatar = await this.avatarGenerator.generateAvatar(
                     profile.name,
                 );
@@ -135,7 +137,6 @@ export class ResidentService implements ResidentRepository {
             //set account
             if (email) {
                 resident.account_id = resident.id;
-
                 let account = new Account();
                 account.owner_id = resident.account_id;
                 account.email = email;
@@ -160,7 +161,7 @@ export class ResidentService implements ResidentRepository {
                     console.error(error);
                 }
             }
-            throw error;
+            throw new Error("Can not create resident");
         }
     }
     async search(query: string): Promise<Resident[]> {
@@ -190,7 +191,6 @@ export class ResidentService implements ResidentRepository {
         resident.payment_info = payment_info;
         let profile = plainToInstance(Profile, rest);
         let avatarURL: string | undefined;
-
         if (avatar_photo) {
             const avataPhoto = avatar_photo as MemoryStoredFile;
             avatarURL = await this.storageManager.upload(
@@ -201,23 +201,14 @@ export class ResidentService implements ResidentRepository {
                     (avataPhoto.extension || "png"),
                 avataPhoto.mimetype || "image/png",
             );
-        } else {
-            const avatar = await this.avatarGenerator.generateAvatar(
-                profile.name,
-            );
-            avatarURL = await this.storageManager.upload(
-                avatar,
-                "resident/" + resident.id + "/avatarURL.svg",
-                "image/svg+xml",
-            );
-        }
+        } 
         if (account !== null) {
-            console.log(email, avatarURL);
             account.email = email as string;
-            account.avatarURL = avatarURL;
+            if(avatarURL) {
+                account.avatarURL = avatarURL;
+            }
             await this.accountRepository.save(account);
         }
-
         resident.profile = profile;
         return await this.residentRepository.save(resident);
     }
@@ -241,27 +232,24 @@ export class ResidentService implements ResidentRepository {
     // }
 
     async update(id: string, UpdateResidentDto: UpdateResidentDto) {
-        let result = await this.residentRepository.update(
-            id,
-            UpdateResidentDto,
-        );
-        return isQueryAffected(result);
+            let result = await this.residentRepository.update(
+                id,
+                UpdateResidentDto,
+            );
+            return result
+       
     }
 
-    async delete(id: string): Promise<boolean> {
-        const result = await this.residentRepository.softDelete({ id });
-        
-        return isQueryAffected(result);
-    }
-
-    async hardDelete?(id: any): Promise<boolean> {
+    async delete(id: string) {
         try {
-            const result = await this.residentRepository.delete({ id });
-            return isQueryAffected(result);
-        } catch (error) {
-            console.error(error);
-            throw error;
+            const result = await this.residentRepository.softDelete({ id });
+            return result;
         }
+        catch(err) {
+            throw new Error("Can not delete resident")
+        }
+        
+       
     }
     async findAll(): Promise<Resident[]> {
         const residents = await this.residentRepository.find({

@@ -21,6 +21,8 @@ import { ResidentRepository, ResidentService } from "../resident/resident.servic
 import { Employee } from "src/employee/entities/employee.entity";
 import { EmployeeRepository, EmployeeService } from "src/employee/employee.service";
 import { random } from "lodash";
+import { Contract } from "src/contract/entities/contract.entity";
+
 @Injectable()
 export class SeedService {
     constructor(
@@ -31,7 +33,7 @@ export class SeedService {
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
-        private readonly residentService: ResidentRepository,
+        private readonly residentService: ResidentService,
         
     ) {}
 

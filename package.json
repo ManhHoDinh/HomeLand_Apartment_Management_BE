@@ -87,7 +87,7 @@
             "^.+\\.(t|j)s$": "ts-jest"
         },
         "collectCoverageFrom": [
-            "**/*.(t|j)s"
+            "**/*.{!(module|entity|guard|filter|sub),}.(t|j)s"
         ],
         "setupFiles": [
             "../setEnvVars.js"

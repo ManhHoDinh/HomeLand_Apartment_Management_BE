@@ -1,4 +1,4 @@
-##ATTENTION!
+## NOTE
 There are some services and APIS we can only use with free amount, please register these service on you own and replace the api key inside  [.env.example](.env.example)
 :
 

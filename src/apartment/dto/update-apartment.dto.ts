@@ -10,7 +10,6 @@ export class UpdateApartmentDto extends PartialType(
         "apartment_id",
         "imageURLs",
         "floor",
-        "building",
         "created_at",
         "deleted_at",
         "contracts",

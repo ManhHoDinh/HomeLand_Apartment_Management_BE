@@ -82,6 +82,9 @@ export class Apartment {
     @JoinColumn({ name: "floor_id" })
     floor: Floor;
 
+    @Column({ nullable: true })
+    floor_id?: string;
+
     @OneToMany(() => Resident, (resident) => resident.stay_at, {
         cascade: true,
     })

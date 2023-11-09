@@ -16,18 +16,9 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
-import {
-    ResidentRepository,
-    ResidentService,
-} from "../resident/resident.service";
+import { ResidentRepository } from "../resident/resident.service";
 import { Contract } from "src/contract/entities/contract.entity";
 
-import { Employee } from "src/employee/entities/employee.entity";
-import {
-    EmployeeRepository,
-    EmployeeService,
-} from "src/employee/employee.service";
-import { random } from "lodash";
 import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
 @Injectable()
 export class SeedService {
@@ -154,7 +145,6 @@ export class SeedService {
                             name: "St. Crytal",
                             images: this.images,
                             length: 20,
-                            building_id: floor.building_id,
                             floor_id: floor.floor_id,
                             width: 15,
                             description: faker.lorem.paragraphs({
@@ -394,7 +384,6 @@ export class SeedService {
                 name: "St. Crytal",
                 images: this.images,
                 length: 20,
-                building_id: "BLD0",
                 floor_id: "BLD0/FLR0",
                 width: 15,
                 description: faker.lorem.paragraphs({

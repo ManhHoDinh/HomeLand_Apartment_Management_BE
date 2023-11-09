@@ -7,8 +7,9 @@ import { StorageManager } from "../storage/storage.service";
 import { Building } from "./entities/building.entity";
 import { Floor } from "../floor/entities/floor.entity";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
-import { isQueryAffected } from "../helper/validation";
-export abstract class BuildingService implements IRepository<Building> {
+import { isQueryAffected } from "src/helper/validation";
+
+export abstract class BuildingService {
     abstract findOne(id: string): Promise<Building | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
     abstract delete(id: string): Promise<boolean>;

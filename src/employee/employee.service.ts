@@ -267,14 +267,14 @@ export class EmployeeService implements EmployeeRepository {
         return isQueryAffected(result);
     }
 
-    async hardDelete?(id: any): Promise<boolean> {
-        try {
-            const result = await this.employeeRepository.delete({ id });
-            return isQueryAffected(result);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
+    // async hardDelete?(id: any): Promise<boolean> {
+    //     try {
+    //         const result = await this.employeeRepository.delete({ id });
+    //         return isQueryAffected(result);
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw error;
+    //     }
+    // }
 
 }

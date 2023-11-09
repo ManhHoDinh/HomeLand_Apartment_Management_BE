@@ -130,6 +130,7 @@ describe("BuildingController", () => {
             expect(result).toEqual([mockBuilding]);
         });
     });
+    
     it("should create new building", async () => {
         jest.spyOn(buildingRepository, "create").mockImplementation((dto) => {
             return {

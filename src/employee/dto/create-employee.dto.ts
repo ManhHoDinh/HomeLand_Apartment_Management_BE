@@ -10,7 +10,7 @@ import {
 } from "nestjs-form-data";
 import { commonImageMIMETypes } from "../../helper/constant";
 import { Transform } from "class-transformer";
-import { Profile } from "../../helper/class/profile.entity";
+import { Profile } from "src/helper/class/profile.entity";
 export class CreateEmployeeDto extends PickType(Profile, [
     "name",
     "date_of_birth",

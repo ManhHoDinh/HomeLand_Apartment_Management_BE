@@ -42,12 +42,6 @@ export abstract class EmployeeRepository implements IRepository<Employee> {
 
 @Injectable()
 export class EmployeeService implements EmployeeRepository {
-    updateResident(arg0: string, arg1: { phone_number: string; avatar_photo: MemoryStoredFile; }) {
-        throw new Error("Method not implemented.");
-    }
-    search(arg0: string) {
-        throw new Error("Method not implemented.");
-    }
     constructor(
         @InjectRepository(Employee)
         private readonly employeeRepository: Repository<Employee>,

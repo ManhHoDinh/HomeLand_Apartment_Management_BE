@@ -1,15 +1,17 @@
 import {
+    BadRequestException,
     Injectable,
     NotFoundException,
-    NotImplementedException,
 } from "@nestjs/common";
 import { createVehicleDto } from "./dto/create-vehicle.dto";
 import { Vehicle } from "./entities/vehicle.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { PlateOCRService } from "../plate-ocr/plate-ocr.service";
+import {
+    NoPlateDetectedError,
+    PlateOCRService,
+} from "../plate-ocr/plate-ocr.service";
 import { StorageManager } from "../storage/storage.service";
-import { ResidentService } from "../resident/resident.service";
 import { Resident } from "../resident/entities/resident.entity";
 
 export abstract class VehicleService {
@@ -36,13 +38,20 @@ export class VehicleServiceImp implements VehicleService {
     }
 
     async createVehicle(createVehicleDto: createVehicleDto): Promise<Vehicle> {
-        const licensePlate = await this.plateOCRService.getPlateNumberFromImage(
-            createVehicleDto.licensePlate.buffer,
-        );
-
         const resident = await this.residentService.findOne({
             where: { id: createVehicleDto.residentId },
         });
+
+        const [data, error] =
+            await this.plateOCRService.getPlateNumberFromImage(
+                createVehicleDto.licensePlate.buffer,
+            );
+
+        if (error instanceof NoPlateDetectedError)
+            throw new BadRequestException("Not plate detected in the image");
+        else if (error) throw error;
+
+        const licensePlate = data;
 
         if (!resident) throw new NotFoundException("Resident not found");
 
@@ -71,7 +80,6 @@ export class VehicleServiceImp implements VehicleService {
             frontRegistrationPhotoURL: frontRegistrationPhotoURL,
             licensePlatePhotoURL: licensePlatePhotoURL,
         });
-        throw new NotImplementedException();
     }
 
     async deleteVehicle(licensePlate: string): Promise<void> {

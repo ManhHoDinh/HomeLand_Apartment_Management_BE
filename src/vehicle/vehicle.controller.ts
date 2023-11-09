@@ -6,8 +6,8 @@ import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { PersonRole } from "../helper/class/profile.entity";
 import { Auth } from "../helper/decorator/auth.decorator";
 
-@Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
 @ApiTags("vehicle")
+@Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
 @Controller("vehicle")
 export class VehicleController {
     constructor(private readonly vehicleService: VehicleService) {}

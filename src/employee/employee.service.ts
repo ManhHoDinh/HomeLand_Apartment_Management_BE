@@ -1,33 +1,21 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from "@nestjs/common";
-import { DeepPartial } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, TypeORMError, DataSource } from "typeorm";
 import { Employee } from "./entities/employee.entity";
-import { hashSync } from "bcrypt";
 import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
-import { HashService } from "../hash/hash.service";
-import { IRepository } from "../helper/interface/IRepository.interface";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { PersonRole, Profile } from "../helper/class/profile.entity";
 import { IdGenerator } from "../id-generator/id-generator.service";
-import { plainToClass, plainToInstance } from "class-transformer";
-import { profile } from "console";
+import { plainToInstance } from "class-transformer";
 
-export abstract class EmployeeRepository implements IRepository<Employee> {
+export abstract class EmployeeRepository {
     abstract findOne(id: string): Promise<Employee | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
     abstract delete(id: string): Promise<boolean>;
-    // abstract findOneByEmail(email: string): Promise<Employee | null>;
     abstract create(
         createEmployeeDto: CreateEmployeeDto,
         id?: string,
@@ -46,11 +34,10 @@ export class EmployeeService implements EmployeeRepository {
         @InjectRepository(Employee)
         private readonly employeeRepository: Repository<Employee>,
         private readonly storageManager: StorageManager,
-        private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly idGenerate: IdGenerator,
         private dataSource: DataSource,
-    ) { }
+    ) {}
 
     /**
      * Create a person and insert into database
@@ -65,7 +52,6 @@ export class EmployeeService implements EmployeeRepository {
         createEmployeeDto: CreateEmployeeDto,
         id?: string,
     ): Promise<Employee> {
-
         const {
             front_identify_card_photo,
             back_identify_card_photo,
@@ -84,13 +70,19 @@ export class EmployeeService implements EmployeeRepository {
             const backPhoto = front_identify_card_photo as MemoryStoredFile;
             const frontURL = await this.storageManager.upload(
                 frontPhoto.buffer,
-                "employee/" + employee.id + "/front_identify_card_photo_URL." + (frontPhoto.extension || "png"),
+                "employee/" +
+                    employee.id +
+                    "/front_identify_card_photo_URL." +
+                    (frontPhoto.extension || "png"),
                 frontPhoto.mimetype || "image/png",
             );
 
             const backURL = await this.storageManager.upload(
                 back_identify_card_photo.buffer,
-                "employee/" + employee.id + "/back_identify_card_photo_URL." + (backPhoto.extension || "png"),
+                "employee/" +
+                    employee.id +
+                    "/back_identify_card_photo_URL." +
+                    (backPhoto.extension || "png"),
                 backPhoto.mimetype || "image/png",
             );
 
@@ -99,11 +91,16 @@ export class EmployeeService implements EmployeeRepository {
             if (avatarPhoto) {
                 profilePictureURL = await this.storageManager.upload(
                     avatarPhoto.buffer,
-                    "employee/" + employee.id + "/avatarURL." + (avatarPhoto.extension || "png"),
+                    "employee/" +
+                        employee.id +
+                        "/avatarURL." +
+                        (avatarPhoto.extension || "png"),
                     avatarPhoto.mimetype || "image/png",
                 );
             } else {
-                const avatar = await this.avatarGenerator.generateAvatar(profile.name);
+                const avatar = await this.avatarGenerator.generateAvatar(
+                    profile.name,
+                );
                 profilePictureURL = await this.storageManager.upload(
                     avatar,
                     "employee/" + employee.id + "/avatarURL.svg",
@@ -121,11 +118,18 @@ export class EmployeeService implements EmployeeRepository {
             if (error instanceof TypeORMError) {
                 try {
                     await this.storageManager.remove([
-                        "/employee/" + employee.id + "/front_identify_card_photo_URL.png",
-                        "/employee/" + employee.id + "/back_identify_card_photo_URL.png",
+                        "/employee/" +
+                            employee.id +
+                            "/front_identify_card_photo_URL.png",
+                        "/employee/" +
+                            employee.id +
+                            "/back_identify_card_photo_URL.png",
                     ]);
                 } catch (removeError) {
-                    console.error("An error occurred while removing files:", removeError);
+                    console.error(
+                        "An error occurred while removing files:",
+                        removeError,
+                    );
                 }
             }
             throw error;
@@ -138,11 +142,15 @@ export class EmployeeService implements EmployeeRepository {
         let employee = await this.employeeRepository.findOne({
             where: { id },
         });
-        console.log(updateEmployeeDto)
+        console.log(updateEmployeeDto);
 
         if (!employee) throw new NotFoundException();
-        const { profile_picture, front_identify_card_photo, back_identify_card_photo, ...rest } =
-            updateEmployeeDto;
+        const {
+            profile_picture,
+            front_identify_card_photo,
+            back_identify_card_photo,
+            ...rest
+        } = updateEmployeeDto;
         let profile = plainToInstance(Profile, rest);
         const queryRunner = this.dataSource.createQueryRunner();
         let avatarURL: string | undefined;
@@ -153,7 +161,9 @@ export class EmployeeService implements EmployeeRepository {
             if (profile_picture) {
                 const imageURL = await this.storageManager.upload(
                     profile_picture.buffer,
-                    `employee/${id}/${Date.now()}.${profile_picture.extension || "png"}`,
+                    `employee/${id}/${Date.now()}.${
+                        profile_picture.extension || "png"
+                    }`,
                     profile_picture.mimetype || "image/png",
                 );
                 employee.profilePictureURL = imageURL;
@@ -162,7 +172,9 @@ export class EmployeeService implements EmployeeRepository {
             if (front_identify_card_photo) {
                 const imageURL = await this.storageManager.upload(
                     front_identify_card_photo.buffer,
-                    `employee/${id}/${Date.now()}.${front_identify_card_photo.extension || "png"}`,
+                    `employee/${id}/${Date.now()}.${
+                        front_identify_card_photo.extension || "png"
+                    }`,
                     front_identify_card_photo.mimetype || "image/png",
                 );
                 profile.front_identify_card_photo_URL = imageURL;
@@ -171,7 +183,9 @@ export class EmployeeService implements EmployeeRepository {
             if (back_identify_card_photo) {
                 const imageURL = await this.storageManager.upload(
                     back_identify_card_photo.buffer,
-                    `employee/${id}/${Date.now()}.${back_identify_card_photo.extension || "png"}`,
+                    `employee/${id}/${Date.now()}.${
+                        back_identify_card_photo.extension || "png"
+                    }`,
                     back_identify_card_photo.mimetype || "image/png",
                 );
                 profile.back_identify_card_photo_URL = imageURL;
@@ -181,11 +195,9 @@ export class EmployeeService implements EmployeeRepository {
             await this.employeeRepository.save(employee);
             await queryRunner.commitTransaction();
         } catch (error) {
-
             await queryRunner.rollbackTransaction();
             throw error;
         } finally {
-
             await queryRunner.release();
         }
         return employee;
@@ -259,7 +271,10 @@ export class EmployeeService implements EmployeeRepository {
     }
 
     async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-        let result = await this.employeeRepository.update(id, updateEmployeeDto as any);
+        let result = await this.employeeRepository.update(
+            id,
+            updateEmployeeDto as any,
+        );
         return isQueryAffected(result);
     }
     async delete(id: string): Promise<boolean> {
@@ -276,5 +291,4 @@ export class EmployeeService implements EmployeeRepository {
             throw error;
         }
     }
-
 }

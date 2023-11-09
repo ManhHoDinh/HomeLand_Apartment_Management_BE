@@ -10,7 +10,6 @@ import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageError, StorageManager } from "../storage/storage.service";
 import { IdGenerator } from "../id-generator/id-generator.service";
-import { IRepository } from "../helper/interface/IRepository.interface";
 import { Resident } from "../resident/entities/resident.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { difference, isString } from "lodash";
@@ -19,7 +18,7 @@ import { difference, isString } from "lodash";
  * @classdesc Represent the service that manage the apartment
  * @abstract
  */
-export abstract class ApartmentService implements IRepository<Apartment> {
+export abstract class ApartmentService {
     /**
      * @param id id of the apartment
      */

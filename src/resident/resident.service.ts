@@ -1,12 +1,10 @@
 import { UpdateResidentDto } from "./dto/update-resident.dto";
 import { Resident } from "./entities/resident.entity";
-
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Like, Repository, TypeORMError } from "typeorm";
 import { StorageManager } from "../storage/storage.service";
 import { isQueryAffected } from "../helper/validation";
-import { IRepository } from "../helper/interface/IRepository.interface";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { Profile } from "../helper/class/profile.entity";
@@ -19,19 +17,14 @@ import { HashService } from "src/hash/hash.service";
 /**
  * Person repository interface
  */
-export abstract class ResidentRepository implements IRepository<Resident> {
+export abstract class ResidentRepository {
     abstract findOne(id: string): Promise<Resident | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
     abstract delete(id: string): Promise<boolean>;
-    // abstract findOneByEmail(email: string): Promise<Resident | null>;
     abstract create(
         createResidentDto: CreateResidentDto,
         id?: string,
     ): Promise<Resident>;
-    // abstract createAccount(
-    //     id: string,
-    //     createAccountDto: CreateAccountDto,
-    // ): Promise<Resident>;
     abstract updateResident(
         id: string,
         updateResidentDto: UpdateResidentDto,
@@ -43,7 +36,7 @@ export abstract class ResidentRepository implements IRepository<Resident> {
 @Injectable()
 export class ResidentService implements ResidentRepository {
     constructor(
-        @InjectRepository(Resident) 
+        @InjectRepository(Resident)
         private readonly residentRepository: Repository<Resident>,
         @InjectRepository(Account)
         private readonly accountRepository: Repository<Account>,
@@ -51,12 +44,7 @@ export class ResidentService implements ResidentRepository {
         private readonly hashService: HashService,
         private readonly idGenerate: IdGenerator,
         private readonly avatarGenerator: AvatarGenerator,
-    ) {
-        
-    
-    }
-    //get person by id
-    //create person
+    ) {}
 
     /**
      * Create a person and insert into database
@@ -79,7 +67,7 @@ export class ResidentService implements ResidentRepository {
             email,
             ...rest
         } = createResidentDto;
-        
+
         const profile = plainToInstance(Profile, rest);
         let resident = new Resident();
         resident.payment_info = payment_info;
@@ -105,7 +93,6 @@ export class ResidentService implements ResidentRepository {
                 backPhoto.mimetype || "image/png",
             );
             let avatarURL: string | undefined;
-            // const avatarPhoto = avatar_photo as MemoryStoredFile;
 
             if (avatar_photo) {
                 const avataPhoto = avatar_photo as MemoryStoredFile;
@@ -127,12 +114,11 @@ export class ResidentService implements ResidentRepository {
                     "image/svg+xml",
                 );
             }
-          
+
             profile.front_identify_card_photo_URL = frontURL;
             profile.back_identify_card_photo_URL = backURL;
             resident.profile = profile;
-            const residentData =  await this.residentRepository.save(resident);
-            //set account
+            const residentData = await this.residentRepository.save(resident);
             if (email) {
                 resident.account_id = resident.id;
 
@@ -141,10 +127,10 @@ export class ResidentService implements ResidentRepository {
                 account.email = email;
                 account.password = this.hashService.hash(profile.phone_number);
                 account.avatarURL = avatarURL;
-                account.resident = resident;    
+                account.resident = resident;
                 await this.accountRepository.save(account);
             }
-            return residentData
+            return residentData;
         } catch (error) {
             if (error instanceof TypeORMError) {
                 try {
@@ -231,15 +217,6 @@ export class ResidentService implements ResidentRepository {
         });
     }
 
-    // findOneByEmail(email: string): Promise<Resident | null> {
-    //     return this.residentRepository.findOne({
-    //         where: {
-    //             ac
-    //         },
-    //         cache: true,
-    //     });
-    // }
-
     async update(id: string, UpdateResidentDto: UpdateResidentDto) {
         let result = await this.residentRepository.update(
             id,
@@ -250,7 +227,7 @@ export class ResidentService implements ResidentRepository {
 
     async delete(id: string): Promise<boolean> {
         const result = await this.residentRepository.softDelete({ id });
-        
+
         return isQueryAffected(result);
     }
 

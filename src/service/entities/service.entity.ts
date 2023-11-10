@@ -54,4 +54,9 @@ export class Service {
     })
     @JoinTable()
     servicePackages?: ServicePackage[];
+    @CreateDateColumn()
+    created_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 }

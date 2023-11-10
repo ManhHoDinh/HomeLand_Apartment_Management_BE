@@ -145,7 +145,6 @@ export class EmployeeService implements EmployeeRepository {
             updateEmployeeDto;
         let profile = plainToInstance(Profile, rest);
         const queryRunner = this.dataSource.createQueryRunner();
-        let avatarURL: string | undefined;
 
         try {
             await queryRunner.connect();

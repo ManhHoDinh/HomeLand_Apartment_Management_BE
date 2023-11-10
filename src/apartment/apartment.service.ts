@@ -37,7 +37,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
      * @abstract
      * @param id id of the apartment
      */
-    abstract delete(id: string): Promise<boolean>;
+    abstract delete(id: string);
     /**
      *
      * @param createPropertyDto
@@ -225,8 +225,9 @@ export class ApartmentServiceImp extends ApartmentService {
         if (difference(newImageURLS, oldImageURLS).length > 0) return true;
         return false;
     }
-
-    delete(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async delete(id: string) {
+        return await this.apartmentRepository.softDelete({
+            apartment_id: id,
+        });
     }
 }

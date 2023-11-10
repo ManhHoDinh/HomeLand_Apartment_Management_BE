@@ -51,8 +51,8 @@ describe("EmployeeController", () => {
                     name: dto.name,
                     gender: dto.gender,
                     phone_number: dto.phone_number,
-                    front_identify_card_photo_URL: "emloyee/frontIdentifyPhoto.jpg",
-                    back_identify_card_photo_URL: "emloyee/backIdentifyPhoto.jpg",
+                    front_identify_card_photo_URL: "employee/frontIdentifyPhoto.jpg",
+                    back_identify_card_photo_URL: "employee/backIdentifyPhoto.jpg",
                 },
                 profilePictureURL: "emloyee/profilePicture.jpg",
                 role: "employee",
@@ -192,15 +192,15 @@ describe("EmployeeController", () => {
                     name: "vobinh",
                     gender: Gender.MALE,
                     phone_number: "0978754723",
-                    front_identify_card_photo_URL: "resident/frontIdentifyPhoto.jpg",
-                    back_identify_card_photo_URL: "resident/backIdentifyPhoto.jpg",
+                    front_identify_card_photo_URL: "employee/frontIdentifyPhoto.jpg",
+                    back_identify_card_photo_URL: "employee/backIdentifyPhoto.jpg",
                 },
                 profilePictureURL: "emloyee/profilePicture.jpg",
                 role: "employee",
             });
         });
         it("should update success employee", async () => {
-            const result = await controller.update("employee", {
+            const result = await controller.updateEmployee("employee", {
               phone_number: "0905091074",
               front_identify_card_photo: new MemoryStoredFile,
               back_identify_card_photo: new MemoryStoredFile

@@ -30,7 +30,7 @@ describe("BuildingService", () => {
     const mockBuilding = {
         building_id: "BLD4",
         max_floor: 0,
-         name: "Building 3",
+        name: "Building 3",
         address: "996 Daugherty Extension",
     } as Building;
     const mockUpdateResult: UpdateResult = {
@@ -118,7 +118,7 @@ describe("BuildingService", () => {
             expect(result).toEqual([mockBuilding]);
         });
     });
-    
+
     it("should create new building", async () => {
         jest.spyOn(buildingRepository, "create").mockImplementation((dto) => {
             return {
@@ -162,42 +162,42 @@ describe("BuildingService", () => {
         }
     });
 
-        it("should update success building", async () => {
-            jest.spyOn(buildingRepository, "update").mockImplementation(
-                async () => {
-                    return mockUpdateResult;
-                },
-            );
-            const result = await service.update("BLD3", mockBuilding);
-            expect(result).toEqual(mockUpdateResult);
-        });
-        it("should update building fail because id not found", async () => {
-            try {
-                const result = await service.update("", mockBuilding);
-            } catch (e) {
-                expect(e.message).toBe("Id not found.");
-            }
-        });
-        it("should search building", async () => {
-            jest.spyOn(buildingRepository, "find").mockImplementation(
-                async () => [mockBuilding],
-            );
-            const result = await service.search("binh");
-            expect(result).toEqual([mockBuilding]);
-        });
-        it("should delete success building", async () => {
-            jest.spyOn(buildingRepository, "softDelete").mockImplementation(
-                async () => {
-                    return mockUpdateResult;
-                },
-            );
-            const result = await service.delete("BLD3");
-            expect(result).toEqual(mockUpdateResult);
-        });
-        it("should delete new building fail ", async () => {
-            const err = new Error("can not delete");
-            jest.spyOn(buildingRepository, "softDelete").mockRejectedValue(err);
-            await expect(service.delete).rejects.toThrow(err);
-        });
+    it("should update success building", async () => {
+        jest.spyOn(buildingRepository, "update").mockImplementation(
+            async () => {
+                return mockUpdateResult;
+            },
+        );
+        const result = await service.update("BLD3", mockBuilding);
+        expect(result).toEqual(mockUpdateResult);
+    });
+    it("should update building fail because id not found", async () => {
+        try {
+            const result = await service.update("", mockBuilding);
+        } catch (e) {
+            expect(e.message).toBe("Id not found.");
+        }
+    });
+    it("should search building", async () => {
+        jest.spyOn(buildingRepository, "find").mockImplementation(
+            async () => [mockBuilding],
+        );
+        const result = await service.search("binh");
+        expect(result).toEqual([mockBuilding]);
+    });
+    it("should delete success building", async () => {
+        jest.spyOn(buildingRepository, "softDelete").mockImplementation(
+            async () => {
+                return mockUpdateResult;
+            },
+        );
+        const result = await service.delete("BLD3");
+        expect(result).toEqual(mockUpdateResult);
+    });
+    it("should delete new building fail ", async () => {
+        const err = new Error("can not delete");
+        jest.spyOn(buildingRepository, "softDelete").mockRejectedValue(err);
+        await expect(service.delete).rejects.toThrow(err);
     });
 });
+

@@ -9,7 +9,7 @@ import { TypeOrmModule, getRepositoryToken } from "@nestjs/typeorm";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
-import { Repository, UpdateResult, DeleteResult } from "typeorm";
+import { Repository, UpdateResult, DeleteResult, DataSource } from "typeorm";
 import {
         BadRequestException,
         INestApplication,
@@ -26,8 +26,14 @@ import { Resident } from "../resident/entities/resident.entity";
 import { AuthModule } from "../auth/auth.module";
 import { StorageModule } from "../storage/storage.module";
 import { JwtModule } from "@nestjs/jwt";
+import { IdGenerator } from "src/id-generator/id-generator.service";
 describe("ApartmentService", () => {
-        let service: ApartmentService;
+        let service: ApartmentServiceImp;
+        let apartmentRepository: Repository<Apartment>;
+        let residentRepository: Repository<Resident>;
+        let storageManager: StorageManager;
+        let dataSource: DataSource;
+        let idGenerate: IdGenerator;
         let AparmentRepository: Repository<Apartment>;
         const mockAparmentservice = {
                 findAll: jest.fn().mockImplementation(() => [mockAparment]),
@@ -54,6 +60,7 @@ describe("ApartmentService", () => {
                 delete: jest.fn().mockImplementation((id) => {
                         return mockUpdateResult;
                 }),
+
         };
         const mockAparment = {
                 apartment_id: "APM3",
@@ -132,10 +139,11 @@ describe("ApartmentService", () => {
                                 // },
                         },],
                 }).compile();
+
                 AparmentRepository = module.get<Repository<Apartment>>(
                         APARTMENT_REPOSITORY_TOKEN,
                 );
-                service = module.get<ApartmentService>(ApartmentService);
+                service = module.get<ApartmentServiceImp>(ApartmentServiceImp);
         }, 50000);
         it("should service be defined", () => {
                 expect(service).toBeDefined();
@@ -143,6 +151,70 @@ describe("ApartmentService", () => {
         it("should repository be defined", () => {
                 expect(AparmentRepository).toBeDefined();
         });
+        describe('Delete', () => {
+                it("should delete success apartment", async () => {
+                        jest.spyOn(AparmentRepository, "softDelete").mockImplementation(
+                                async () => {
+                                        return mockUpdateResult;
+                                },
+                        );
+                        const result = await service.delete("BLD3");
+                        expect(result).toEqual(mockUpdateResult);
+                });
+        });
+        describe('findAll', () => {
+                it('should return all apartments', async () => {
+                        const apartments = [
+                                {
+                                        "apartment_id": "APM3",
+                                        "building_id": "BLD1",
+                                        "description": "string",
+                                        "floor_id": "FLR1",
+                                        "length": 20,
+                                        "name": "Aparment 3",
+                                        "number_of_bathroom": 2,
+                                        "number_of_bedroom": 2,
+                                        "rent": 5000000,
+                                        "width": 20,
+                                },
+                        ];
+                        const apartmentFindSpy = jest
+                                .spyOn(AparmentRepository, 'find')
+                                .mockResolvedValue(mockAparmentservice.findAll());
+
+                        const result = await service.findAll();
+
+                        expect(result).toEqual(apartments);
+                        expect(apartmentFindSpy).toHaveBeenCalled();
+                });
+
+                it('should return all apartments by page', async () => {
+                        const apartments = [
+                                {
+                                        "apartment_id": "APM3",
+                                        "building_id": "BLD1",
+                                        "description": "string",
+                                        "floor_id": "FLR1",
+                                        "length": 20,
+                                        "name": "Aparment 3",
+                                        "number_of_bathroom": 2,
+                                        "number_of_bedroom": 2,
+                                        "rent": 5000000,
+                                        "width": 20,
+                                },
+                        ];
+                        const apartmentFindSpy = jest
+                                .spyOn(AparmentRepository, 'find')
+                                .mockResolvedValue(mockAparmentservice.findAll());
+
+                        const result = await service.findAll(1);
+
+                        expect(result).toEqual(apartments);
+                        expect(apartmentFindSpy).toHaveBeenCalled();
+                });
+        });
+
+
         describe("Aparment", () => {
                 it("should find Aparment by id", async () => {
                         jest.spyOn(AparmentRepository, "findOne").mockImplementation(
@@ -170,24 +242,29 @@ describe("ApartmentService", () => {
                 });
                 describe("Create", () => {
                         it("should create new Aparment", async () => {
-                                jest.spyOn(AparmentRepository, "create").mockImplementation(
-                                        (dto) => {
-                                                return {
-                                                        apartment_id: faker.string.binary(),
-                                                        building_id: "BLD1",
-                                                        name: dto.name,
-                                                        width: dto.width,
-                                                        length: dto.length,
-                                                        number_of_bedroom: dto.number_of_bedroom,
-                                                        number_of_bathroom: dto.number_of_bathroom,
-                                                        rent: dto.rent,
-                                                        description: "string",
-                                                        floor_id: "FLR1",
-
-                                                } as Apartment;
+                                const mockRepository = {
+                                        metadata: {
+                                                columns: [],
+                                                relations: [],
                                         },
-                                );
+                                        create: jest.spyOn(AparmentRepository, "create").mockImplementation(
+                                                (dto) => {
+                                                        return {
+                                                                apartment_id: faker.string.binary(),
+                                                                building_id: "BLD1",
+                                                                name: dto.name,
+                                                                width: dto.width,
+                                                                length: dto.length,
+                                                                number_of_bedroom: dto.number_of_bedroom,
+                                                                number_of_bathroom: dto.number_of_bathroom,
+                                                                rent: dto.rent,
+                                                                description: "string",
+                                                                floor_id: "FLR1",
 
+                                                        } as Apartment;
+                                                },
+                                        )
+                                }
                                 const result = await service.create({
                                         building_id: mockAparment.building_id,
                                         name: mockAparment.name,

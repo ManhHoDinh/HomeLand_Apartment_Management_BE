@@ -1,10 +1,9 @@
-
 import { Test, TestingModule } from "@nestjs/testing";
 import { Floor } from "../floor/entities/floor.entity";
 import { TypeOrmModule, getRepositoryToken } from "@nestjs/typeorm";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
-import { Repository} from "typeorm";
+import { Repository } from "typeorm";
 import { Account } from "../account/entities/account.entity";
 import { AuthServiceImp } from "./auth.service";
 import { Resident } from "../resident/entities/resident.entity";
@@ -23,8 +22,8 @@ import { UnauthorizedException } from "@nestjs/common";
 describe("AccountService", () => {
     let service: AuthServiceImp;
     let accountRepository: Repository<Account>;
-    let hashSerVice : HashService
-    let jwtSerVice : JwtService
+    let hashSerVice: HashService;
+    let jwtSerVice: JwtService;
     const mockResident = {
         id: "resident",
         profile: {
@@ -41,7 +40,7 @@ describe("AccountService", () => {
             password: "0978754723",
             avatarURL: "resident/avatar.svg",
         },
-        role: PersonRole.RESIDENT
+        role: PersonRole.RESIDENT,
     } as Resident;
     const mockAccount = {
         owner_id: "resident",
@@ -90,17 +89,21 @@ describe("AccountService", () => {
                 }),
                 TypeOrmModule.forFeature([Account]),
                 Repository<Account>,
-                HashModule
+                HashModule,
             ],
-            providers: [AuthServiceImp, AccountService, JWTAuthGuard,
-                JwtService],
+            providers: [
+                AuthServiceImp,
+                AccountService,
+                JWTAuthGuard,
+                JwtService,
+            ],
         }).compile();
         accountRepository = module.get<Repository<Account>>(
             ACCOUNT_REPOSITORY_TOKEN,
         );
         service = module.get<AuthServiceImp>(AuthServiceImp);
-        hashSerVice = module.get(HashService)
-        jwtSerVice = module.get(JwtService)
+        hashSerVice = module.get(HashService);
+        jwtSerVice = module.get(JwtService);
     }, 50000);
     it("should service be defined", () => {
         expect(service).toBeDefined();
@@ -118,8 +121,13 @@ describe("AccountService", () => {
             expect(result).toEqual(mockResident);
         });
         it("should not find account by email", async () => {
-            jest.spyOn(accountRepository, "findOne").mockImplementation(async(email) => null)
-           await expect( service.findOwnerByAccountEmail("")).toBe(null)
+            jest.spyOn(accountRepository, "findOne").mockImplementation(
+                async () => null,
+            );
+            const result =await service.findOwnerByAccountEmail("email");
+            await expect(result).toEqual(
+                null,
+            );
         });
         it("should find account by id", async () => {
             jest.spyOn(accountRepository, "findOne").mockImplementation(
@@ -127,10 +135,10 @@ describe("AccountService", () => {
             );
             const result = await service.findOwnerById("resident");
             expect(result).toEqual(mockResident);
-        }); 
+        });
         it("should not find account by email", async () => {
-            jest.spyOn(accountRepository, "findOne").mockRejectedValue(null)
-           await expect(service.findOwnerById("")).rejects.toBe(null)
+            jest.spyOn(accountRepository, "findOne").mockRejectedValue(null);
+            await expect(service.findOwnerById("")).rejects.toBe(null);
         });
         it("should sign in", async () => {
             jest.spyOn(accountRepository, "findOne").mockImplementation(
@@ -149,13 +157,15 @@ describe("AccountService", () => {
         });
         it("should sign in fail with not found person", async () => {
             const err = new UnauthorizedException("Wrong email or password");
-            jest.spyOn(accountRepository, "findOne").mockRejectedValue(err)
+            jest.spyOn(accountRepository, "findOne").mockRejectedValue(err);
             jest.spyOn(hashSerVice, "isMatch").mockReturnValue(true);
             jest.spyOn(jwtSerVice, "sign").mockReturnValue("abc");
-            await expect(service.signIn({
-                email: "abc@gmail.com",
-                password: PersonRole.RESIDENT,
-            })).rejects.toThrow(err)
+            await expect(
+                service.signIn({
+                    email: "abc@gmail.com",
+                    password: PersonRole.RESIDENT,
+                }),
+            ).rejects.toThrow(err);
         });
         it("should sign in fail with not found hash service false", async () => {
             const err = new UnauthorizedException("Wrong email or password");
@@ -164,10 +174,12 @@ describe("AccountService", () => {
             );
             jest.spyOn(hashSerVice, "isMatch").mockReturnValue(false);
             jest.spyOn(jwtSerVice, "sign").mockReturnValue("abc");
-            await expect(service.signIn({
-                email: "abc@gmail.com",
-                password: PersonRole.RESIDENT,
-            })).rejects.toThrow(err)
+            await expect(
+                service.signIn({
+                    email: "abc@gmail.com",
+                    password: PersonRole.RESIDENT,
+                }),
+            ).rejects.toThrow(err);
         });
         it("should sign in fail with person not has account", async () => {
             const err = new UnauthorizedException("Wrong email or password");
@@ -176,12 +188,12 @@ describe("AccountService", () => {
             );
             jest.spyOn(hashSerVice, "isMatch").mockReturnValue(true);
             jest.spyOn(jwtSerVice, "sign").mockReturnValue("abc");
-            await expect(service.signIn({
-                email: "abc@gmail.com",
-                password: PersonRole.RESIDENT,
-            })).rejects.toThrow(err)
+            await expect(
+                service.signIn({
+                    email: "abc@gmail.com",
+                    password: PersonRole.RESIDENT,
+                }),
+            ).rejects.toThrow(err);
         });
     });
 });
-
-  

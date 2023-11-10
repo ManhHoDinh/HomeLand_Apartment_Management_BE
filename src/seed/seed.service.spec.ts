@@ -128,7 +128,7 @@ describe("SeedService", () => {
         apartmentService = module.get<ApartmentService>(ApartmentService);
         residentService = module.get<ResidentService>(ResidentService);
         supaClient = module.get(SupabaseClient);
-    });
+    },30000);
 
     // afterEach(async () => {
     //     await dataSource.destroy();

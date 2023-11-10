@@ -14,6 +14,7 @@ import { IRepository } from "../helper/interface/IRepository.interface";
 import { Resident } from "../resident/entities/resident.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { difference, isString } from "lodash";
+import { isQueryAffected } from "../helper/validation";
 
 /**
  * @classdesc Represent the service that manage the apartment
@@ -189,8 +190,8 @@ export class ApartmentServiceImp extends ApartmentService {
                 );
                 apartment.imageURLs = newImageURLS;
             }
-            apartment = await this.apartmentRepository.save(apartment);
-            return true;
+           const result=  await this.apartmentRepository.update(apartment.apartment_id,apartment);
+        return isQueryAffected(result);
         } catch (error) {
             await queryRunnder.rollbackTransaction();
             if (uploadPaths.length > 0)

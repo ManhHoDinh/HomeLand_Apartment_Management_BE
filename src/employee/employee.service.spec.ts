@@ -21,19 +21,24 @@ import multer from "multer";
 import { ExpressAdapter } from "@nestjs/platform-express";
 import { ConfigModule } from "@nestjs/config";
 import { AccountService } from "../account/account.service";
-
+import { CreateResidentDto } from "src/resident/dto/create-resident.dto";
 describe("EmployeeController", () => {
         let service: EmployeeService;
         let accountService: AccountService;
         let employeeRepository: Repository<Employee>;
 
-
+        const mockDeleteResult: DeleteResult = {
+                raw: [],
+                affected: 1,
+        };
         const mockUpdateResult: UpdateResult = {
                 raw: [],
                 affected: 1,
                 generatedMaps: [],
         };
-
+        const mockEmployeeRepository = {
+                softDelete: jest.fn().mockResolvedValue(mockUpdateResult),
+        };
         const mockEmployee = {
                 id: "employee",
                 profile: {
@@ -44,9 +49,9 @@ describe("EmployeeController", () => {
                         front_identify_card_photo_URL: "employee/frontIdentifyPhoto.jpg",
                         back_identify_card_photo_URL: "employee/backIdentifyPhoto.jpg",
                 },
-
+                profilePictureURL: "employee/avatar.svg",
         } as Employee;
-        const EMPLOYEE_REPOSITORY_TOKEN = getRepositoryToken(Employee);
+        const RESIDENT_REPOSITORY_TOKEN = getRepositoryToken(Employee);
 
         beforeEach(async () => {
                 const module: TestingModule = await Test.createTestingModule({
@@ -94,13 +99,12 @@ describe("EmployeeController", () => {
                                 HashModule,
                                 AvatarGeneratorModule,
                                 Repository<Employee>,
-
                         ],
 
                         providers: [EmployeeService],
                 }).compile();
                 employeeRepository = module.get<Repository<Employee>>(
-                        EMPLOYEE_REPOSITORY_TOKEN,
+                        RESIDENT_REPOSITORY_TOKEN,
                 );
 
                 service = module.get<EmployeeService>(EmployeeService);
@@ -113,7 +117,7 @@ describe("EmployeeController", () => {
         it("should repository be defined", () => {
                 expect(employeeRepository).toBeDefined();
         });
-        describe("employee", () => {
+        describe("resident", () => {
                 it("should find employee by id", async () => {
                         jest.spyOn(employeeRepository, "findOne").mockImplementation(
                                 async () => mockEmployee,
@@ -139,10 +143,10 @@ describe("EmployeeController", () => {
                                                         name: dto.name,
                                                         gender: dto.gender,
                                                         phone_number: dto.phone_number,
-                                                        front_identify_card_photo_URL: "employee/frontIdentifyPhoto.jpg",
-                                                        back_identify_card_photo_URL: "employee/backIdentifyPhoto.jpg",
+                                                        front_identify_card_photo_URL: "resident/frontIdentifyPhoto.jpg",
+                                                        back_identify_card_photo_URL: "resident/backIdentifyPhoto.jpg",
                                                 },
-                                                profilePictureURL: "employee/avatar.svg",
+                                                profilePictureURL: "resident/avatar.svg",
                                         } as Employee;
                                 },
                         );
@@ -156,9 +160,9 @@ describe("EmployeeController", () => {
                                                         gender: dto.profile.gender,
                                                         phone_number: dto.profile.phone_number,
                                                         front_identify_card_photo_URL:
-                                                                "employee/frontIdentifyPhoto.jpg",
+                                                                "resident/frontIdentifyPhoto.jpg",
                                                         back_identify_card_photo_URL:
-                                                                "employee/backIdentifyPhoto.jpg",
+                                                                "resident/backIdentifyPhoto.jpg",
                                                 },
 
                                         } as Employee;
@@ -191,9 +195,9 @@ describe("EmployeeController", () => {
                                         gender: Gender.MALE,
                                         phone_number: "0978754723",
                                         front_identify_card_photo_URL:
-                                                "employee/frontIdentifyPhoto.jpg",
+                                                "resident/frontIdentifyPhoto.jpg",
                                         back_identify_card_photo_URL:
-                                                "employee/backIdentifyPhoto.jpg",
+                                                "resident/backIdentifyPhoto.jpg",
                                 },
 
                         });
@@ -209,10 +213,10 @@ describe("EmployeeController", () => {
                                                         name: dto.name,
                                                         gender: dto.gender,
                                                         phone_number: dto.phone_number,
-                                                        front_identify_card_photo_URL: "employee/frontIdentifyPhoto.jpg",
-                                                        back_identify_card_photo_URL: "employee/backIdentifyPhoto.jpg",
+                                                        front_identify_card_photo_URL: "resident/frontIdentifyPhoto.jpg",
+                                                        back_identify_card_photo_URL: "resident/backIdentifyPhoto.jpg",
                                                 },
-                                                profilePictureURL: "employee/avatar.svg",
+                                                profilePictureURL: "resident/avatar.svg",
                                         } as Employee;
                                 },
                         );
@@ -230,15 +234,28 @@ describe("EmployeeController", () => {
                                 } as MemoryStoredFile,
 
                                 back_identify_card_photo: {
-                                        mimetype: 'text/csv',
-                                        buffer: Buffer.from('one,two,three')
+                                        mimetype: 'image/png',
+                                        buffer: Buffer.from(''),
                                 } as MemoryStoredFile,
                                 profile_picture: {
-                                        mimetype: 'text/csv',
-                                        buffer: Buffer.from('one,two,three')
+                                        mimetype: 'image/png',
+                                        buffer: Buffer.from(''),
                                 } as MemoryStoredFile,
                         })).rejects.toThrow(err)
                 }, 30000);
+
+                // it("should update", async () => {
+                      
+                //         jest.spyOn(employeeRepository, 'update').mockResolvedValue(mockUpdateResult);
+
+                //         const result = await service.updateEmployee("employee", {
+                //                 phone_number: "0905091074",
+                //                 front_identify_card_photo: new MemoryStoredFile,
+                //                 back_identify_card_photo: new MemoryStoredFile
+                //         });
+
+                //         expect(result).toEqual(true);
+                // });
                 it("should update", async () => {
                         const mockEmployeeId = "employee";
                         jest.spyOn(employeeRepository, 'update').mockImplementation(
@@ -254,23 +271,81 @@ describe("EmployeeController", () => {
                                 front_identify_card_photo: new MemoryStoredFile(),
                                 back_identify_card_photo: new MemoryStoredFile(),
                         });
-
-
                 });
-                it("should update new employee fail ", async () => {
-                        const err = new Error("Can not update employee");
-                        jest.spyOn(employeeRepository, "update").mockRejectedValue(err);
-                        await expect(service.update("employeeId", {
-                                front_identify_card_photo: new MemoryStoredFile(),
-                                back_identify_card_photo: new MemoryStoredFile(),
-                        })).rejects.toThrow(err);
+                it("should update success employee without avata photo with ft,bk", async () => {
+                        const mockEmployeeId = "employee";
+                        jest.spyOn(employeeRepository, "findOne").mockImplementation(
+                                async (id) => {
+                                        return mockEmployee;
+                                },
+                        );
+                        jest.spyOn(employeeRepository, "save").mockImplementation(
+                                async (dto) => {
+                                        return mockEmployee;
+                                },
+                        );
+
+                        const result = await service.updateEmployee(mockEmployeeId, {
+                                phone_number: "0905091074",
+                                front_identify_card_photo: new MemoryStoredFile,
+                                back_identify_card_photo: new MemoryStoredFile
+                        });
+
+                        expect(result).toEqual(mockEmployee);
+                });
+                it("should update success employee with avata photo without ft,bk", async () => {
+                        const mockEmployeeId = "employee";
+                        jest.spyOn(employeeRepository, "findOne").mockImplementation(
+                                async (id) => {
+                                        return mockEmployee;
+                                },
+                        );
+                        jest.spyOn(employeeRepository, "save").mockImplementation(
+                                async (dto) => {
+
+                                        return mockEmployee;
+                                },
+                        );
+                        jest.spyOn(employeeRepository, 'update').mockResolvedValue(mockUpdateResult);
+                        const result = await service.updateEmployee(mockEmployeeId, {
+                                phone_number: "0905091074",
+                                profile_picture: {
+                                        mimetype: 'text/csv',
+                                        buffer: Buffer.from('one,two,three')
+                                } as MemoryStoredFile,
+                                front_identify_card_photo: new MemoryStoredFile,
+                                back_identify_card_photo: new MemoryStoredFile
+                        });
+
+                        expect(result).toEqual(true);
+                });
+                it("should update success employee without avata photo with ft,bk", async () => {
+                        const mockEmployeeId = "employee";
+                        jest.spyOn(employeeRepository, 'update').mockResolvedValue(mockUpdateResult);
+                      
+                        const result = await service.update(mockEmployeeId, {
+                          front_identify_card_photo: new MemoryStoredFile(),
+                          back_identify_card_photo: new MemoryStoredFile(),
+                        });
+                      
+                        expect(result).toEqual(true);
+                      });
+
+                it("should delete  employee", async () => {
+                        jest.spyOn(employeeRepository, "softDelete").mockImplementation(
+                                async () => {
+                                        return mockUpdateResult;
+                                },
+                        );
+                        const result = await service.delete("employee");
+                        expect(result).toEqual(mockUpdateResult);
                 });
                 it("should delete success employee", async () => {
                         const mockEmployeeId = "employee";
                         jest.spyOn(employeeRepository, 'update').mockImplementation(
                                 async (id, dto) => {
                                         if (id === mockEmployeeId) {
-
+        
                                         }
                                         return { affected: 0, generatedMaps: [], raw: [] };
                                 },

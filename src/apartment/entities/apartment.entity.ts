@@ -113,4 +113,6 @@ export class Apartment {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+        max_floor: any;
+        find: any;
 }

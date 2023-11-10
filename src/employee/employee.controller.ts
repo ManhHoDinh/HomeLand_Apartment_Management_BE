@@ -59,7 +59,7 @@ export class EmployeeController {
         @Patch(":id")
         @ApiConsumes("multipart/form-data")
         @FormDataRequest()
-        async update(
+        async updateEmployee(
                 @Param("id") id: string,
                 @Body() updateEmployeeDto: UpdateEmployeeDto,
         ): Promise<Employee> {

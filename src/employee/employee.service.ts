@@ -145,7 +145,6 @@ export class EmployeeService implements EmployeeRepository {
             updateEmployeeDto;
         let profile = plainToInstance(Profile, rest);
         const queryRunner = this.dataSource.createQueryRunner();
-        let avatarURL: string | undefined;
 
         try {
             await queryRunner.connect();
@@ -267,14 +266,14 @@ export class EmployeeService implements EmployeeRepository {
         return isQueryAffected(result);
     }
 
-    async hardDelete?(id: any): Promise<boolean> {
-        try {
-            const result = await this.employeeRepository.delete({ id });
-            return isQueryAffected(result);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
+    // async hardDelete?(id: any): Promise<boolean> {
+    //     try {
+    //         const result = await this.employeeRepository.delete({ id });
+    //         return isQueryAffected(result);
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw error;
+    //     }
+    // }
 
 }

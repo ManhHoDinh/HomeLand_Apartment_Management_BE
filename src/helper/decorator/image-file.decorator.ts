@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { HasMimeType, IsFile, IsFiles, MaxFileSize } from "nestjs-form-data";
 import { commonImageMIMETypes } from "../constant";
 import { IsDefined, IsOptional } from "class-validator";
+import { Transform } from "class-transformer";
 
 export function IsImageFile(isOptional = false) {
     return applyDecorators(
@@ -18,8 +19,12 @@ export function IsImageFiles(isOptional = false) {
     return applyDecorators(
         ApiProperty({ type: "file", required: !isOptional }),
         isOptional ? IsOptional() : IsDefined(),
+        Transform(({ value }) => {
+            if (value && !Array.isArray(value)) return [value];
+            return value;
+        }),
         IsFiles(),
-        MaxFileSize(10e6),
-        HasMimeType(commonImageMIMETypes),
+        MaxFileSize(10e6, { each: true }),
+        HasMimeType(commonImageMIMETypes, { each: true }),
     );
 }

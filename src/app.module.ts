@@ -22,6 +22,7 @@ import { EmployeeModule } from "./employee/employee.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 import { ServiceModule } from './service/service.module';
+import { ServicePackageModule } from './service-package/service-package.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -82,6 +83,7 @@ import { ServiceModule } from './service/service.module';
         AccountModule,
         AdminModule,
         ServiceModule,
+        ServicePackageModule,
     ],
     controllers: [AppController],
     providers: [AppService],

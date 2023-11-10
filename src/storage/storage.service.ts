@@ -33,7 +33,7 @@ export abstract class StorageManager {
      * @param newPath path to file will be copy to
      * @returns public url of new file
      */
-    abstract copy(oldPath: string, newPath: string): Promise<string>;
+    //abstract copy(oldPath: string, newPath: string): Promise<string>;
 
     /**
      * Initiate storage if not exist
@@ -84,20 +84,21 @@ export class SupabaseStorageManager
         await this.supabaseClient.storage.createBucket(this.BUCKET_NAME, {
             public: true,
         });
+
     }
+    
+    // async copy(oldPath: string, newPath: string): Promise<string> {
+    //     const { data, error } = await this.supabaseClient.storage
+    //         .from(this.BUCKET_NAME)
+    //         .copy(oldPath, newPath);
+    //     if (error) throw new StorageError(error);
 
-    async copy(oldPath: string, newPath: string): Promise<string> {
-        const { data, error } = await this.supabaseClient.storage
-            .from(this.BUCKET_NAME)
-            .copy(oldPath, newPath);
-        if (error) throw new StorageError(error);
+    //     const response = this.supabaseClient.storage
+    //         .from(this.BUCKET_NAME)
+    //         .getPublicUrl(data.path);
 
-        const response = this.supabaseClient.storage
-            .from(this.BUCKET_NAME)
-            .getPublicUrl(data.path);
-
-        return response.data.publicUrl;
-    }
+    //     return response.data.publicUrl;
+    // }
 
     async remove(pathsOrURLs: string[]): Promise<boolean> {
         if (pathsOrURLs.length === 0) return true;

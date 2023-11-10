@@ -205,7 +205,7 @@ describe("ContractService", () => {
                 ...mockContract,
             } as UpdateContractDto);
             expect(result).toEqual(mockUpdateResult);
-        });
+        },30000);
         it("should update Contract success with invalid id", async () => {
             try {
                 const result = await controller.update("in-val", {

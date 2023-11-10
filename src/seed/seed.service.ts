@@ -42,8 +42,8 @@ export class SeedService {
             await this.storageManager.destroyStorage();
             await this.dataSource.dropDatabase();
         } catch (error) {
-            console.error(error);
-            throw error;
+            throw new Error("error");
+            
         }
     }
     async createDB() {
@@ -51,8 +51,7 @@ export class SeedService {
             await this.storageManager.initiateStorage();
             await this.dataSource.synchronize();
         } catch (error) {
-            console.error(error);
-            throw error;
+            throw new Error("error");
         }
     }
     private readonly NUMBER_OF_BUILDING = 5;
@@ -91,54 +90,6 @@ export class SeedService {
     ];
 
     async startSeeding() {
-       await this.createDemoAdmin();
-       await this.createDemoResident();
-       await this.createDemoManager();
-       await this.createDemoTechnician();
-       await this.createDemoAccountResident();
-        
-
-        // Create demo building
-        let buildingInfo: any[] = await this.createDemoBuildings();
-        let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
-        await this.createDemoApartments(floorInfo);
-        await this.createDemoContract();
-    }
-    async createDemoBuildings() {
-        let buildingInfo: any[] = [];
-        for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
-            buildingInfo.push({
-                building_id: `BLD${i}`,
-                name: `Building ${i}`,
-                address: faker.location.streetAddress(),
-            });
-        }
-        await this.dataSource
-            .createQueryBuilder()
-            .insert()
-            .into(Building)
-            .values(buildingInfo)
-            .execute();
-        return buildingInfo;
-    }
-    async createDemoFloors(buildingInfo: any[]) {
-        let floorInfo: any[] = [];
-        for (let building of buildingInfo) {
-            for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
-                floorInfo.push({
-                    floor_id: `${building.building_id}/FLR${i}`,
-                    name: `Floor ${i}`,
-                    building_id: building.building_id,
-                });
-            }
-        }
-        await this.dataSource
-            .createQueryBuilder()
-            .insert()
-            .into(Floor)
-            .values(floorInfo)
-            .execute();
-        return floorInfo;
     }
     async createDemoApartments(floorInfo: any[]) {
         let apartmentIds: any[] = [];
@@ -166,252 +117,8 @@ export class SeedService {
             }
         }
 
-        //create demo resident
-            for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-                 await this.createDemoResident()
-            }
+        
        
     }
-    async createDemoAccountResident() {
-        let id = "RESIDENT"; 
-        const resident = await this.dataSource.getRepository(Resident).save({
-            id: id,
-            profile: {
-                date_of_birth: faker.date.birthdate(),
-                name: faker.person.fullName(),
-                gender: Gender.MALE,
-                phone_number: faker.phone.number(),
-                front_identify_card_photo_URL: await this.storageManager.upload(
-                    this.frontIdentity.buffer,
-                    "resident/" + id + "/frontIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-                back_identify_card_photo_URL: await this.storageManager.upload(
-                    this.backIdentity.buffer,
-                    "resident/" + id + "/backIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-            },
-            account: {
-                owner_id: id,
-                email: "resident@gmail.com",
-                password: this.hashService.hash("password"),
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "resident/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),  
-            } 
-        });
-    }
-
-    async createDemoTechnician() {
-        let id = "TEC" + this.idGenerator.generateId();
-        const technician = await this.dataSource
-            .getRepository(Technician)
-            .save({
-                id: id,
-                profile: {
-                    date_of_birth: new Date("1999-01-01"),
-                    name: "DEMO TECHNICIAN",
-                    gender: Gender.MALE,
-                    phone_number: "0896666666",
-                    front_identify_card_photo_URL:
-                        await this.storageManager.upload(
-                            this.frontIdentity.buffer,
-                            "admin/" + id + "/frontIdentifyPhoto.jpg",
-                            "image/jpeg",
-                        ),
-                    back_identify_card_photo_URL:
-                        await this.storageManager.upload(
-                            this.backIdentity.buffer,
-                            "admin/" + id + "/backIdentifyPhoto.jpg",
-                            "image/jpeg",
-                        ),
-                },
-                account: {
-                    owner_id: id,
-                    email: "technician@gmail.com",
-                    password: this.hashService.hash("password"),
-                    avatarURL: await this.storageManager.upload(
-                        await this.avatarGenerator.generateAvatar(
-                            "DEMO TECHNICIAN",
-                        ),
-                        "admin/" + id + "/avatar.svg",
-                        "image/svg+xml",
-                    ),
-                },
-            });
-    }
-
-    async createDemoManager() {
-        let id = "MNG" + this.idGenerator.generateId();
-        const manager = await this.dataSource.getRepository(Manager).save({
-            id: id,
-            profile: {
-                date_of_birth: new Date("1999-01-01"),
-                name: "DEMO MANAGER",
-                gender: Gender.MALE,
-                phone_number: "0677778787",
-                front_identify_card_photo_URL: await this.storageManager.upload(
-                    this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-                back_identify_card_photo_URL: await this.storageManager.upload(
-                    this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-            },
-            account: {
-                owner_id: id,
-                email: "manager@gmail.com",
-                password: this.hashService.hash("password"),
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
-                    "admin/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
-            },
-        });
-    }
-
-    async createDemoResident(residentId?: string, email?: string) {
-        let id = "RES" + this.idGenerator.generateId();
-        const random = Math.random() * 2;
-        if (residentId) id = residentId;
-
-        const resident = await this.dataSource.getRepository(Resident).save({
-            id: id,
-            profile: {
-                date_of_birth: faker.date.birthdate(),
-                name: faker.person.fullName(),
-                gender: Gender.MALE,
-                phone_number: faker.phone.number(),
-                front_identify_card_photo_URL: await this.storageManager.upload(
-                    this.frontIdentity.buffer,
-                    "resident/" + id + "/frontIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-                back_identify_card_photo_URL: await this.storageManager.upload(
-                    this.backIdentity.buffer,
-                    "resident/" + id + "/backIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-            },
-            account: random === 0 ? {
-                owner_id: id,
-                email: faker.internet.email(),
-                password: this.hashService.hash("password"),
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "resident/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),  
-            } : undefined,
-        });
-        
-    }
-
   
-    async createDemoEmployee() {
-        let id = "EMP" + this.idGenerator.generateId();
-        const employee = await this.dataSource.getRepository(Resident).save({
-            id: id,
-            profile: {
-                date_of_birth: new Date("1999-01-01"),
-                name: "DEMO EMPLOYEE",
-                gender: Gender.MALE,
-                phone_number: faker.phone.number(),
-                front_identify_card_photo_URL: await this.storageManager.upload(
-                    this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-                back_identify_card_photo_URL: await this.storageManager.upload(
-                    this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-            },
-            account: {
-                owner_id: id,
-                email: "employee@gmail.com",
-                password: this.hashService.hash("password"),
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO EMPOLYEE"),
-                    "admin/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
-            },
-        });
-    }
-
-    async createDemoAdmin() {
-        let id = "ADM" + this.idGenerator.generateId();
-        const admin = await this.dataSource.getRepository(Admin).save({
-            id: id,
-            profile: {
-                date_of_birth: new Date("1999-01-01"),
-                name: "DEMO ADMIN",
-                gender: Gender.MALE,
-                phone_number: "0755555555",
-                front_identify_card_photo_URL: await this.storageManager.upload(
-                    this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-                back_identify_card_photo_URL: await this.storageManager.upload(
-                    this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
-                    "image/jpeg",
-                ),
-            },
-            account: {
-                owner_id: id,
-                email: "admin@gmail.com",
-                password: this.hashService.hash("password"),
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
-                    "admin/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
-            },
-        });
-    }
-    async createDemoApartment(id?: string) {
-        let apartmentId = "APM" + this.idGenerator.generateId();
-        if (id) apartmentId = id;
-        const floor = await this.dataSource.getRepository(Floor).find()[0];
-        await this.apartmentService.create(
-            {
-                name: "St. Crytal",
-                images: this.images,
-                length: 20,
-                building_id: floor.building_id,
-                floor_id: floor.floor_id,
-                width: 15,
-                description: faker.lorem.paragraphs({
-                    min: 3,
-                    max: 5,
-                }),
-                number_of_bathroom: 2,
-                number_of_bedroom: 1,
-                rent: 9000000,
-            },
-            apartmentId,
-        );
-    }
-    async createDemoContract() {
-        // await this.createDemoResident("RES123");
-        // await this.createDemoApartment("APM1698502960091");
-        // let contractId = "Contract" + this.idGenerator.generateId();
-        // await this.dataSource.getRepository(Contract).save({
-        //     contract_id: contractId,
-        //     resident_id: "RES123",
-        //     apartment_id: "APM1698502960091",
-        //     expired_date: new Date(),
-        // });
-    }
 }

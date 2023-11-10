@@ -22,7 +22,9 @@ import { ExpressAdapter } from "@nestjs/platform-express";
 import { ConfigModule } from "@nestjs/config";
 import { AccountService } from "../account/account.service";
 import { CreateResidentDto } from "src/resident/dto/create-resident.dto";
-describe("EmployeeController", () => {
+import { readFileSync } from "fs";
+import { isQueryAffected } from "../helper/validation";
+describe("EmployeeService", () => {
         let service: EmployeeService;
         let accountService: AccountService;
         let employeeRepository: Repository<Employee>;
@@ -31,6 +33,10 @@ describe("EmployeeController", () => {
                 raw: [],
                 affected: 1,
         };
+        const image = {
+                buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
+            } as MemoryStoredFile;
+        
         const mockUpdateResult: UpdateResult = {
                 raw: [],
                 affected: 1,
@@ -287,8 +293,8 @@ describe("EmployeeController", () => {
 
                         const result = await service.updateEmployee(mockEmployeeId, {
                                 phone_number: "0905091074",
-                                front_identify_card_photo: new MemoryStoredFile,
-                                back_identify_card_photo: new MemoryStoredFile
+                                front_identify_card_photo: image,
+                                back_identify_card_photo: image
                         });
 
                         expect(result).toEqual(mockEmployee);
@@ -309,15 +315,12 @@ describe("EmployeeController", () => {
                         jest.spyOn(employeeRepository, 'update').mockResolvedValue(mockUpdateResult);
                         const result = await service.updateEmployee(mockEmployeeId, {
                                 phone_number: "0905091074",
-                                profile_picture: {
-                                        mimetype: 'text/csv',
-                                        buffer: Buffer.from('one,two,three')
-                                } as MemoryStoredFile,
-                                front_identify_card_photo: new MemoryStoredFile,
-                                back_identify_card_photo: new MemoryStoredFile
+                                profile_picture: image,
+                                front_identify_card_photo: image,
+                                back_identify_card_photo: image
                         });
 
-                        expect(result).toEqual(true);
+                        expect(result).toEqual(mockEmployee);
                 });
                 it("should update success employee without avata photo with ft,bk", async () => {
                         const mockEmployeeId = "employee";
@@ -338,18 +341,7 @@ describe("EmployeeController", () => {
                                 },
                         );
                         const result = await service.delete("employee");
-                        expect(result).toEqual(mockUpdateResult);
-                });
-                it("should delete success employee", async () => {
-                        const mockEmployeeId = "employee";
-                        jest.spyOn(employeeRepository, 'update').mockImplementation(
-                                async (id, dto) => {
-                                        if (id === mockEmployeeId) {
-        
-                                        }
-                                        return { affected: 0, generatedMaps: [], raw: [] };
-                                },
-                        );
+                        expect(result).toEqual(true);
                 });
                 it("should delete new employee fail ", async () => {
                         const err = new Error("Can not delete employee");

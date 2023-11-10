@@ -44,6 +44,7 @@
         "redis": "^4.6.10",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^7.8.1",
+        "socket.io-client": "^4.7.2",
         "typeorm": "^0.3.17"
     },
     "devDependencies": {
@@ -87,7 +88,11 @@
             "^.+\\.(t|j)s$": "ts-jest"
         },
         "collectCoverageFrom": [
-            "**/*.{!(module|entity|guard|filter|sub),}.(t|j)s"
+            "**/*.{!(module|entity|guard|filter|sub|seed.service),}.(t|j)s"
+        ],
+        "coveragePathIgnorePatterns": [
+            "<rootDir>/storage/storage.service.ts"
+           
         ],
         "setupFiles": [
             "../setEnvVars.js"

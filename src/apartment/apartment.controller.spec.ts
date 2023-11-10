@@ -22,6 +22,7 @@ describe("ApartmentController", () => {
                 raw: [],
                 affected: 1,
         };
+        
         const mockUpdateResult: UpdateResult = {
                 raw: [],
                 affected: 1,
@@ -65,7 +66,7 @@ describe("ApartmentController", () => {
                         return mockUpdateResult;
                 }),
         };
-        beforeEach(async () => {
+        beforeAll(async () => {
                 const module: TestingModule = await Test.createTestingModule({
                         imports: [
                                 NestjsFormDataModule.config({
@@ -208,9 +209,9 @@ describe("ApartmentController", () => {
                         expect(result).toEqual(mockAparment);
                 });
                 it("should not find aparment by id", async () => {
-                        const err = new Error("aparment not found");
+                        const err = new NotFoundException("Apartment not found");;
                         jest.spyOn(mockAparmentservice, "findOne").mockRejectedValue(err)
-                        await expect(controller.findOne("")).rejects.toThrow(err)
+                        await expect(controller.findOne("in-valid")).rejects.toThrow(err)
                 });
                 it("should find all apartment", async () => {
                         const result = await controller.findAll(1);

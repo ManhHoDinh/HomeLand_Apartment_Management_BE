@@ -11,6 +11,7 @@ import { CreateBuildingDto } from "./dto/create-building.dto";
 import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { INestApplication, NotFoundException } from "@nestjs/common";
 import { random } from "lodash";
+import { Apartment } from "../apartment/entities/apartment.entity";
 
 describe("BuildingController", () => {
     let controller: BuildingController;
@@ -49,7 +50,7 @@ describe("BuildingController", () => {
             return mockUpdateResult;
         }),
     };
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 NestjsFormDataModule.config({
@@ -88,7 +89,7 @@ describe("BuildingController", () => {
                         }
                     },
                 }),
-                TypeOrmModule.forFeature([Building, Floor]),
+                TypeOrmModule.forFeature([Building, Floor, Apartment]),
                 IdGeneratorModule,
                 Repository<Building>,
             ],

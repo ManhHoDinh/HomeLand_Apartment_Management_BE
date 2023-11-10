@@ -7,10 +7,11 @@ import { Building } from "./entities/building.entity";
 import { Floor } from "../floor/entities/floor.entity";
 import { BuildingController } from "./building.controller";
 import { Like } from "typeorm";
+import { Apartment } from "../apartment/entities/apartment.entity";
 @Module(
   {
     imports: [
-        TypeOrmModule.forFeature([Building, Floor]),
+        TypeOrmModule.forFeature([Building, Floor, Apartment]),
         IdGeneratorModule,
     ],
     controllers: [BuildingController],

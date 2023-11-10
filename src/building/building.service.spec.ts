@@ -22,6 +22,7 @@ import { mock } from "node:test";
 import { CreateAccountDto } from "src/account/dto/create-account.dto";
 import { promiseHooks } from "v8";
 import { error } from "console";
+import { Apartment } from "../apartment/entities/apartment.entity";
 
 describe("BuildingService", () => {
     let service: TypeORMBuildingService;
@@ -39,7 +40,7 @@ describe("BuildingService", () => {
         generatedMaps: [],
     };
     const BUILDING_REPOSITORY_TOKEN = getRepositoryToken(Building);
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 NestjsFormDataModule.config({
@@ -78,7 +79,7 @@ describe("BuildingService", () => {
                         }
                     },
                 }),
-                TypeOrmModule.forFeature([Building, Floor]),
+                TypeOrmModule.forFeature([Building, Floor, Apartment]),
                 IdGeneratorModule,
                 Repository<Building>,
             ],

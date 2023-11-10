@@ -16,6 +16,7 @@ import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { AuthModule } from "../auth/auth.module";
 import { StorageModule } from "../storage/storage.module";
 import { JwtModule } from "@nestjs/jwt";
+import { readFileSync } from "fs";
 
 describe("EmployeeController", () => {
     let controller: EmployeeController;
@@ -24,7 +25,10 @@ describe("EmployeeController", () => {
         affected: 1,
         generatedMaps: [],
     };
-    
+    const image = {
+        buffer: readFileSync(process.cwd() + "/src/seed/room.jpg"),
+    } as MemoryStoredFile;
+
     const mockEmployee = {
         id: "emloyee",
        
@@ -41,7 +45,7 @@ describe("EmployeeController", () => {
       } as Employee;
       
     const mockEmployeeService = {
-      findOne: jest.fn().mockResolvedValue(mockEmployee),
+      findOne: jest.fn().mockResolvedValue(mockEmployee).mockResolvedValue(new NotFoundException),
         findAll: jest.fn().mockImplementation(() => [mockEmployee]),
         create: jest.fn().mockImplementation((dto:CreateEmployeeDto) => {
             return {
@@ -59,9 +63,9 @@ describe("EmployeeController", () => {
             };
         }),
         // findOne: jest.fn().mockImplementation((id) => mockEmployee),
-        updateResident: jest.fn().mockImplementation((id, dto) => {
+        updateEmployee: jest.fn().mockImplementation((id, dto) => {
             return {
-                id: "resident",
+                id: "employee",
                 profile: {
                     date_of_birth: mockEmployee.profile.date_of_birth,
                     name: mockEmployee.profile.name,

@@ -14,6 +14,7 @@ import { Floor } from "../floor/entities/floor.entity";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { isQueryAffected } from "../helper/validation";
 import { th } from "@faker-js/faker";
+import { Apartment } from "../apartment/entities/apartment.entity";
 export abstract class BuildingService implements IRepository<Building> {
     abstract findOne(id: string): Promise<Building | null>;
     abstract update(id: string, updateEntityDto: any);
@@ -34,7 +35,8 @@ export class TypeORMBuildingService extends BuildingService {
         private readonly buildingRepository: Repository<Building>,
         @InjectRepository(Floor)
         private readonly floorRepository: Repository<Floor>,
-
+        @InjectRepository(Apartment)
+        private readonly apartmentRepository: Repository<Apartment>,
         private readonly idGenerate: IdGenerator,
     ) {
         super();

@@ -44,7 +44,6 @@ export class CreateResidentDto extends PickType(Profile, [
 
     @ApiProperty({ type: "file", required: false })
     @IsFile()
-    @Transform(({ value }) => (isFile(value) ? value : undefined))
     @IsOptional()
     @MaxFileSize(10e6)
     @HasMimeType(commonImageMIMETypes)

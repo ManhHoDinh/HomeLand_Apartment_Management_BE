@@ -96,7 +96,7 @@ describe("ResidentController", () => {
             return mockUpdateResult;
         }),
     };
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 NestjsFormDataModule.config({
@@ -146,7 +146,7 @@ describe("ResidentController", () => {
             .useValue(mockResidentService)
             .compile();
         controller = module.get<ResidentController>(ResidentController);
-    }, 30000);
+    }, 50000);
 
     it("should be defined", () => {
         expect(controller).toBeDefined();

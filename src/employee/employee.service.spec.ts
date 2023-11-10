@@ -117,7 +117,7 @@ describe("EmployeeController", () => {
         it("should repository be defined", () => {
                 expect(employeeRepository).toBeDefined();
         });
-        describe("resident", () => {
+        describe("Employee", () => {
                 it("should find employee by id", async () => {
                         jest.spyOn(employeeRepository, "findOne").mockImplementation(
                                 async () => mockEmployee,

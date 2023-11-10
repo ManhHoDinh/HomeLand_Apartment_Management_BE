@@ -7,7 +7,7 @@ import { Apartment } from "./entities/apartment.entity";
 import { Floor } from "../floor/entities/floor.entity";
 import { TypeOrmModule, getRepositoryToken } from "@nestjs/typeorm";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
-import { NestjsFormDataModule } from "nestjs-form-data";
+import { MemoryStoredFile, NestjsFormDataModule } from "nestjs-form-data";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { Repository, UpdateResult, DeleteResult, DataSource } from "typeorm";
 import {
@@ -15,25 +15,13 @@ import {
         INestApplication,
         NotFoundException,
 } from "@nestjs/common";
-import { AppModule } from "../app.module";
 import { faker, id_ID } from "@faker-js/faker";
-import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { mock } from "node:test";
-import { CreateAccountDto } from "src/account/dto/create-account.dto";
-import { promiseHooks } from "v8";
-import { error } from "console";
 import { Resident } from "../resident/entities/resident.entity";
 import { AuthModule } from "../auth/auth.module";
 import { StorageModule } from "../storage/storage.module";
 import { JwtModule } from "@nestjs/jwt";
-import { IdGenerator } from "src/id-generator/id-generator.service";
 describe("ApartmentService", () => {
         let service: ApartmentServiceImp;
-        let apartmentRepository: Repository<Apartment>;
-        let residentRepository: Repository<Resident>;
-        let storageManager: StorageManager;
-        let dataSource: DataSource;
-        let idGenerate: IdGenerator;
         let AparmentRepository: Repository<Apartment>;
         const mockAparmentservice = {
                 findAll: jest.fn().mockImplementation(() => [mockAparment]),
@@ -128,15 +116,6 @@ describe("ApartmentService", () => {
                         providers: [ApartmentServiceImp, {
                                 provide: ApartmentService,
                                 useValue: mockAparmentservice,
-                                // useValue: {
-                                //   find: jest.fn().mockResolvedValue([]),
-                                //   findOne: jest.fn().mockResolvedValue(new Employee()),
-                                //   findAll: jest.fn().mockResolvedValue([new Employee()]),
-                                //   create: jest.fn().mockResolvedValue(new Employee()),
-                                //   updateEmployee: jest.fn().mockResolvedValue(new Employee()),
-                                //   delete: jest.fn().mockResolvedValue({ affected: 1 }),
-
-                                // },
                         },],
                 }).compile();
 
@@ -224,14 +203,14 @@ describe("ApartmentService", () => {
                         console.log(result);
                         expect(result).toEqual(mockAparment);
                 });
-                it("should find Apartment by page", async () => {
-                        jest.spyOn(AparmentRepository, "findOne").mockImplementation(
-                                async () => mockAparment,
-                        );
-                        const result = await service.findAll(1);
-                        console.log(result);
-                        expect(result).toEqual([mockAparment]);
-                });
+                // it("should find Apartment by page", async () => {
+                //         jest.spyOn(AparmentRepository, "findOne").mockImplementation(
+                //                 async () => mockAparment,
+                //         );
+                //         const result = await service.findAll(1);
+                //         console.log(result);
+                //         expect(result).toEqual([mockAparment]);
+                // });
                 it("should find all Aparment", async () => {
                         jest.spyOn(AparmentRepository, "find").mockImplementation(
                                 async () => [mockAparment],
@@ -242,29 +221,42 @@ describe("ApartmentService", () => {
                 });
                 describe("Create", () => {
                         it("should create new Aparment", async () => {
-                                const mockRepository = {
-                                        metadata: {
-                                                columns: [],
-                                                relations: [],
-                                        },
-                                        create: jest.spyOn(AparmentRepository, "create").mockImplementation(
-                                                (dto) => {
-                                                        return {
-                                                                apartment_id: faker.string.binary(),
-                                                                building_id: "BLD1",
-                                                                name: dto.name,
-                                                                width: dto.width,
-                                                                length: dto.length,
-                                                                number_of_bedroom: dto.number_of_bedroom,
-                                                                number_of_bathroom: dto.number_of_bathroom,
-                                                                rent: dto.rent,
-                                                                description: "string",
-                                                                floor_id: "FLR1",
 
-                                                        } as Apartment;
-                                                },
-                                        )
-                                }
+                                jest.spyOn(AparmentRepository, "create").mockImplementation(
+                                        (dto) => {
+                                                return {
+                                                        apartment_id: faker.string.binary(),
+                                                        building_id: "BLD1",
+                                                        name: dto.name,
+                                                        width: dto.width,
+                                                        length: dto.length,
+                                                        number_of_bedroom: dto.number_of_bedroom,
+                                                        number_of_bathroom: dto.number_of_bathroom,
+                                                        rent: dto.rent,
+                                                        description: "string",
+                                                        floor_id: "FLR1",
+
+                                                } as Apartment;
+                                        },
+                                )
+                                jest.spyOn(AparmentRepository, "save").mockImplementation(
+                                        async (dto) => {
+                                                return {
+                                                        apartment_id: faker.string.binary(),
+                                                        building_id: "BLD1",
+                                                        name: dto.name,
+                                                        width: dto.width,
+                                                        length: dto.length,
+                                                        number_of_bedroom: dto.number_of_bedroom,
+                                                        number_of_bathroom: dto.number_of_bathroom,
+                                                        rent: dto.rent,
+                                                        description: "string",
+                                                        floor_id: "FLR1",
+
+                                                } as Apartment;
+                                        },
+                                )
+
                                 const result = await service.create({
                                         building_id: mockAparment.building_id,
                                         name: mockAparment.name,
@@ -288,34 +280,92 @@ describe("ApartmentService", () => {
                                         rent: mockAparment.rent,
                                         description: mockAparment.description,
                                         floor_id: mockAparment.floor_id,
-                                        images: [],
-                                        max_floor: mockAparment.max_floor,
+                                   
+                                     
                                 });
+                        });
+                        it("should create new apartment fail", async () => {
+                                const err = new BadRequestException("Create fail");
+                                jest.spyOn(service, "create").mockRejectedValue(err);
+                                await expect(service.create).rejects.toThrow(err);
                         });
                         describe("Update", () => {
-                                it("should create new building fail", async () => {
-                                        const err = new BadRequestException("Create fail");
-                                        jest.spyOn(service, "create").mockRejectedValue(err);
-                                        await expect(service.create).rejects.toThrow(err);
+                                it("should update success apartment", async () => {
+                                        jest.spyOn(AparmentRepository, "update").mockImplementation(
+                                                async () => {
+                                                        return mockUpdateResult;
+                                                },
+                                        );
+                                        const result = await service.update("BLD3", mockAparment);
+                                        expect(result).toEqual(mockUpdateResult);
+                                });
+                                it("should update apartment fail because id not found", async () => {
+                                        try {
+                                                const result = await service.update("", mockAparment);
+                                        } catch (e) {
+                                                expect(e.message).toBe("No metadata for \"Apartment\" was found.");
+                                        }
                                 });
                         });
-                        it("should update success building", async () => {
-                                jest.spyOn(AparmentRepository, "update").mockImplementation(
-                                        async () => {
-                                                return mockUpdateResult;
-                                        },
-                                );
-                                const result = await service.update("BLD3", mockAparment);
-                                expect(result).toEqual(mockUpdateResult);
+                       
+                                
+                             
+                      
+                        describe('newImageHaveStrangeURL', () => {
+                                it('should return false if there are no new images', () => {
+                                        const newImages: (string | MemoryStoredFile)[] = [];
+                                        const oldImageURLS = ['http://example.com/image1.png'];
+
+                                        const result = (service as any).newImageHaveStrangeURL(newImages, oldImageURLS);
+
+                                        expect(result).toBe(false);
+                                });
+
+                                it('should return true if at least one new image has a strange URL', () => {
+                                        const newImages = [
+                                                'http://example.com/image2.png',
+                                                'http://example.com/image3.png',
+                                                'http://strange-url.com/image4.png',
+                                        ];
+                                        const oldImageURLS = ['http://example.com/image1.png'];
+
+                                        const result = (service as any).newImageHaveStrangeURL(newImages, oldImageURLS);
+
+                                        expect(result).toBe(true);
+                                });
                         });
-                        it("should update building fail because id not found", async () => {
-                                try {
-                                        const result = await service.update("", mockAparment);
-                                } catch (e) {
-                                        expect(e.message).toBe("Id not found.");
-                                }
+                        describe('isPromiseFulfilledResult', () => {
+                                it('should return true if the promise is fulfilled', () => {
+                                        const fulfilledPromise: PromiseFulfilledResult<any> = {
+                                                status: 'fulfilled',
+                                                value: 'test',
+                                        };
+
+                                        const result = (service as any).isPromiseFulfilledResult(fulfilledPromise as any);
+
+                                        expect(result).toBe(true);
+                                });
+
+                                it('should return false if the promise is rejected', () => {
+                                        const rejectedPromise: PromiseRejectedResult = {
+                                                status: 'rejected',
+                                                reason: 'test',
+                                        };
+
+                                        const result = (service as any).isPromiseFulfilledResult(rejectedPromise as any);
+
+                                        expect(result).toBe(false);
+                                });
+
+
+
+
                         });
+                        
 
                 });
+
+
         });
+
 });

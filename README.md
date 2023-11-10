@@ -1,3 +1,11 @@
+## NOTE
+There are some services and APIS we can only use with free amount, please register these service on you own and replace the api key inside  [.env.example](.env.example)
+:
+
+* https://guides.platerecognizer.com/docs/snapshot/api-reference
+* https://supabase.com
+* Postgresql and Redis (we recommend using on [Render](https://render.com/))
+
 ## HOW TO BUILD
 ```bash
 # clone repository

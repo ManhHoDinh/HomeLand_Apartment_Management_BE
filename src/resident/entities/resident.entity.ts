@@ -12,6 +12,7 @@ import { Account } from "../../account/entities/account.entity";
 import { Contract } from "../../contract/entities/contract.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
+import { Vehicle } from "../../vehicle/entities/vehicle.entity";
 
 @Entity()
 export class Resident {
@@ -25,7 +26,7 @@ export class Resident {
         nullable: true,
         cascade: true,
     })
-    @JoinColumn()   
+    @JoinColumn()
     account?: Account;
 
     @Column({ nullable: true })
@@ -33,7 +34,7 @@ export class Resident {
 
     @Column({ nullable: true })
     payment_info?: string;
-    
+
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
 
@@ -43,6 +44,9 @@ export class Resident {
 
     @Column({ nullable: true })
     stay_at_apartment_id: string;
+
+    @OneToMany(() => Vehicle, (vehicle) => vehicle.resident)
+    vehicles: Vehicle[];
 
     @CreateDateColumn()
     created_at: Date;

@@ -37,7 +37,9 @@ export class ServiceController {
   findOne(@Param('id') id: string) {
     return this.serviceService.findOne(id);
   }
-
+  
+  @ApiConsumes("multipart/form-data")
+  @FormDataRequest()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.serviceService.update(id, updateServiceDto);

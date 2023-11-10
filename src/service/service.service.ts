@@ -34,17 +34,17 @@ export class ServiceService {
     async create(createServiceDto: CreateServiceDto, id?: string) {
         const { images, ...rest } = createServiceDto;
         let service = this.serviceRepository.create(rest);
-
+        service.imageURLs = [];
         service.service_id = "SER" + this.idGenerate.generateId().toString();
         if (id) service.service_id = id;
         const queryRunner = this.dataSource.createQueryRunner();
-
         if (images) {
             let uploadResults: PromiseSettledResult<string>[] = [];
-
+            
             try {
                 await queryRunner.connect();
                 await queryRunner.startTransaction();
+                
                 uploadResults = await Promise.allSettled(
                     images.map((image) =>
                         this.storageManager.upload(
@@ -77,10 +77,9 @@ export class ServiceService {
             } finally {
                 await queryRunner.release();
             }
-        } else {
-            service = await this.serviceRepository.save(service);
-            return await this.findOne(service.service_id);
         }
+        service = await this.serviceRepository.save(service);
+        return await this.findOne(service.service_id);
     }
 
     async findAll(page?: number) {

@@ -45,8 +45,7 @@ export class Service {
     @Column({ nullable: true })
     description?: string;
 
-    @IsOptional()
-    @Column("simple-array", { nullable: true } )
+    @Column("simple-array", { nullable: true })
     imageURLs?: string[];
 
     @IsOptional()

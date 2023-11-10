@@ -24,9 +24,5 @@ export class CreateBuildingDto extends PickType(Building, [
     })
     @IsOptional()
     @IsString({ each: true })
-    @Transform(({ value }) => {
-        if (value && !Array.isArray(value)) return [value];
-        return value;
-    })
     floorIds?: string[];
 }

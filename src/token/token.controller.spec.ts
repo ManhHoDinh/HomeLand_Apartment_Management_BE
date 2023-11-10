@@ -11,22 +11,56 @@ import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
 import { TokenController } from "./token.controller";
 import { NestjsFormDataModule } from "nestjs-form-data";
-import { AuthService } from "../auth/auth.service";
+import { AuthService, AuthServiceImp } from "../auth/auth.service";
 import { SignInDto } from "../auth/dto/signin.dto";
-import { PersonRole } from "../helper/class/profile.entity";
+import { Gender, PersonRole } from "../helper/class/profile.entity";
+import { Account } from "../account/entities/account.entity";
+import { AccountService } from "../account/account.service";
+import { HashModule } from "../hash/hash.module";
+import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
+import { HashService } from "../hash/hash.service";
 
 describe("TokenService", () => {
     let controller: TokenController;
     const mockToken = "Token is valid";
-    let service: AuthService;
+    let accountRepository: Repository<Account>
+    let service: AuthServiceImp;
+    let hashSerVice : HashService
+    let jwtSerVice : JwtService
     const mockSignIn = {
-        email: "manh@gmail.com",
+        email: "resident@gmail.com",
         password: "password",
     } as SignInDto;
     const signInResult = {
-        role: PersonRole.ADMIN,
-        access_token: "avasa",
+        access_token: "abc",
+        role: PersonRole.RESIDENT,
     };
+    const mockResident = {
+        id: "resident",
+        profile: {
+            date_of_birth: new Date(2022),
+            name: "vobinh",
+            gender: Gender.MALE,
+            phone_number: "0978754723",
+            front_identify_card_photo_URL: "resident/frontIdentifyPhoto.jpg",
+            back_identify_card_photo_URL: "resident/backIdentifyPhoto.jpg",
+        },
+        account: {
+            owner_id: "resident",
+            email: "resident@gmail.com",
+            password: "password",
+            avatarURL: "resident/avatar.svg",
+        },
+        role: PersonRole.RESIDENT
+    } as Resident;
+    const mockAccount = {
+        owner_id: "resident",
+        email: "resident@gmail.com",
+        password: "password",
+        resident: mockResident,
+    } as Account;
+
+    const ACCOUNT_REPOSITORY_TOKEN = getRepositoryToken(Account);
     beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
@@ -67,12 +101,17 @@ describe("TokenService", () => {
                         }
                     },
                 }),
+                TypeOrmModule.forFeature([Account]),
+                Repository<Account>,
                 AuthModule,
                 JwtModule,
+                HashModule
             ],
-            controllers: [TokenController],
+            controllers: [TokenController, AccountService, AuthServiceImp, JWTAuthGuard,
+                JwtService],
         }).compile();
         controller = module.get<TokenController>(TokenController);
+       service = module.get(AuthServiceImp)
     }, 30000);
 
     it("should be defined", () => {
@@ -81,17 +120,14 @@ describe("TokenService", () => {
 
     describe("get Token", () => {
         it("should find Token by id", async () => {
-            jest.spyOn(controller, "validateToken").mockImplementation(
-                () => mockToken,
-            );
             const result = controller.validateToken();
-            expect(result).toEqual(mockToken);
+            expect(result).toEqual("Token is valid");
         });
     });
     describe("getExiredToken ", () => {
         it("should find Token by id", async () => {
-            jest.spyOn(controller, "getExiredToken").mockImplementation(
-                () => Promise.resolve(signInResult),
+            jest.spyOn(service, "signIn").mockImplementation(
+                async() =>signInResult,
             );
             const result = await controller.getExiredToken(mockSignIn);
             expect(result).toEqual(signInResult);

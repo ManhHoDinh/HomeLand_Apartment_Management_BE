@@ -81,7 +81,7 @@ export class Apartment {
 
     @ManyToOne(() => Floor, (floor) => floor.apartments)
     @JoinColumn({ name: "floor_id" })
-    floor: Floor;
+    floor?: Floor;
 
     @ApiProperty({ example: "BLD0/FLR0" })
     @IsString()
@@ -90,7 +90,7 @@ export class Apartment {
 
     @ManyToOne(() => Building, (building) => building.apartments)
     @JoinColumn({ name: "building_id" })
-    building: Building;
+    building?: Building;
 
     @ApiProperty({ example: "BLD0" })
     @IsString()
@@ -100,10 +100,10 @@ export class Apartment {
     @OneToMany(() => Resident, (resident) => resident.stay_at, {
         cascade: true,
     })
-    residents: Resident[];
+    residents?: Resident[];
 
     @OneToMany(() => Contract, (contract) => contract.apartment)
-    contracts: Contract[];
+    contracts?: Contract[];
 
     @Column("simple-array")
     imageURLs: string[];

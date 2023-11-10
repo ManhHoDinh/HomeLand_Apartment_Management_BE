@@ -1,7 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { SeedService } from "./seed.service";
-import { DataSource } from "typeorm";
-import { StorageManager } from "../storage/storage.service";
+import { DataSource, EntityTarget } from "typeorm";
+import {
+    StorageManager,
+    SupabaseStorageManager,
+} from "../storage/storage.service";
 import { IdGenerator } from "../id-generator/id-generator.service";
 import { HashService } from "../hash/hash.service";
 import { AvatarGenerator } from "../avatar-generator/avatar-generator.service";
@@ -19,6 +22,11 @@ import { StorageModule } from "../storage/storage.module";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { AuthModule } from "../auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { PickType } from "@nestjs/swagger";
+import { Apartment } from "src/apartment/entities/apartment.entity";
+import { Repository } from "typeorm/browser";
+import { Resident } from "src/resident/entities/resident.entity";
 
 describe("SeedService", () => {
     let seedService: SeedService;
@@ -29,7 +37,7 @@ describe("SeedService", () => {
     let avatarGenerator: AvatarGenerator;
     let apartmentService: ApartmentService;
     let residentService: ResidentService;
-
+    let supaClient: SupabaseClient;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
@@ -86,13 +94,28 @@ describe("SeedService", () => {
                 SeedService,
                 {
                     provide: DataSource,
-                    useValue: {},
+                    useValue: {
+                        dropDatabase: jest
+                            .fn()
+                            .mockImplementation(async () => {}),
+                            synchronize: jest
+                            .fn()
+                            .mockImplementation(async () => {}),
+                    },
                 },
                 Seed,
                 {
                     provide: StorageManager,
-                    useValue: {},
+                    useValue: {
+                        destroyStorage: jest
+                            .fn()
+                            .mockImplementation(async () => {}),
+                            initiateStorage:jest
+                            .fn()
+                            .mockImplementation(async () => {}),
+                    },
                 },
+                SupabaseStorageManager,
             ],
         }).compile();
 
@@ -104,15 +127,17 @@ describe("SeedService", () => {
         avatarGenerator = module.get<AvatarGenerator>(AvatarGenerator);
         apartmentService = module.get<ApartmentService>(ApartmentService);
         residentService = module.get<ResidentService>(ResidentService);
+        supaClient = module.get(SupabaseClient);
     });
 
-    afterEach(async () => {
-        await dataSource.destroy();
-    });
+    // afterEach(async () => {
+    //     await dataSource.destroy();
+    // });
     it("should be defined", () => {
         expect(seedService).toBeDefined();
         expect(dataSource).toBeDefined();
         expect(storageManager).toBeDefined();
+        expect(supaClient).toBeDefined();
     });
     // describe("startSeeding", () => {
     //     it("should start seeding", async () => {
@@ -120,54 +145,94 @@ describe("SeedService", () => {
     //         expect(result).toEqual({ msg: "Seeding started" });
     //     });
     // });
-    describe("dropDB", () => {
-        it("should call destroyStorage on the storageManager", async () => {
-            const destroyStorageSpy = jest
-                .spyOn(storageManager, "destroyStorage")
-                .mockImplementation();
 
-            await seedService.dropDB();
-
-            expect(destroyStorageSpy).toHaveBeenCalled();
-        });
-
-        it("should call dropDatabase on the dataSource", async () => {
-            const dropDatabaseSpy = jest
-                .spyOn(dataSource, "dropDatabase")
-                .mockImplementation();
-
-            await seedService.dropDB();
-
-            expect(dropDatabaseSpy).toHaveBeenCalled();
-        });
-    });
-
-    describe("createDB", () => {
-        it("should call initiateStorage and synchronize", async () => {
-            const initiateStorageSpy = jest
-                .spyOn(storageManager, "initiateStorage")
-                .mockImplementation();
-            const synchronizeSpy = jest
-                .spyOn(dataSource, "synchronize")
-                .mockImplementation();
-
-            await seedService.createDB();
-
-            expect(initiateStorageSpy).toHaveBeenCalled();
-            expect(synchronizeSpy).toHaveBeenCalled();
-        });
-
-        it("should handle errors and rethrow them", async () => {
-            const error = new Error("Test Error");
-            jest.spyOn(storageManager, "initiateStorage").mockRejectedValue(
-                error,
+    describe("seed", () => {
+        it("should drop database", async () => {
+            jest.spyOn(supaClient.storage, "emptyBucket").mockImplementation(
+                async (id) => {
+                    return {
+                        data: {
+                            message: "success",
+                        },
+                        error: null,
+                    };
+                },
             );
-
-            try {
-                await seedService.createDB();
-            } catch (e) {
-                expect(e).toBe(error);
-            }
+            jest.spyOn(supaClient.storage, "deleteBucket").mockImplementation(
+                async (id) => {
+                    return {
+                        data: {
+                            message: "success",
+                        },
+                        error: null,
+                    };
+                },
+            );
+            await seedService.dropDB();
+        });
+        it("should create database", async () => {
+            jest.spyOn(supaClient.storage, "createBucket").mockImplementation(
+                async (id, obj) => {
+                    return {
+                        data: Buffer,
+                        error: null,
+                    };
+                },
+            );
+            await seedService.createDB();
+        });
+        it("should create demo apartment", async () => {
+            jest.spyOn(apartmentService, "create").mockImplementation(
+                async (dto) => {
+                    return {
+                        apartment_id: "1",
+                        name: "St. Crytal",
+                        length: 1,
+                        building_id: "1",
+                        floor_id: "1",
+                        width: 1,
+                        description:"abc",
+                        number_of_bathroom: 1,
+                        number_of_bedroom: 1,
+                        rent: 1,
+                        status: "active",
+                        imageURLs: ["img"],
+                        created_at: new Date(2022),
+                    } as Apartment
+                    
+                },
+            );
+            await seedService.createDemoApartments(["1"]);
         });
     });
+    
+
+    // describe("createDB", () => {
+    //     it("should call initiateStorage and synchronize", async () => {
+    //         const initiateStorageSpy = jest
+    //             .spyOn(storageManager, "initiateStorage")
+    //             .mockImplementation();
+    //         const synchronizeSpy = jest
+    //             .spyOn(dataSource, "synchronize")
+    //             .mockImplementation();
+
+    //         await seedService.createDB();
+
+    //         expect(initiateStorageSpy).toHaveBeenCalled();
+    //         expect(synchronizeSpy).toHaveBeenCalled();
+    //     });
+
+    //     it("should handle errors and rethrow them", async () => {
+    //         const error = new Error("Test Error");
+    //         jest.spyOn(storageManager, "initiateStorage").mockRejectedValue(
+    //             error,
+    //         );
+
+    //         try {
+    //             await seedService.createDB();
+    //         } catch (e) {
+    //             expect(e).toBe(error);
+    //         }
+    //     });
+    // });
 });

@@ -76,10 +76,9 @@ describe("MeService", () => {
 
     describe("get Me", () => {
         it("should find Me by id", async () => {
-            jest.spyOn(controller, "getPersonalInfo").mockImplementation(
-                () => mockMe,
-            );
-            const result = controller.getPersonalInfo("1");
+            const result = controller.getPersonalInfo({
+                user: mockMe
+            });
             expect(result).toEqual(mockMe);
         });
     });

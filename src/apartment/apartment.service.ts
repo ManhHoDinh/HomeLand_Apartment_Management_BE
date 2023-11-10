@@ -201,6 +201,7 @@ export class ApartmentServiceImp extends ApartmentService {
         } finally {
             await queryRunnder.release();
         }
+        
     }
 
     private isPromiseFulfilledResult<T>(

@@ -22,6 +22,7 @@ describe("ApartmentController", () => {
                 raw: [],
                 affected: 1,
         };
+        
         const mockUpdateResult: UpdateResult = {
                 raw: [],
                 affected: 1,

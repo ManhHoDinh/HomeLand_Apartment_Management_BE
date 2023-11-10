@@ -7,7 +7,7 @@ import { Transform } from "class-transformer";
 
 export function IsImageFile(isOptional = false) {
     return applyDecorators(
-        ApiProperty({ type: "file", required: !isOptional }),
+        ApiProperty({ type: "file", format: "binary", required: !isOptional }),
         isOptional ? IsOptional() : IsDefined(),
         IsFile(),
         MaxFileSize(10e6),
@@ -17,14 +17,25 @@ export function IsImageFile(isOptional = false) {
 
 export function IsImageFiles(isOptional = false) {
     return applyDecorators(
-        ApiProperty({ type: "file", required: !isOptional }),
-        isOptional ? IsOptional() : IsDefined(),
-        Transform(({ value }) => {
-            if (value && !Array.isArray(value)) return [value];
-            return value;
+        ApiProperty({
+            type: "string",
+            required: !isOptional,
+            isArray: true,
+            items: {
+                type: "string",
+                format: "binary",
+            },
+            minItems: 1,
         }),
+        isOptional ? IsOptional() : IsDefined(),
+        Transform(({ value }) => toArray(value)),
         IsFiles(),
         MaxFileSize(10e6, { each: true }),
         HasMimeType(commonImageMIMETypes, { each: true }),
     );
+}
+
+export function toArray(value: any) {
+    if (value && !Array.isArray(value)) return [value];
+    return value;
 }

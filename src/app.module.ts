@@ -22,6 +22,8 @@ import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 import { VehicleModule } from "./vehicle/vehicle.module";
 
+import { ServiceModule } from './service/service.module';
+import { ServicePackageModule } from './service-package/service-package.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -81,6 +83,8 @@ import { VehicleModule } from "./vehicle/vehicle.module";
         }),
         AccountModule,
         AdminModule,
+        ServiceModule,
+        ServicePackageModule,
         VehicleModule,
     ],
     controllers: [AppController],

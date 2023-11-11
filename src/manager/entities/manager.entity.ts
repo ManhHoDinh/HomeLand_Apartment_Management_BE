@@ -1,3 +1,4 @@
+import { Building } from './../../building/entities/building.entity';
 import {
     Column,
     Entity,
@@ -6,6 +7,8 @@ import {
     JoinColumn,
     DeleteDateColumn,
     CreateDateColumn,
+    OneToMany,
+    ManyToOne,
 } from "typeorm";
 import { PersonRole, Profile } from "../../helper/class/profile.entity";
 import { Account } from "../../account/entities/account.entity";
@@ -21,6 +24,11 @@ export class Manager {
     @OneToOne(() => Account, { nullable: true, cascade: true })
     @JoinColumn()
     account?: Account;
+
+    @ManyToOne(() => Building, (building) => building.managers)
+    @JoinColumn()
+    building?: Building;
+
 
     @CreateDateColumn()
     created_at: Date;

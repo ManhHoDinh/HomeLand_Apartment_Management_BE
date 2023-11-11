@@ -1,3 +1,4 @@
+import { isArray } from 'class-validator';
 import { IdGenerator } from "src/id-generator/id-generator.service";
 import { CreateBuildingDto } from "./dto/create-building.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
@@ -9,6 +10,7 @@ import { Building } from "./entities/building.entity";
 import { Floor } from "src/floor/entities/floor.entity";
 import { UpdateBuildingDto } from "./dto/update-building.dto";
 import { isQueryAffected } from "src/helper/validation";
+import { Manager } from "src/manager/entities/manager.entity";
 export abstract class BuildingService implements IRepository<Building> {
     abstract findOne(id: string): Promise<Building | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
@@ -20,6 +22,9 @@ export abstract class BuildingService implements IRepository<Building> {
 
     abstract findAll(page?: number): Promise<Building[]>;
     abstract search(query: string): Promise<Building[]>;
+    abstract addManagersToBuilding(managerIds: string[] | string, id: string): Promise<Building | null>;
+    abstract deleteManager(building_id:string, manager_id: string): Promise<Building | null>;
+
 }
 
 @Injectable()
@@ -29,6 +34,8 @@ export class TypeORMBuildingService extends BuildingService {
         private readonly buildingRepository: Repository<Building>,
         @InjectRepository(Floor)
         private readonly floorRepository: Repository<Floor>,
+        @InjectRepository(Manager)
+        private readonly managerRepository: Repository<Manager>,
         @InjectDataSource()
         private readonly dataSource: DataSource,
         private readonly idGenerate: IdGenerator,
@@ -54,12 +61,16 @@ export class TypeORMBuildingService extends BuildingService {
         }
     }
     async findAll() {
-        return await this.buildingRepository.find();
+        return await this.buildingRepository.find({ 
+            relations: ["managers"]
+        });
     }
 
     async findOne(id: string) {
         return await this.buildingRepository.findOne({
             where: { building_id: id },
+            relations:["managers", "managers.account"],
+            
         });
     }
 
@@ -99,5 +110,50 @@ export class TypeORMBuildingService extends BuildingService {
             },
         });
         return result;
+    }
+    async addManagersToBuilding(managerIds: string[] | string, id: string): Promise<Building | null> {
+        try {
+            const building = await this.buildingRepository.findOne({where: {
+                building_id: id
+            }}) as Building;
+            if(Array.isArray(managerIds)){
+                managerIds.forEach(async(managerId) => {
+                    const manager = await this.managerRepository.findOne({where: {
+                        id: managerId
+                    }}) as Manager
+                    manager.building = building;
+                 await this.managerRepository.save(manager)
+                })
+            }
+            else {
+                const manager = await this.managerRepository.findOne({where: {
+                    id: managerIds
+                }}) as Manager
+                manager.building = building;
+             await this.managerRepository.save(manager)
+            }
+             const result = await this.buildingRepository.findOne({where: {
+             building_id: id,
+            }, relations:["managers"] })
+            console.log(result)
+            return result
+
+        }catch(e) {
+            throw new Error(e)
+        }  
+    }
+    async deleteManager(building_id: string, manager_id: string): Promise<Building | null> {
+        console.log(building_id, manager_id);
+        const building = await this.buildingRepository.findOne({where: {
+            building_id
+        }})
+        await this.buildingRepository.createQueryBuilder().relation(Building, "managers").of(building).remove(manager_id);
+        const nebw = await this.buildingRepository.findOne({where: {
+            building_id
+        },
+        relations: ["managers"]
+    })
+    return nebw;
+        
     }
 }

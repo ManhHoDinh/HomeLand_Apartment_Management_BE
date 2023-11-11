@@ -72,4 +72,13 @@ export class BuildingController {
     async softDeleteBuilding(@Param("id") id: string) {
         return await this.buildingRepository.delete(id);
     }
+
+    @Post("/:id/addManagers")
+    async addManagerToBuilding(@Param ("id") id: string, @Query("managerIds" ) managerIds : string[] | string) {
+        return await this.buildingRepository.addManagersToBuilding(managerIds, id)
+    }
+    @Post("/:id/deleteManager")
+    async deleteManager(@Param ("id") id: string, @Query("managerId" ) managerId : string) {
+        return await this.buildingRepository.deleteManager(id, managerId)
+    }
 }

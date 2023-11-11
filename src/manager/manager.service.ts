@@ -200,7 +200,7 @@ export class ManagerService {
     }
     async findAll(): Promise<Manager[]> {
         const managers = await this.managerRepository.find({
-            relations: ["account"],
+            relations: ["account", "building"],
         });
         return managers;
     }

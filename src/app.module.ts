@@ -24,6 +24,8 @@ import { VehicleModule } from "./vehicle/vehicle.module";
 
 import { ServiceModule } from './service/service.module';
 import { ServicePackageModule } from './service-package/service-package.module';
+import { ManagerModule } from "./manager/manager.module";
+import { TechnicianModule } from "./technician/technician.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -76,7 +78,9 @@ import { ServicePackageModule } from './service-package/service-package.module';
         TokenModule,
         ResidentModule,
         BuildingModule,
+        ManagerModule,
         ContractModule,
+        TechnicianModule,
         AvatarGeneratorModule,
         NestjsFormDataModule.config({
             isGlobal: true,

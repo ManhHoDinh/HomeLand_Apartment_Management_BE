@@ -1,3 +1,11 @@
+## NOTE
+There are some services and APIS we can only use with free amount, please register these service on you own and replace the api key inside  [.env.example](.env.example)
+:
+
+* https://guides.platerecognizer.com/docs/snapshot/api-reference
+* https://supabase.com
+* Postgresql and Redis (we recommend using on [Render](https://render.com/))
+
 ## HOW TO BUILD
 ```bash
 # clone repository
@@ -7,23 +15,14 @@ $ cd HomeLand_Apartment_Management_BE
 # install dependencies
 $ npm install
 
-# start docker compose
+# pull necessary images
 $ docker compose pull
 
 # rename .env.example to .env
+# you might change some variable if you need to connect to real redis, postgresql or supabase project
 $ cp .env.example .env
 ```
 
-Open  ```http://localhost:54323``` in the browser
-
-On left menu, navigate to ```Storage```
-
-![](./doc/pic1.png)
-
-Create ```New bucket``` with following config
-<div align="center"> 
-<img src="https://github.com/phuochungus/HomeLand_Apartment_Management_BE/blob/7a908fc4e13f83ff9be4eefb910064257dce578d/doc/pic2.png" width="50%" />
-</div>
 
 ## HOW TO RUN
 ```bash
@@ -36,9 +35,12 @@ $ npx supabase start
 
 # start nestjs
 $ npm run start:dev
+
+# you might need to send HTTP GET to this endpoint to create empty database and S3 storage:
+http://localhost:3000/seed/init
 ```
 
-# HOW TO CLOSE
+# HOW TO CLOSE (GRACEFULLY)
 
 On terminal where Nestjs running press ```Ctrl + C```
 ```bash

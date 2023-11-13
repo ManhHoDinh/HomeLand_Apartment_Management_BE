@@ -5,6 +5,8 @@ import {
     Entity,
     ManyToOne,
     PrimaryColumn,
+    Index,
+    JoinColumn,
 } from "typeorm";
 import { Resident } from "../../resident/entities/resident.entity";
 
@@ -14,9 +16,13 @@ enum status {
     REJECTED = "REJECTED",
 }
 
+@Index(["licensePlate", "residentId"], { unique: true })
 @Entity()
 export class Vehicle {
-    @PrimaryColumn({ name: "license_plate" })
+    @PrimaryColumn()
+    id: string;
+
+    @Column({ name: "license_plate" })
     licensePlate: string;
 
     @Column({ name: "front_registration_photo_url" })
@@ -29,6 +35,7 @@ export class Vehicle {
     licensePlatePhotoURL: string;
 
     @ManyToOne(() => Resident, (resident) => resident.vehicles)
+    @JoinColumn({ name: "resident_id" })
     resident: Resident;
 
     @Column({ name: "resident_id" })

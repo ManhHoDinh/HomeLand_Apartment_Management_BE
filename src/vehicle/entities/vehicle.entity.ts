@@ -16,7 +16,6 @@ enum status {
     REJECTED = "REJECTED",
 }
 
-@Index(["licensePlate", "residentId"], { unique: true })
 @Entity()
 export class Vehicle {
     @PrimaryColumn()
@@ -27,7 +26,7 @@ export class Vehicle {
     @Column()
     color: string;
 
-    @Column({ name: "license_plate" })
+    @Column({ name: "license_plate", unique: true })
     licensePlate: string;
 
     @Column({ name: "front_registration_photo_url" })

@@ -1,6 +1,4 @@
 import {
-    BeforeInsert,
-    BeforeUpdate,
     Column,
     Entity,
     ManyToOne,
@@ -43,10 +41,4 @@ export class Vehicle {
 
     @Column({ enum: status, default: status.PENDING })
     status: status = status.PENDING;
-
-    @BeforeUpdate()
-    @BeforeInsert()
-    checkForResident() {
-        if (!this.residentId) throw new Error("Resident id must not be null");
-    }
 }

@@ -16,18 +16,19 @@ export class TokenPayload {
     role: PersonRole;
 }
 
+export type AccountOwner = Admin | Manager | Technician | Resident;
+
 export abstract class AuthService {
     abstract signIn(
         signInDto: SignInDto,
         expiresIn?: string,
     ): Promise<{ access_token: string; role: PersonRole }>;
+
     abstract findOwnerByAccountEmail(
         email: string,
-    ): Promise<Admin | Manager | Technician | Resident | null>;
+    ): Promise<AccountOwner | null>;
 
-    abstract findOwnerById(
-        id: string,
-    ): Promise<Admin | Manager | Technician | Resident | null>;
+    abstract findOwnerById(id: string): Promise<AccountOwner | null>;
 }
 @Injectable()
 export class AuthServiceImp extends AuthService {
@@ -64,9 +65,7 @@ export class AuthServiceImp extends AuthService {
         };
     }
 
-    async findOwnerByAccountEmail(
-        email: string,
-    ): Promise<Admin | Manager | Technician | Resident | null> {
+    async findOwnerByAccountEmail(email: string): Promise<AccountOwner | null> {
         const account = await this.accountRepository.findOne({
             where: { email },
             relations: {
@@ -96,9 +95,7 @@ export class AuthServiceImp extends AuthService {
         );
     }
 
-    async findOwnerById(
-        id: string,
-    ): Promise<Admin | Manager | Technician | Resident | null> {
+    async findOwnerById(id: string): Promise<AccountOwner | null> {
         const account = await this.accountRepository.findOne({
             where: { owner_id: id },
             relations: {

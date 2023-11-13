@@ -7,6 +7,8 @@ import {
     JoinColumn,
 } from "typeorm";
 import { Resident } from "../../resident/entities/resident.entity";
+import { IsEnum, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 enum status {
     PENDING = "PENDING",
@@ -19,6 +21,11 @@ enum status {
 export class Vehicle {
     @PrimaryColumn()
     id: string;
+
+    @ApiProperty({ example: "Xanh" })
+    @IsString()
+    @Column()
+    color: string;
 
     @Column({ name: "license_plate" })
     licensePlate: string;
@@ -36,9 +43,12 @@ export class Vehicle {
     @JoinColumn({ name: "resident_id" })
     resident: Resident;
 
+    @IsString()
     @Column({ name: "resident_id" })
     residentId: string;
 
+    @ApiProperty({ enum: status })
+    @IsEnum(status)
     @Column({ enum: status, default: status.PENDING })
-    status: status = status.PENDING;
+    status: status;
 }

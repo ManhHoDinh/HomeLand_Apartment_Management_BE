@@ -11,6 +11,8 @@ import { Vehicle } from "./entities/vehicle.entity";
 import { HttpModule } from "@nestjs/axios";
 import { StorageModule } from "../storage/storage.module";
 import { Resident } from "../resident/entities/resident.entity";
+import { VehicleSubscriber } from "./event_subscriber/vehicle_event_subscriber";
+import { IdGeneratorModule } from "../id-generator/id-generator.module";
 
 @Module({
     imports: [
@@ -18,8 +20,10 @@ import { Resident } from "../resident/entities/resident.entity";
         TypeOrmModule.forFeature([Vehicle, Resident]),
         HttpModule,
         StorageModule,
+        IdGeneratorModule,
     ],
     providers: [
+        VehicleSubscriber,
         {
             provide: VehicleService,
             useClass: VehicleServiceImp,

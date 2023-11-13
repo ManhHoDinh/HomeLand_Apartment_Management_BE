@@ -118,9 +118,6 @@ export class VehicleServiceImp implements VehicleService {
             ...updateVehicleDto,
         });
 
-        console.log(updateVehicleDto);
-        console.log(vehicle);
-
         if (!vehicle) throw new NotFoundException("Vehicle not found");
         return await this.vehicleRepostiory.save(vehicle);
     }

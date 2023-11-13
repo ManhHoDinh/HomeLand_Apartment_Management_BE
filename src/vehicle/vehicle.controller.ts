@@ -51,7 +51,6 @@ export class VehicleController {
         @Param("id") id: string,
         @Body() updateVehicleDto: UpdateVehicleDto,
     ) {
-        console.log(updateVehicleDto);
         return await this.vehicleService.updateVehicleById(
             id,
             updateVehicleDto,

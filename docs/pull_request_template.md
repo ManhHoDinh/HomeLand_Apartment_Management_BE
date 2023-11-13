@@ -12,7 +12,7 @@
 
 
 * **What is the current behavior?** (You can also link to an open issue here)
-*If this is a feature, leave empty*
+*If this is a new feature, leave empty*
 
 * **What is the new behavior (if this is a feature change)?**
 

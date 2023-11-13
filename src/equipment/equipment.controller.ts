@@ -13,12 +13,16 @@ import { CreateEquipmentDto } from "./dto/create-equipment.dto";
 import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
 import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
+import { Auth } from "../helper/decorator/auth.decorator";
+import { PersonRole } from "../helper/class/profile.entity";
 
+@Auth()
 @ApiTags("equipment")
 @Controller("equipment")
 export class EquipmentController {
     constructor(private readonly equipmentService: EquipmentService) {}
 
+    @Auth(PersonRole.ADMIN, PersonRole.MANAGER)
     @ApiConsumes("multipart/form-data")
     @FormDataRequest()
     @Post()

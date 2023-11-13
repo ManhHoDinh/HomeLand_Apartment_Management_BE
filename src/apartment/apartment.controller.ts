@@ -10,11 +10,13 @@ import {
 } from "@nestjs/common";
 import { ApartmentService } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
-// import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
+import { Auth } from "../helper/decorator/auth.decorator";
+import { PersonRole } from "../helper/class/profile.entity";
 
+@Auth(PersonRole.ADMIN, PersonRole.MANAGER, PersonRole.RESIDENT)
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {
@@ -64,9 +66,15 @@ export class ApartmentController {
         }
     }
 
-    @ApiOperation({summary: "add resident to apartment"})
+    @ApiOperation({ summary: "add resident to apartment" })
     @Post("/:id/addResidents")
-    async addResidentToApartment(@Param ("id") id: string, @Query("residentIds" ) residentIds : string[]) {
-        return await this.apartmentRepository.addResidentToApartment(residentIds, id)
+    async addResidentToApartment(
+        @Param("id") id: string,
+        @Query("residentIds") residentIds: string[],
+    ) {
+        return await this.apartmentRepository.addResidentToApartment(
+            residentIds,
+            id,
+        );
     }
 }

@@ -2,11 +2,6 @@
 - [ ] Swagger has been added/updated (for bug fixes/features)
 - [ ] Features/bug fixes have been manually tested
 
-* **What case have you tested?** (Screenshot, cURL, ...)
-
-*If the test case must upload files, please provide your uploaded files*
-
-
 * **What kind of change does this PR introduce?** (Bug fix, feature, docs update, ...)
 
 
@@ -17,3 +12,6 @@
 * **What is the new behavior (if this is a feature change)?**
 
 * **Other information**:
+
+* **What case have you tested?** (Screenshot, cURL, ...)
+

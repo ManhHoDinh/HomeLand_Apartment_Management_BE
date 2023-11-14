@@ -12,6 +12,8 @@ import { Floor } from "../../floor/entities/floor.entity";
 import { Building } from "../../building/entities/building.entity";
 import { IsEnum, IsOptional, IsString } from "class-validator";
 import { BadRequestException } from "@nestjs/common";
+import { ApiProperty } from "@nestjs/swagger";
+import { faker } from "@faker-js/faker";
 
 export enum EquipmentStatus {
     AVAILABLE = "AVAILABLE",
@@ -39,9 +41,11 @@ export class Equipment {
     @Column("simple-array")
     imageURLs: string[];
 
+    @ApiProperty({ required: false, example: faker.lorem.lines(1) })
+    @IsOptional()
     @IsString()
-    @Column()
-    description: string;
+    @Column({ nullable: true })
+    description?: string;
 
     @ManyToOne(() => Apartment, (apartment) => apartment.equipments)
     @JoinColumn({ name: "apartment_id" })

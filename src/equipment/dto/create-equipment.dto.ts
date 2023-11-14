@@ -10,6 +10,6 @@ export class CreateEquipmentDto extends OmitType(Equipment, [
     "imageURLs",
     "id",
 ]) {
-    @IsImageFiles()
+    @IsImageFiles(true)
     images: MemoryStoredFile[];
 }

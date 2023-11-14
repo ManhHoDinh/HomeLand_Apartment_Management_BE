@@ -42,7 +42,7 @@ export class EquipmentServiceImp extends EquipmentService {
         createEquipmentDto: CreateEquipmentDto,
         id?: string,
     ): Promise<Equipment> {
-        const { images, ...rest } = createEquipmentDto;
+        let { images, ...rest } = createEquipmentDto;
         let equipment = this.equipmentRepository.create(rest);
         equipment.checkFK();
 
@@ -70,6 +70,7 @@ export class EquipmentServiceImp extends EquipmentService {
 
         if (id) equipment.id = id;
         else equipment.id = "EQM" + this.idGenerate.generateId();
+        if (!(images && images.length > 0)) images = [];
         try {
             const imageURLs = await Promise.all(
                 images.map((file, index) => {
@@ -82,11 +83,11 @@ export class EquipmentServiceImp extends EquipmentService {
                 }),
             );
             equipment.imageURLs = imageURLs;
-            return await this.equipmentRepository.save(equipment);
         } catch (error) {
             await this.storageManager.remove([`equipment/${equipment.id}`]);
             throw error;
         }
+        return await this.equipmentRepository.save(equipment);
     }
 
     findAll(): Promise<Equipment[]> {

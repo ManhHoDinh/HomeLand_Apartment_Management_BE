@@ -11,7 +11,7 @@ import {
 import { ApartmentService } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 // import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
 
@@ -62,5 +62,11 @@ export class ApartmentController {
         if (await this.apartmentRepository.update(id, updateApartmentDto)) {
             return await this.findOne(id);
         }
+    }
+
+    @ApiOperation({summary: "add resident to apartment"})
+    @Post("/:id/addResidents")
+    async addResidentToApartment(@Param ("id") id: string, @Query("residentIds" ) residentIds : string[]) {
+        return await this.apartmentRepository.addResidentToApartment(residentIds, id)
     }
 }

@@ -3,6 +3,9 @@ import { Floor } from "../../floor/entities/floor.entity";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsNumberString, IsNumber } from "class-validator";
+import { Manager } from "src/manager/entities/manager.entity";
+
+
 @Entity()
 export class Building {
     
@@ -24,6 +27,11 @@ export class Building {
 
     @OneToMany(() => Apartment, (apartment) => apartment.building)
     apartments: Apartment[];
+
+    @OneToMany(() => Manager, (manager) => manager.building, {
+        cascade: true
+    })
+    managers?: Manager[];
 
     @ApiProperty({ example: "Linh Trung, Thu Duc" })
     @IsString()

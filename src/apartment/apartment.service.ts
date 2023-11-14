@@ -49,6 +49,10 @@ export abstract class ApartmentService implements IRepository<Apartment> {
     ): Promise<Apartment>;
 
     abstract findAll(page?: number): Promise<Apartment[]>;
+    abstract addResidentToApartment (
+        residentIds: string[] | string,
+        id: string,
+    ): Promise<Apartment | null>;
 }
 
 @Injectable()
@@ -65,7 +69,7 @@ export class ApartmentServiceImp extends ApartmentService {
     ) {
         super();
     }
-
+    
     async create(
         createApartmentDto: CreateApartmentDto,
         id?: string,
@@ -131,6 +135,7 @@ export class ApartmentServiceImp extends ApartmentService {
             return await this.apartmentRepository.find({
                 skip: (page - 1) * 30,
                 take: 30,
+                relations: ["residents"]
             });
         }
 
@@ -140,6 +145,7 @@ export class ApartmentServiceImp extends ApartmentService {
     async findOne(id: string) {
         return await this.apartmentRepository.findOne({
             where: { apartment_id: id },
+            relations:["residents"]
         });
     }
 
@@ -228,5 +234,32 @@ export class ApartmentServiceImp extends ApartmentService {
 
     delete(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
+    }
+
+    async addResidentToApartment(
+        residentIds: string[] | string,
+        id: string,
+    ): Promise<Apartment | null> {
+        try {
+            const apartment = (await this.apartmentRepository.findOne({
+                where: {
+                    apartment_id: id
+                },
+            })) as Apartment;
+            await this.apartmentRepository
+                .createQueryBuilder()
+                .relation(Apartment, "residents")
+                .of(apartment)
+                .add(residentIds);
+            const result = await this.apartmentRepository.findOne({
+                where: {
+                    apartment_id: id,
+                },
+                relations: ["residents"],
+            });
+            return result;
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 }

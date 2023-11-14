@@ -64,9 +64,11 @@ export class VehicleController {
     @Delete("/:id")
     async deleteVehicle(@User() user: AccountOwner, @Param("id") id: string) {
         if (user?.role === PersonRole.RESIDENT) {
-            let resident = user as Resident;
-            if (resident.vehicles.findIndex((vehicle) => vehicle.id === id) < 0)
+            const residentVehicles =
+                await this.vehicleService.getAllVehicleByResidentId(user.id);
+            if (!residentVehicles.find((vehicle) => vehicle.id === id))
                 throw new NotFoundException("Vehicle not found");
-        } else await this.vehicleService.deleteVehicleById(id);
+        }
+        await this.vehicleService.deleteVehicleById(id);
     }
 }

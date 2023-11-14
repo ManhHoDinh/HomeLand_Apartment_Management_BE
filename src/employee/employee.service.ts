@@ -4,7 +4,7 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from "@nestjs/common";
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, Like } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
@@ -36,7 +36,7 @@ export abstract class EmployeeRepository implements IRepository<Employee> {
         id: string,
         updateEmployeeDto: UpdateEmployeeDto,
     ): Promise<Employee>;
-
+    abstract search(query: string): Promise<Employee[]>;
     abstract findAll(): Promise<Employee[]>;
 }
 
@@ -95,7 +95,8 @@ export class EmployeeService implements EmployeeRepository {
             );
 
             let profilePictureURL: string | undefined = undefined;
-            const avatarPhoto = createEmployeeDto.profile_picture;
+            // const avatarPhoto = createEmployeeDto.profile_picture;
+            const avatarPhoto = profile_picture as MemoryStoredFile;
             if (avatarPhoto) {
                 profilePictureURL = await this.storageManager.upload(
                     avatarPhoto.buffer,
@@ -191,7 +192,15 @@ export class EmployeeService implements EmployeeRepository {
         return employee;
     }
 
-  
+    async search(query: string): Promise<Employee[]> {
+        const result = await this.employeeRepository.find({
+            where: {
+                profile: { name: Like(`%${query}%`) },
+            },
+        });
+
+        return result;
+    }
     findOne(id: string): Promise<Employee | null> {
         return this.employeeRepository.findOne({
             where: {
@@ -206,7 +215,7 @@ export class EmployeeService implements EmployeeRepository {
             cache: true,
         });
     }
-
+    
     async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
         let result = await this.employeeRepository.update(id, updateEmployeeDto as any);
         return isQueryAffected(result);

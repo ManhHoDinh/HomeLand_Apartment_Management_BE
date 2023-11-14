@@ -47,6 +47,11 @@ export class EmployeeController {
         async create(@Body() createPersonDto: CreateEmployeeDto) {
                 return await this.employeeRepository.create(createPersonDto);
         }
+        @Get("/search")
+        async searchEmployee(@Query("query") query: string) {
+            const result = await this.employeeRepository.search(query);
+            return result;
+        }
         @Get(":id")
         findOne(@Param("id") id: string) {
                 return this.employeeRepository.findOne(id);

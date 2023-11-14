@@ -40,7 +40,7 @@ export class SeedService {
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
         private readonly residentService: ResidentRepository,
-    ) {}
+    ) { }
 
     async dropDB() {
         try {
@@ -306,17 +306,17 @@ export class SeedService {
             account:
                 random === 0
                     ? {
-                          owner_id: id,
-                          email: faker.internet.email(),
-                          password: this.hashService.hash("password"),
-                          avatarURL: await this.storageManager.upload(
-                              await this.avatarGenerator.generateAvatar(
-                                  "DEMO RESIDENT",
-                              ),
-                              "resident/" + id + "/avatar.svg",
-                              "image/svg+xml",
-                          ),
-                      }
+                        owner_id: id,
+                        email: faker.internet.email(),
+                        password: this.hashService.hash("password"),
+                        avatarURL: await this.storageManager.upload(
+                            await this.avatarGenerator.generateAvatar(
+                                "DEMO RESIDENT",
+                            ),
+                            "resident/" + id + "/avatar.svg",
+                            "image/svg+xml",
+                        ),
+                    }
                     : undefined,
         });
     }
@@ -326,31 +326,27 @@ export class SeedService {
         const employee = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
-                date_of_birth: new Date("1999-01-01"),
-                name: "DEMO EMPLOYEE",
+                date_of_birth: faker.date.birthdate(),
+                name: faker.person.fullName(),
                 gender: Gender.MALE,
                 phone_number: faker.phone.number(),
                 front_identify_card_photo_URL: await this.storageManager.upload(
                     this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "resident/" + id + "/frontIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
                 back_identify_card_photo_URL: await this.storageManager.upload(
                     this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-            },
-            account: {
-                owner_id: id,
-                email: "employee@gmail.com",
-                password: this.hashService.hash("password"),
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO EMPOLYEE"),
                     "admin/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
             },
+
         });
     }
 

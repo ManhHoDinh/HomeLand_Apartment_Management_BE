@@ -3,8 +3,6 @@ import { Floor } from "../../floor/entities/floor.entity";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsNumberString, IsNumber } from "class-validator";
-
-
 @Entity()
 export class Building {
     

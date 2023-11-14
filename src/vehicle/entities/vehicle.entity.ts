@@ -1,12 +1,14 @@
 import {
-    BeforeInsert,
-    BeforeUpdate,
     Column,
     Entity,
     ManyToOne,
     PrimaryColumn,
+    Index,
+    JoinColumn,
 } from "typeorm";
 import { Resident } from "../../resident/entities/resident.entity";
+import { IsEnum, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 enum status {
     PENDING = "PENDING",
@@ -16,7 +18,15 @@ enum status {
 
 @Entity()
 export class Vehicle {
-    @PrimaryColumn({ name: "license_plate" })
+    @PrimaryColumn()
+    id: string;
+
+    @ApiProperty({ example: "Xanh" })
+    @IsString()
+    @Column()
+    color: string;
+
+    @Column({ name: "license_plate", unique: true })
     licensePlate: string;
 
     @Column({ name: "front_registration_photo_url" })
@@ -29,17 +39,15 @@ export class Vehicle {
     licensePlatePhotoURL: string;
 
     @ManyToOne(() => Resident, (resident) => resident.vehicles)
+    @JoinColumn({ name: "resident_id" })
     resident: Resident;
 
+    @IsString()
     @Column({ name: "resident_id" })
     residentId: string;
 
+    @ApiProperty({ enum: status })
+    @IsEnum(status)
     @Column({ enum: status, default: status.PENDING })
-    status: status = status.PENDING;
-
-    @BeforeUpdate()
-    @BeforeInsert()
-    checkForResident() {
-        if (!this.residentId) throw new Error("Resident id must not be null");
-    }
+    status: status;
 }

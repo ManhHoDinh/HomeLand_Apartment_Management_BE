@@ -36,7 +36,7 @@ export abstract class EmployeeRepository implements IRepository<Employee> {
         id: string,
         updateEmployeeDto: UpdateEmployeeDto,
     ): Promise<Employee>;
-    // abstract search(query: string): Promise<Employee[]>;
+    abstract search(query: string): Promise<Employee[]>;
     abstract findAll(): Promise<Employee[]>;
 }
 
@@ -192,15 +192,15 @@ export class EmployeeService implements EmployeeRepository {
         return employee;
     }
 
-    // async search(query: string): Promise<Employee[]> {
-    //     const result = await this.employeeRepository.find({
-    //         where: {
-    //             profile: { name: Like(`%${query}%`) },
-    //         },
-    //     });
+    async search(query: string): Promise<Employee[]> {
+        const result = await this.employeeRepository.find({
+            where: {
+                profile: { name: Like(`%${query}%`) },
+            },
+        });
 
-    //     return result;
-    // }
+        return result;
+    }
     findOne(id: string): Promise<Employee | null> {
         return this.employeeRepository.findOne({
             where: {

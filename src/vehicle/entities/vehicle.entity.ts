@@ -1,11 +1,4 @@
-import {
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryColumn,
-    Index,
-    JoinColumn,
-} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, JoinColumn } from "typeorm";
 import { Resident } from "../../resident/entities/resident.entity";
 import { IsEnum, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
@@ -20,11 +13,6 @@ enum status {
 export class Vehicle {
     @PrimaryColumn()
     id: string;
-
-    @ApiProperty({ example: "Xanh" })
-    @IsString()
-    @Column()
-    color: string;
 
     @Column({ name: "license_plate", unique: true })
     licensePlate: string;

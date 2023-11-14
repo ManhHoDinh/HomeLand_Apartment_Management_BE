@@ -25,7 +25,7 @@ import {
 
 import { FormDataRequest } from "nestjs-form-data";
 import { PersonRole } from "../helper/class/profile.entity";
-import { JWTAuthGuard } from "src/auth/guard/jwt-auth.guard";
+import { JWTAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { CreateResidentDto } from "./dto/create-resident.dto";
 import { Resident } from "./entities/resident.entity";
 import { UpdateResidentDto } from "./dto/update-resident.dto";

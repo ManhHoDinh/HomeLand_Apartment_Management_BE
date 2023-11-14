@@ -12,15 +12,18 @@ import { SeedModule } from "./seed/seed.module";
 import { MeModule } from "./me/me.module";
 import { ApartmentModule } from "./apartment/apartment.module";
 import { TokenModule } from "./token/token.module";
-import { ContractModule } from './contract/contract.module';
+import { ContractModule } from "./contract/contract.module";
 import { AvatarGeneratorModule } from "./avatar-generator/avatar-generator.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
-import { Employee } from "./employee/entities/employee.entity";
 import { EmployeeModule } from "./employee/employee.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
+import { VehicleModule } from "./vehicle/vehicle.module";
+
+import { ServiceModule } from './service/service.module';
+import { ServicePackageModule } from './service-package/service-package.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -80,6 +83,9 @@ import { ResidentModule } from "./resident/resident.module";
         }),
         AccountModule,
         AdminModule,
+        ServiceModule,
+        ServicePackageModule,
+        VehicleModule,
     ],
     controllers: [AppController],
     providers: [AppService],

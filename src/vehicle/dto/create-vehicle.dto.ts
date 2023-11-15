@@ -5,7 +5,6 @@ import { Vehicle } from "../entities/vehicle.entity";
 
 export class CreateVehicleDto extends PickType(Vehicle, [
     "residentId",
-    "color",
 ] as const) {
     /**
      * The photo must contain a license plate, otherwise the request will be rejected

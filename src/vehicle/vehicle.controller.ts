@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     Get,
+    NotFoundException,
     Param,
     Patch,
     Post,
@@ -16,13 +17,14 @@ import { Auth } from "../helper/decorator/auth.decorator";
 import { User } from "../helper/decorator/user.decorator";
 import { AccountOwner } from "../auth/auth.service";
 import { UpdateVehicleDto } from "./dto/update-vehicle.dto";
+import { Resident } from "../resident/entities/resident.entity";
 
 @ApiTags("vehicle")
-@Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
 @Controller("vehicle")
 export class VehicleController {
     constructor(private readonly vehicleService: VehicleService) {}
 
+    @Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
     @Post("/")
     @FormDataRequest()
     @ApiConsumes("multipart/form-data")
@@ -37,6 +39,7 @@ export class VehicleController {
      * @param user user fetched from the token
      * @returns
      */
+    @Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
     @Get("/")
     async getAllVehicle(@User() user: AccountOwner | null) {
         if (user?.role === PersonRole.RESIDENT) {
@@ -57,8 +60,15 @@ export class VehicleController {
         );
     }
 
+    @Auth(PersonRole.RESIDENT, PersonRole.MANAGER, PersonRole.ADMIN)
     @Delete("/:id")
-    async deleteVehicle(@Param("id") id: string) {
+    async deleteVehicle(@User() user: AccountOwner, @Param("id") id: string) {
+        if (user?.role === PersonRole.RESIDENT) {
+            const residentVehicles =
+                await this.vehicleService.getAllVehicleByResidentId(user.id);
+            if (!residentVehicles.find((vehicle) => vehicle.id === id))
+                throw new NotFoundException("Vehicle not found");
+        }
         await this.vehicleService.deleteVehicleById(id);
     }
 }

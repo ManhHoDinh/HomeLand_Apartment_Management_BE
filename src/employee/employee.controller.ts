@@ -30,7 +30,7 @@ import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { IsOptional } from "class-validator";
 import { EmojiType } from "node_modules/@faker-js/faker/dist/types/modules/internet";
 @ApiTags("Employee")
-// @Auth(PersonRole.ADMIN, PersonRole.MANAGER)
+@Auth(PersonRole.ADMIN, PersonRole.MANAGER)
 @Controller("employee")
 export class EmployeeController {
         constructor(private readonly employeeRepository: EmployeeRepository) { }

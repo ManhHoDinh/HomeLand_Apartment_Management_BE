@@ -13,10 +13,7 @@ import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
-import { Auth } from "../helper/decorator/auth.decorator";
-import { PersonRole } from "../helper/class/profile.entity";
 
-@Auth(PersonRole.ADMIN, PersonRole.MANAGER, PersonRole.RESIDENT)
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {

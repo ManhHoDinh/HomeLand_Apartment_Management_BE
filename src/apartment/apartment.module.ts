@@ -4,7 +4,7 @@ import { ApartmentController } from "./apartment.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
-import { StorageManagerModule } from "../storage/storage.module";
+import { StorageModule } from "../storage/storage.module";
 import { Resident } from "../resident/entities/resident.entity";
 import { AuthModule } from "../auth/auth.module";
 
@@ -13,7 +13,7 @@ import { AuthModule } from "../auth/auth.module";
         AuthModule,
         TypeOrmModule.forFeature([Apartment, Resident]),
         IdGeneratorModule,
-        StorageManagerModule,
+        StorageModule,
     ],
     controllers: [ApartmentController],
     providers: [

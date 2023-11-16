@@ -2,7 +2,7 @@ import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Employee } from "./entities/employee.entity";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
-import { StorageManagerModule } from "../storage/storage.module";
+import { StorageModule } from "../storage/storage.module";
 import { HashModule } from "../hash/hash.module";
 import { AvatarGeneratorModule } from "../avatar-generator/avatar-generator.module";
 import { EmployeeController } from "./employee.controller";
@@ -14,7 +14,7 @@ import { AuthModule } from "../auth/auth.module";
     imports: [
         TypeOrmModule.forFeature([Employee]),
         IdGeneratorModule,
-        StorageManagerModule,
+        StorageModule,
         HashModule,
         AvatarGeneratorModule,
         AuthModule,

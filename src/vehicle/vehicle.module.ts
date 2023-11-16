@@ -9,7 +9,7 @@ import { AuthModule } from "../auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Vehicle } from "./entities/vehicle.entity";
 import { HttpModule } from "@nestjs/axios";
-import { StorageManagerModule } from "../storage/storage.module";
+import { StorageModule } from "../storage/storage.module";
 import { Resident } from "../resident/entities/resident.entity";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
 
@@ -18,7 +18,7 @@ import { IdGeneratorModule } from "../id-generator/id-generator.module";
         AuthModule,
         TypeOrmModule.forFeature([Vehicle, Resident]),
         HttpModule,
-        StorageManagerModule,
+        StorageModule,
         IdGeneratorModule,
     ],
     providers: [

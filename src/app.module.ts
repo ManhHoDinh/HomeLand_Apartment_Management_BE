@@ -4,7 +4,7 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { IdGeneratorModule } from "./id-generator/id-generator.module";
-import { StorageManagerModule } from "./storage/storage.module";
+import { StorageModule } from "./storage/storage.module";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { HashModule } from "./hash/hash.module";
@@ -69,7 +69,7 @@ import { EquipmentModule } from "./equipment/equipment.module";
         }),
         AuthModule,
         IdGeneratorModule,
-        StorageManagerModule,
+        StorageModule,
         HashModule,
         SeedModule,
         ApartmentModule,

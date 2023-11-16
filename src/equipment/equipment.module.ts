@@ -4,7 +4,7 @@ import { EquipmentController } from "./equipment.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Equipment } from "./entities/equipment.entity";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
-import { StorageManagerModule } from "../storage/storage.module";
+import { StorageModule } from "../storage/storage.module";
 import { AuthModule } from "../auth/auth.module";
 
 @Module({
@@ -12,7 +12,7 @@ import { AuthModule } from "../auth/auth.module";
         AuthModule,
         TypeOrmModule.forFeature([Equipment]),
         IdGeneratorModule,
-        StorageManagerModule,
+        StorageModule,
     ],
     controllers: [EquipmentController],
     providers: [{ provide: EquipmentService, useClass: EquipmentServiceImp }],

@@ -1,7 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { IdGeneratorModule } from "../id-generator/id-generator.module";
-import { StorageManagerModule } from "../storage/storage.module";
+import { StorageModule } from "../storage/storage.module";
 import { HashModule } from "../hash/hash.module";
 import { AvatarGeneratorModule } from "src/avatar-generator/avatar-generator.module";
 import { Account } from "src/account/entities/account.entity";
@@ -15,7 +15,7 @@ import { Technician } from "./entities/technician.entity";
         TypeOrmModule.forFeature([Technician, Account]),
         IdGeneratorModule,
         AuthModule,
-        StorageManagerModule,
+        StorageModule,
         HashModule,
         AvatarGeneratorModule,
     ],

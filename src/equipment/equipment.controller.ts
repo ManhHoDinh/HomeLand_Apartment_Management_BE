@@ -15,6 +15,7 @@ import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { PersonRole } from "../helper/class/profile.entity";
+import { isInt } from "class-validator";
 
 @Auth()
 @ApiTags("equipment")
@@ -38,7 +39,9 @@ export class EquipmentController {
     })
     @Get()
     async findAll(@Query("page") page?: number) {
-        console.log(page);
+        if (isInt(page) && page) {
+            return await this.equipmentService.findAll(page);
+        }
         return await this.equipmentService.findAll(page);
     }
 
@@ -48,15 +51,17 @@ export class EquipmentController {
     }
 
     @Patch(":id")
-    update(
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
+    async update(
         @Param("id") id: string,
         @Body() updateEquipmentDto: UpdateEquipmentDto,
     ) {
-        return this.equipmentService.update(id, updateEquipmentDto);
+        return await this.equipmentService.update(id, updateEquipmentDto);
     }
 
     @Delete(":id")
-    remove(@Param("id") id: string) {
-        return this.equipmentService.remove(id);
+    async remove(@Param("id") id: string) {
+        await this.equipmentService.remove(id);
     }
 }

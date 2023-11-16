@@ -19,7 +19,7 @@ import { difference, isString } from "lodash";
  * @classdesc Represent the service that manage the apartment
  * @abstract
  */
-export abstract class ApartmentService implements IRepository<Apartment> {
+export abstract class ApartmentService {
     /**
      * @param id id of the apartment
      */
@@ -37,7 +37,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
      * @abstract
      * @param id id of the apartment
      */
-    abstract delete(id: string): Promise<boolean>;
+    abstract delete(id: string): Promise<void>;
     /**
      *
      * @param createPropertyDto
@@ -49,7 +49,7 @@ export abstract class ApartmentService implements IRepository<Apartment> {
     ): Promise<Apartment>;
 
     abstract findAll(page?: number): Promise<Apartment[]>;
-    abstract addResidentToApartment (
+    abstract addResidentToApartment(
         residentIds: string[] | string,
         id: string,
     ): Promise<Apartment | null>;
@@ -69,7 +69,7 @@ export class ApartmentServiceImp extends ApartmentService {
     ) {
         super();
     }
-    
+
     async create(
         createApartmentDto: CreateApartmentDto,
         id?: string,
@@ -135,7 +135,9 @@ export class ApartmentServiceImp extends ApartmentService {
             return await this.apartmentRepository.find({
                 skip: (page - 1) * 30,
                 take: 30,
-                relations: ["residents"]
+                relations: {
+                    residents: true,
+                },
             });
         }
 
@@ -145,7 +147,7 @@ export class ApartmentServiceImp extends ApartmentService {
     async findOne(id: string) {
         return await this.apartmentRepository.findOne({
             where: { apartment_id: id },
-            relations:["residents"]
+            relations: ["residents"],
         });
     }
 
@@ -189,7 +191,7 @@ export class ApartmentServiceImp extends ApartmentService {
 
                 const newImageURLS = newImages.map((result) => result.value);
                 // this task can be done in parallel, will enhance later
-                console.log(difference(apartment.imageURLs, newImageURLS));
+                // console.log(difference(apartment.imageURLs, newImageURLS));
                 await this.storageManager.remove(
                     difference(apartment.imageURLs, newImageURLS),
                 );
@@ -232,8 +234,8 @@ export class ApartmentServiceImp extends ApartmentService {
         return false;
     }
 
-    delete(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async delete(id: string) {
+        await this.apartmentRepository.delete({ apartment_id: id });
     }
 
     async addResidentToApartment(
@@ -243,7 +245,7 @@ export class ApartmentServiceImp extends ApartmentService {
         try {
             const apartment = (await this.apartmentRepository.findOne({
                 where: {
-                    apartment_id: id
+                    apartment_id: id,
                 },
             })) as Apartment;
             await this.apartmentRepository

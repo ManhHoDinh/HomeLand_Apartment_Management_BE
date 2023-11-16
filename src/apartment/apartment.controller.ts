@@ -7,13 +7,16 @@ import {
     Query,
     Post,
     Patch,
+    Delete,
 } from "@nestjs/common";
 import { ApartmentService } from "./apartment.service";
 import { CreateApartmentDto } from "./dto/create-apartment.dto";
 import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateApartmentDto } from "./dto/update-apartment.dto";
+import { Auth } from "../helper/decorator/auth.decorator";
 
+@Auth()
 @ApiTags("Apartment")
 @Controller("apartment")
 export class ApartmentController {
@@ -73,5 +76,10 @@ export class ApartmentController {
             residentIds,
             id,
         );
+    }
+
+    @Delete(":id")
+    async delete(@Param("id") id: string) {
+        return await this.apartmentRepository.delete(id);
     }
 }

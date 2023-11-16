@@ -13,6 +13,7 @@ import { AuthModule } from "../auth/auth.module";
         TypeOrmModule.forFeature([Apartment, Resident]),
         IdGeneratorModule,
         StorageModule,
+        AuthModule,
     ],
     controllers: [ApartmentController],
     providers: [

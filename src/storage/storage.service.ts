@@ -44,6 +44,8 @@ export abstract class StorageManager {
      * Destroy storage if exist
      */
     abstract destroyStorage(): Promise<void>;
+
+    abstract listAllFiles(path: string): Promise<string[]>;
 }
 
 export class StorageError extends Error {
@@ -132,7 +134,8 @@ export class SupabaseStorageManager
         return restOfPath;
     }
 
-    private async listAllFiles(path: string): Promise<string[]> {
+    async listAllFiles(path: string): Promise<string[]> {
+        if (path[0] === "/") path = path.slice(1);
         let { data: list, error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)
             .list(path);

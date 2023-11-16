@@ -7,7 +7,7 @@ import { HashModule } from "../hash/hash.module";
 import { AvatarGeneratorModule } from "../avatar-generator/avatar-generator.module";
 import { EmployeeController } from "./employee.controller";
 import { EmployeeRepository, EmployeeService } from "./employee.service";
-import { AuthModule } from "src/auth/auth.module";
+import { AuthModule } from "../auth/auth.module";
 
 @Global()
 @Module({

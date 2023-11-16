@@ -90,8 +90,8 @@ export class EquipmentServiceImp extends EquipmentService {
         return await this.equipmentRepository.save(equipment);
     }
 
-    findAll(): Promise<Equipment[]> {
-        throw new NotImplementedException();
+    async findAll(page?: number): Promise<Equipment[]> {
+        return await this.equipmentRepository.find();
     }
 
     findOne(id: String): Promise<Equipment> {

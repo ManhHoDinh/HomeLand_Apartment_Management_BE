@@ -11,7 +11,7 @@ import {
 import { EquipmentService } from "./equipment.service";
 import { CreateEquipmentDto } from "./dto/create-equipment.dto";
 import { UpdateEquipmentDto } from "./dto/update-equipment.dto";
-import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { Auth } from "../helper/decorator/auth.decorator";
 import { PersonRole } from "../helper/class/profile.entity";
@@ -30,8 +30,15 @@ export class EquipmentController {
         return this.equipmentService.create(createEquipmentDto);
     }
 
+    @ApiQuery({
+        name: "page",
+        required: false,
+        description:
+            "Page number: Page indexed from 1, each page contain 30 items, if null then return all.",
+    })
     @Get()
-    async findAll(@Query("page") page: number) {
+    async findAll(@Query("page") page?: number) {
+        console.log(page);
         return await this.equipmentService.findAll(page);
     }
 

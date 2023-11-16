@@ -12,7 +12,7 @@ import { Floor } from "../../floor/entities/floor.entity";
 import { Building } from "../../building/entities/building.entity";
 import { IsEnum, IsOptional, IsString } from "class-validator";
 import { BadRequestException } from "@nestjs/common";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiBody, ApiProperty } from "@nestjs/swagger";
 import { faker } from "@faker-js/faker";
 
 export enum EquipmentStatus {
@@ -60,6 +60,7 @@ export class Equipment {
     @JoinColumn({ name: "floor_id" })
     floor?: Floor;
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     @Column({ nullable: true })
@@ -69,6 +70,7 @@ export class Equipment {
     @JoinColumn({ name: "building_id" })
     building?: Building;
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     @Column({ nullable: true })

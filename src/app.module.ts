@@ -21,7 +21,6 @@ import { EmployeeModule } from "./employee/employee.module";
 import { BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 import { VehicleModule } from "./vehicle/vehicle.module";
-
 import { ServiceModule } from "./service/service.module";
 import { ServicePackageModule } from "./service-package/service-package.module";
 import { ManagerModule } from "./manager/manager.module";

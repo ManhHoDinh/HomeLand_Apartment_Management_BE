@@ -20,10 +20,7 @@ import { Technician } from "./entities/technician.entity";
         AvatarGeneratorModule,
     ],
     controllers: [TechnicianController],
-    providers: [
-        TechnicianService
-    ],
+    providers: [TechnicianService],
     exports: [TechnicianService],
-
 })
 export class TechnicianModule {}

@@ -6,23 +6,20 @@ import { StorageModule } from "../storage/storage.module";
 import { Building } from "./entities/building.entity";
 import { Floor } from "../floor/entities/floor.entity";
 import { BuildingController } from "./building.controller";
-import { Like } from "typeorm";
 import { Manager } from "src/manager/entities/manager.entity";
-@Module(
-  {
+@Module({
     imports: [
         TypeOrmModule.forFeature([Building, Floor, Manager]),
         IdGeneratorModule,
         StorageModule,
     ],
     controllers: [BuildingController],
-    providers: [        
+    providers: [
         {
             provide: BuildingService,
             useClass: TypeORMBuildingService,
         },
     ],
     exports: [BuildingService],
-  }
-)
+})
 export class BuildingModule {}

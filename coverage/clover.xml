@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1699632684203" clover="3.2.0">
-  <project timestamp="1699632684204" name="All files">
-    <metrics statements="703" coveredstatements="643" conditionals="130" coveredconditionals="70" methods="116" coveredmethods="103" elements="949" coveredelements="816" complexity="0" loc="703" ncloc="703" packages="22" files="37" classes="37"/>
+<coverage generated="1700118117687" clover="3.2.0">
+  <project timestamp="1700118117687" name="All files">
+    <metrics statements="700" coveredstatements="640" conditionals="127" coveredconditionals="70" methods="115" coveredmethods="102" elements="942" coveredelements="812" complexity="0" loc="700" ncloc="700" packages="22" files="37" classes="37"/>
     <package name="src">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-      <file name="app.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\app.controller.ts">
+      <file name="app.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\app.controller.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -15,7 +15,7 @@
         <line num="16" count="1" type="stmt"/>
         <line num="17" count="1" type="stmt"/>
       </file>
-      <file name="app.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\app.service.ts">
+      <file name="app.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\app.service.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="4" count="2" type="stmt"/>
@@ -24,7 +24,7 @@
     </package>
     <package name="src.account">
       <metrics statements="19" coveredstatements="19" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
-      <file name="account.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\account\account.controller.ts">
+      <file name="account.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\account\account.controller.ts">
         <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -40,7 +40,7 @@
         <line num="25" count="2" type="stmt"/>
         <line num="26" count="1" type="stmt"/>
       </file>
-      <file name="account.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\account\account.service.ts">
+      <file name="account.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\account\account.service.ts">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="1" count="6" type="stmt"/>
         <line num="5" count="6" type="stmt"/>
@@ -52,7 +52,7 @@
     </package>
     <package name="src.account.dto">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="create-account.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\account\dto\create-account.dto.ts">
+      <file name="create-account.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\account\dto\create-account.dto.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -63,7 +63,7 @@
     </package>
     <package name="src.apartment">
       <metrics statements="106" coveredstatements="75" conditionals="26" coveredconditionals="7" methods="22" coveredmethods="15"/>
-      <file name="apartment.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\apartment\apartment.controller.ts">
+      <file name="apartment.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\apartment\apartment.controller.ts">
         <metrics statements="20" coveredstatements="19" conditionals="4" coveredconditionals="3" methods="5" coveredmethods="5"/>
         <line num="1" count="4" type="stmt"/>
         <line num="11" count="4" type="stmt"/>
@@ -86,7 +86,7 @@
         <line num="62" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="63" count="1" type="stmt"/>
       </file>
-      <file name="apartment.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\apartment\apartment.service.ts">
+      <file name="apartment.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\apartment\apartment.service.ts">
         <metrics statements="86" coveredstatements="56" conditionals="22" coveredconditionals="4" methods="17" coveredmethods="10"/>
         <line num="1" count="5" type="stmt"/>
         <line num="8" count="5" type="stmt"/>
@@ -177,22 +177,19 @@
       </file>
     </package>
     <package name="src.apartment.dto">
-      <metrics statements="19" coveredstatements="16" conditionals="7" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="create-apartment.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\apartment\dto\create-apartment.dto.ts">
-        <metrics statements="11" coveredstatements="9" conditionals="3" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="16" coveredstatements="15" conditionals="4" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="create-apartment.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\apartment\dto\create-apartment.dto.ts">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
-        <line num="4" count="4" type="stmt"/>
         <line num="5" count="4" type="stmt"/>
         <line num="11" count="4" type="stmt"/>
         <line num="13" count="4" type="stmt"/>
         <line num="32" count="4" type="stmt"/>
-        <line num="46" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="47" count="0" type="stmt"/>
         <line num="49" count="4" type="stmt"/>
       </file>
-      <file name="update-apartment.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\apartment\dto\update-apartment.dto.ts">
+      <file name="update-apartment.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\apartment\dto\update-apartment.dto.ts">
         <metrics statements="8" coveredstatements="7" conditionals="4" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
@@ -206,7 +203,7 @@
     </package>
     <package name="src.auth">
       <metrics statements="33" coveredstatements="33" conditionals="18" coveredconditionals="9" methods="6" coveredmethods="6"/>
-      <file name="auth.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\auth\auth.controller.ts">
+      <file name="auth.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\auth\auth.controller.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="1" count="11" type="stmt"/>
         <line num="2" count="11" type="stmt"/>
@@ -217,7 +214,7 @@
         <line num="39" count="11" type="stmt"/>
         <line num="40" count="1" type="stmt"/>
       </file>
-      <file name="auth.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\auth\auth.service.ts">
+      <file name="auth.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\auth\auth.service.ts">
         <metrics statements="25" coveredstatements="25" conditionals="18" coveredconditionals="9" methods="4" coveredmethods="4"/>
         <line num="1" count="12" type="stmt"/>
         <line num="2" count="12" type="stmt"/>
@@ -248,7 +245,7 @@
     </package>
     <package name="src.auth.dto">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="signin.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\auth\dto\signin.dto.ts">
+      <file name="signin.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\auth\dto\signin.dto.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="11" type="stmt"/>
         <line num="2" count="11" type="stmt"/>
@@ -259,7 +256,7 @@
     </package>
     <package name="src.avatar-generator">
       <metrics statements="7" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="avatar-generator.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\avatar-generator\avatar-generator.service.ts">
+      <file name="avatar-generator.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\avatar-generator\avatar-generator.service.ts">
         <metrics statements="7" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="1" count="8" type="stmt"/>
         <line num="2" count="8" type="stmt"/>
@@ -272,7 +269,7 @@
     </package>
     <package name="src.building">
       <metrics statements="66" coveredstatements="64" conditionals="1" coveredconditionals="1" methods="14" coveredmethods="14"/>
-      <file name="building.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\building\building.controller.ts">
+      <file name="building.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\building\building.controller.ts">
         <metrics statements="30" coveredstatements="30" conditionals="1" coveredconditionals="1" methods="7" coveredmethods="7"/>
         <line num="2" count="2" type="stmt"/>
         <line num="14" count="2" type="stmt"/>
@@ -305,7 +302,7 @@
         <line num="83" count="1" type="stmt"/>
         <line num="86" count="1" type="stmt"/>
       </file>
-      <file name="building.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\building\building.service.ts">
+      <file name="building.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\building\building.service.ts">
         <metrics statements="36" coveredstatements="34" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -347,7 +344,7 @@
     </package>
     <package name="src.building.dto">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="create-building.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\building\dto\create-building.dto.ts">
+      <file name="create-building.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\building\dto\create-building.dto.ts">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -356,7 +353,7 @@
         <line num="14" count="2" type="stmt"/>
         <line num="27" count="2" type="stmt"/>
       </file>
-      <file name="update-building.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\building\dto\update-building.dto.ts">
+      <file name="update-building.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\building\dto\update-building.dto.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -365,7 +362,7 @@
     </package>
     <package name="src.contract">
       <metrics statements="70" coveredstatements="64" conditionals="15" coveredconditionals="8" methods="12" coveredmethods="12"/>
-      <file name="contract.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\contract\contract.controller.ts">
+      <file name="contract.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\contract\contract.controller.ts">
         <metrics statements="25" coveredstatements="24" conditionals="3" coveredconditionals="2" methods="6" coveredmethods="6"/>
         <line num="1" count="2" type="stmt"/>
         <line num="16" count="2" type="stmt"/>
@@ -393,7 +390,7 @@
         <line num="69" count="2" type="stmt"/>
         <line num="70" count="1" type="stmt"/>
       </file>
-      <file name="contract.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\contract\contract.service.ts">
+      <file name="contract.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\contract\contract.service.ts">
         <metrics statements="45" coveredstatements="40" conditionals="12" coveredconditionals="6" methods="6" coveredmethods="6"/>
         <line num="1" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -444,7 +441,7 @@
     </package>
     <package name="src.contract.dto">
       <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="create-contract.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\contract\dto\create-contract.dto.ts">
+      <file name="create-contract.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\contract\dto\create-contract.dto.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -455,7 +452,7 @@
         <line num="25" count="2" type="stmt"/>
         <line num="32" count="2" type="stmt"/>
       </file>
-      <file name="update-contract.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\contract\dto\update-contract.dto.ts">
+      <file name="update-contract.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\contract\dto\update-contract.dto.ts">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -466,8 +463,8 @@
       </file>
     </package>
     <package name="src.employee">
-      <metrics statements="98" coveredstatements="91" conditionals="35" coveredconditionals="27" methods="13" coveredmethods="13"/>
-      <file name="employee.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\employee\employee.controller.ts">
+      <metrics statements="98" coveredstatements="89" conditionals="35" coveredconditionals="27" methods="13" coveredmethods="12"/>
+      <file name="employee.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\employee\employee.controller.ts">
         <metrics statements="21" coveredstatements="21" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
         <line num="1" count="4" type="stmt"/>
         <line num="15" count="4" type="stmt"/>
@@ -491,8 +488,8 @@
         <line num="87" count="4" type="stmt"/>
         <line num="88" count="2" type="stmt"/>
       </file>
-      <file name="employee.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\employee\employee.service.ts">
-        <metrics statements="77" coveredstatements="70" conditionals="35" coveredconditionals="27" methods="7" coveredmethods="7"/>
+      <file name="employee.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\employee\employee.service.ts">
+        <metrics statements="77" coveredstatements="68" conditionals="35" coveredconditionals="27" methods="7" coveredmethods="6"/>
         <line num="1" count="5" type="stmt"/>
         <line num="11" count="5" type="stmt"/>
         <line num="12" count="5" type="stmt"/>
@@ -568,13 +565,13 @@
         <line num="254" count="1" type="stmt"/>
         <line num="261" count="2" type="stmt"/>
         <line num="262" count="2" type="stmt"/>
-        <line num="265" count="2" type="stmt"/>
-        <line num="266" count="1" type="stmt"/>
+        <line num="265" count="0" type="stmt"/>
+        <line num="266" count="0" type="stmt"/>
       </file>
     </package>
     <package name="src.employee.dto">
       <metrics statements="19" coveredstatements="18" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="create-employee.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\employee\dto\create-employee.dto.ts">
+      <file name="create-employee.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\employee\dto\create-employee.dto.ts">
         <metrics statements="11" coveredstatements="10" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
@@ -588,7 +585,7 @@
         <line num="36" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="40" count="4" type="stmt"/>
       </file>
-      <file name="update-employee.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\employee\dto\update-employee.dto.ts">
+      <file name="update-employee.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\employee\dto\update-employee.dto.ts">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -602,7 +599,7 @@
     </package>
     <package name="src.hash">
       <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-      <file name="hash.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\hash\hash.service.ts">
+      <file name="hash.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\hash\hash.service.ts">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="1" count="16" type="stmt"/>
         <line num="2" count="16" type="stmt"/>
@@ -615,7 +612,7 @@
     </package>
     <package name="src.helper.decorator">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="auth.decorator.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\helper\decorator\auth.decorator.ts">
+      <file name="auth.decorator.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\helper\decorator\auth.decorator.ts">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="7" type="stmt"/>
         <line num="2" count="7" type="stmt"/>
@@ -625,7 +622,7 @@
         <line num="16" count="7" type="stmt"/>
         <line num="17" count="11" type="stmt"/>
       </file>
-      <file name="roles.decorator.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\helper\decorator\roles.decorator.ts">
+      <file name="roles.decorator.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\helper\decorator\roles.decorator.ts">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="7" type="stmt"/>
         <line num="4" count="7" type="stmt"/>
@@ -633,7 +630,7 @@
     </package>
     <package name="src.id-generator">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="id-generator.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\id-generator\id-generator.service.ts">
+      <file name="id-generator.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\id-generator\id-generator.service.ts">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="14" type="stmt"/>
         <line num="3" count="14" type="stmt"/>
@@ -643,7 +640,7 @@
     </package>
     <package name="src.me">
       <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="me.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\me\me.controller.ts">
+      <file name="me.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\me\me.controller.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -659,7 +656,7 @@
     </package>
     <package name="src.resident">
       <metrics statements="113" coveredstatements="108" conditionals="26" coveredconditionals="18" methods="15" coveredmethods="15"/>
-      <file name="resident.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\resident\resident.controller.ts">
+      <file name="resident.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\resident\resident.controller.ts">
         <metrics statements="30" coveredstatements="30" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
         <line num="1" count="4" type="stmt"/>
         <line num="15" count="4" type="stmt"/>
@@ -692,7 +689,7 @@
         <line num="107" count="1" type="stmt"/>
         <line num="109" count="1" type="stmt"/>
       </file>
-      <file name="resident.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\resident\resident.service.ts">
+      <file name="resident.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\resident\resident.service.ts">
         <metrics statements="83" coveredstatements="78" conditionals="26" coveredconditionals="18" methods="8" coveredmethods="8"/>
         <line num="2" count="5" type="stmt"/>
         <line num="4" count="5" type="stmt"/>
@@ -781,7 +778,7 @@
     </package>
     <package name="src.resident.dto">
       <metrics statements="15" coveredstatements="15" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="create-resident.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\resident\dto\create-resident.dto.ts">
+      <file name="create-resident.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\resident\dto\create-resident.dto.ts">
         <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
@@ -796,7 +793,7 @@
         <line num="43" count="4" type="stmt"/>
         <line num="50" count="4" type="stmt"/>
       </file>
-      <file name="update-resident.dto.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\resident\dto\update-resident.dto.ts">
+      <file name="update-resident.dto.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\resident\dto\update-resident.dto.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -805,7 +802,7 @@
     </package>
     <package name="src.seed">
       <metrics statements="53" coveredstatements="51" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="8"/>
-      <file name="seed.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\seed\seed.controller.ts">
+      <file name="seed.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\seed\seed.controller.ts">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -819,7 +816,7 @@
         <line num="21" count="3" type="stmt"/>
         <line num="22" count="1" type="stmt"/>
       </file>
-      <file name="seed.service.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\seed\seed.service.ts">
+      <file name="seed.service.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\seed\seed.service.ts">
         <metrics statements="42" coveredstatements="40" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="4"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -867,7 +864,7 @@
     </package>
     <package name="src.token">
       <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-      <file name="token.controller.ts" path="D:\BE_HomeLander\HomeLand_Apartment_Management_BE\src\token\token.controller.ts">
+      <file name="token.controller.ts" path="D:\User\vocongbinh\web_technology\HomeLand_Apartment_Management_BE\src\token\token.controller.ts">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>

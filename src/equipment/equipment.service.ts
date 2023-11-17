@@ -151,7 +151,6 @@ export class EquipmentServiceImp extends EquipmentService {
 
                 const newImageURLS = newImages.map((result) => result.value);
                 // this task can be done in parallel, will enhance later
-                // console.log(difference(apartment.imageURLs, newImageURLS));
                 await this.storageManager.remove(
                     difference(equipment.imageURLs, newImageURLS),
                 );

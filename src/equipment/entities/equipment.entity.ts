@@ -2,6 +2,8 @@ import {
     BeforeInsert,
     BeforeUpdate,
     Column,
+    CreateDateColumn,
+    DeleteDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
@@ -12,7 +14,7 @@ import { Floor } from "../../floor/entities/floor.entity";
 import { Building } from "../../building/entities/building.entity";
 import { IsEnum, IsOptional, IsString } from "class-validator";
 import { BadRequestException } from "@nestjs/common";
-import { ApiBody, ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { faker } from "@faker-js/faker";
 
 export enum EquipmentStatus {
@@ -75,6 +77,12 @@ export class Equipment {
     @IsString()
     @Column({ nullable: true })
     building_id?: string;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at?: Date;
 
     @BeforeInsert()
     @BeforeUpdate()

@@ -110,7 +110,6 @@ export class SupabaseStorageManager
         let fileToDelete = await Promise.all(
             paths.map((path) => this.listAllFiles(path)),
         );
-        console.log(fileToDelete.flat());
 
         const { data, error } = await this.supabaseClient.storage
             .from(this.BUCKET_NAME)

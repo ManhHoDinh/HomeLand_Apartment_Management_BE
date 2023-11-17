@@ -9,6 +9,8 @@ export class CreateEquipmentDto extends OmitType(Equipment, [
     "floor",
     "imageURLs",
     "id",
+    "created_at",
+    "deleted_at",
 ]) {
     @IsImageFiles(true)
     images: MemoryStoredFile[];

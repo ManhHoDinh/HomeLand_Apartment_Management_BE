@@ -27,6 +27,5 @@ import { AuthModule } from "../auth/auth.module";
         },
     ],
     exports: [ResidentRepository],
-
 })
 export class ResidentModule {}

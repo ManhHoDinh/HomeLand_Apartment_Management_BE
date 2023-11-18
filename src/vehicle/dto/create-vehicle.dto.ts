@@ -1,9 +1,14 @@
-import { IsNumber, IsString } from "class-validator";
 import { IsImageFile } from "../../helper/decorator/image-file.decorator";
-import { ApiProperty } from "@nestjs/swagger";
 import { MemoryStoredFile } from "nestjs-form-data";
+import { PickType } from "@nestjs/swagger";
+import { Vehicle } from "../entities/vehicle.entity";
 
-export class createVehicleDto {
+export class CreateVehicleDto extends PickType(Vehicle, [
+    "residentId",
+] as const) {
+    /**
+     * The photo must contain a license plate, otherwise the request will be rejected
+     */
     @IsImageFile()
     licensePlate: MemoryStoredFile;
 
@@ -12,7 +17,4 @@ export class createVehicleDto {
 
     @IsImageFile()
     backRegistrationPhoto: MemoryStoredFile;
-
-    @IsString()
-    residentId: string;
 }

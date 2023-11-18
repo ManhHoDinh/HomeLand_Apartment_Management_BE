@@ -20,10 +20,7 @@ import { ManagerService } from "./manager.service";
         AvatarGeneratorModule,
     ],
     controllers: [ManagerController],
-    providers: [
-       ManagerService
-    ],
+    providers: [ManagerService],
     exports: [ManagerService],
-
 })
 export class ManagerModule {}

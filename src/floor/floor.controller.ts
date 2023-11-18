@@ -17,6 +17,7 @@ import { UpdateFloorDto } from "./dto/update-floor.dto";
 import { CreateFloorDto } from "./dto/create-floor.dto";
 import { FloorService } from "./floor.service";
 import { id_ID } from "@faker-js/faker";
+import { Floor } from "./entities/floor.entity";
 
 @ApiTags("Floor")
 @Controller("floor")
@@ -55,21 +56,23 @@ export class FloorController {
         if (building) return building;
         throw new NotFoundException("Floor not found");
     }
-
+   
     @Patch(":id")
-    async update(
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
+    async updateFloor(
         @Param("id") id: string,
-        @Body() updateBuildingDto: UpdateFloorDto,
-    ) {
-        const result = await this.floorRepository.update(
-            id,
-            updateBuildingDto,
+        @Body() updateFloorDto: UpdateFloorDto,
+    ) : Promise<Floor> {
+        const floor = await this.floorRepository.updateFloor(
+                id,
+                updateFloorDto,
         );
-        if (result) return { msg: "Floor updated" };
-        throw new NotFoundException("Floor not found");
-    }
-    @Delete("/:id")
-    async softDeleteBuilding(@Param("id") id: string) {
-        return await this.floorRepository.delete(id);
-    }
+        return floor;
+}
+    
+    // @Delete(":id")
+    // remove(@Param("id") id: string) {
+    //         return this.floorRepository.delete(id);
+    // }
 }

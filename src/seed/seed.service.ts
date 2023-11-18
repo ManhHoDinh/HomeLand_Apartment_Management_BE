@@ -194,16 +194,17 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-            },
-            account: {
-                owner_id: id,
-                email: "resident@gmail.com",
-                password: this.hashService.hash("password"),
+                identify_number: "11111111",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
                     "resident/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
+            },
+            account: {
+                owner_id: id,
+                email: "resident@gmail.com",
+                password: this.hashService.hash("password"),
             },
         });
     }
@@ -231,11 +232,7 @@ export class SeedService {
                             "admin/" + id + "/backIdentifyPhoto.jpg",
                             "image/jpeg",
                         ),
-                },
-                account: {
-                    owner_id: id,
-                    email: "technician@gmail.com",
-                    password: this.hashService.hash("password"),
+                    identify_number: "2222222",
                     avatarURL: await this.storageManager.upload(
                         await this.avatarGenerator.generateAvatar(
                             "DEMO TECHNICIAN",
@@ -243,6 +240,11 @@ export class SeedService {
                         "admin/" + id + "/avatar.svg",
                         "image/svg+xml",
                     ),
+                },
+                account: {
+                    owner_id: id,
+                    email: "technician@gmail.com",
+                    password: this.hashService.hash("password"),
                 },
             });
     }
@@ -266,16 +268,18 @@ export class SeedService {
                     "admin/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-            },
-            account: {
-                owner_id: id,
-                email: "manager@gmail.com",
-                password: this.hashService.hash("password"),
+
+                identify_number: "44444444",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
                     "admin/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
+            },
+            account: {
+                owner_id: id,
+                email: "manager@gmail.com",
+                password: this.hashService.hash("password"),
             },
         });
     }
@@ -302,6 +306,12 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
+                identify_number: "583838383",
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
+                    "resident/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
             },
             account:
                 random === 0
@@ -309,13 +319,6 @@ export class SeedService {
                           owner_id: id,
                           email: faker.internet.email(),
                           password: this.hashService.hash("password"),
-                          avatarURL: await this.storageManager.upload(
-                              await this.avatarGenerator.generateAvatar(
-                                  "DEMO RESIDENT",
-                              ),
-                              "resident/" + id + "/avatar.svg",
-                              "image/svg+xml",
-                          ),
                       }
                     : undefined,
         });
@@ -373,16 +376,17 @@ export class SeedService {
                     "admin/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-            },
-            account: {
-                owner_id: id,
-                email: "admin@gmail.com",
-                password: this.hashService.hash("password"),
+                identify_number: "999999999",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
                     "admin/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
+            },
+            account: {
+                owner_id: id,
+                email: "admin@gmail.com",
+                password: this.hashService.hash("password"),
             },
         });
     }

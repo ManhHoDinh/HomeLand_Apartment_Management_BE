@@ -26,6 +26,7 @@ import { ServiceModule } from './service/service.module';
 import { ServicePackageModule } from './service-package/service-package.module';
 import { ManagerModule } from "./manager/manager.module";
 import { TechnicianModule } from "./technician/technician.module";
+import { FloorModule } from "./floor/floor.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -79,6 +80,7 @@ import { TechnicianModule } from "./technician/technician.module";
         ResidentModule,
         BuildingModule,
         ManagerModule,
+        FloorModule,
         ContractModule,
         TechnicianModule,
         AvatarGeneratorModule,

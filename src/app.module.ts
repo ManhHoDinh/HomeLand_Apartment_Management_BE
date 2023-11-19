@@ -18,14 +18,14 @@ import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { EmployeeModule } from "./employee/employee.module";
-import { BuildingModule } from "./building/building.module";
+import { BuildingModule, BuildingModule } from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 import { VehicleModule } from "./vehicle/vehicle.module";
-
-import { ServiceModule } from './service/service.module';
-import { ServicePackageModule } from './service-package/service-package.module';
+import { ServiceModule } from "./service/service.module";
+import { ServicePackageModule, ServicePackageModule } from "./service-package/service-package.module";
 import { ManagerModule } from "./manager/manager.module";
 import { TechnicianModule } from "./technician/technician.module";
+import { EquipmentModule } from "./equipment/equipment.module";
 import { FloorModule } from "./floor/floor.module";
 @Module({
     imports: [
@@ -92,6 +92,7 @@ import { FloorModule } from "./floor/floor.module";
         ServiceModule,
         ServicePackageModule,
         VehicleModule,
+        EquipmentModule,
     ],
     controllers: [AppController],
     providers: [AppService],

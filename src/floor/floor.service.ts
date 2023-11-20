@@ -8,15 +8,24 @@ import { IRepository } from "../helper/interface/IRepository.interface";
 import { Floor } from "./entities/floor.entity";
 import { UpdateFloorDto } from "./dto/update-floor.dto";
 import { isQueryAffected } from "../helper/validation";
+import { Building } from "src/building/entities/building.entity";
+import { CreateBuildingDto } from "src/building/dto/create-building.dto";
+import { BuildingController } from "src/building/building.controller";
+import { Apartment } from "src/apartment/entities/apartment.entity";
+import { floor } from "lodash";
+
 export abstract class FloorService implements IRepository<Floor> {
     abstract findOne(id: string): Promise<Floor | null>;
     abstract update(id: string, updateEntityDto: any): Promise<boolean>;
     abstract delete(id: string): Promise<boolean>;
     abstract create(
-        createBuildingDto: CreateFloorDto,
+        createPropertyDto: CreateFloorDto,
         id?: string,
     ): Promise<Floor>;
-
+    abstract updateFloor(
+        id: string,
+        updateFloorDto: UpdateFloorDto,
+    ): Promise<Floor>;
     abstract findAll(page?: number): Promise<Floor[]>;
     abstract search(query: string): Promise<Floor[]>;
 }
@@ -24,8 +33,8 @@ export abstract class FloorService implements IRepository<Floor> {
 @Injectable()
 export class TypeORMFloorService extends FloorService {
     constructor(
-        @InjectRepository(Floor)
-        private readonly buildingRepository: Repository<Floor>,
+        @InjectRepository(Apartment)
+        private readonly apartmentRepository: Repository<Apartment>,
         @InjectRepository(Floor)
         private readonly floorRepository: Repository<Floor>,
         @InjectDataSource()
@@ -37,7 +46,7 @@ export class TypeORMFloorService extends FloorService {
     }
 
     async create(
-        createBuildingDto: CreateFloorDto,
+        CreateFloorDto: CreateFloorDto,
         id?: string,
     ): Promise<Floor> {
         let floor = this.floorRepository.create(CreateFloorDto);
@@ -45,6 +54,14 @@ export class TypeORMFloorService extends FloorService {
         if (id) floor.floor_id = id;
 
         try {
+            if (CreateFloorDto.apartmentIds) {
+                const apartments = await this.apartmentRepository.find({
+                    where: { apartment_id: In(CreateFloorDto.apartmentIds) },
+                });
+                if (apartments.length !== CreateFloorDto.apartmentIds.length)
+                    throw new NotFoundException("Some resident not found");
+                floor.apartments = apartments;
+            }
             floor = await this.floorRepository.save(floor);
             return floor;
         } catch (error) {
@@ -52,38 +69,57 @@ export class TypeORMFloorService extends FloorService {
             throw error;
         }
     }
+
     async findAll() {
         return await this.floorRepository.find();
     }
 
     async findOne(id: string) {
         return await this.floorRepository.findOne({
-            where: { building_id: id },
+            where: { floor_id: id },
         });
     }
 
-    async update(
+    async updateFloor(
         id: string,
         updateFloorDto: UpdateFloorDto,
-    ): Promise<boolean> {
+    ): Promise<Floor> {
+        let floor = await this.floorRepository.findOne({
+            where: { floor_id: id },
+        });
+        if (!floor) throw new NotFoundException();
+        const queryRunner = this.dataSource.createQueryRunner();
+       
         try {
-            let result = await this.floorRepository.update(
-                id,
-                updateFloorDto,
-            );
-            return isQueryAffected(result);
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
+            let { max_apartment, ...rest } = updateFloorDto;
+            floor = this.floorRepository.merge(floor, updateFloorDto);
+            floor = await this.floorRepository.save(floor);
+            await queryRunner.commitTransaction();
         } catch (error) {
-            throw new Error("Method not implemented.");
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
         }
+        return floor;
+    }
+    async update(id: string, UpdateFloorDto: UpdateFloorDto) {
+        let result = await this.floorRepository.update(id, UpdateFloorDto as any);
+        return isQueryAffected(result);
     }
     async delete(id: string): Promise<boolean> {
+        const result = await this.floorRepository.softDelete({ floor_id: id });
+        return isQueryAffected(result);
+    }
+    async hardDelete?(id: any): Promise<boolean> {
         try {
-            const result = await this.floorRepository.softDelete({
-                building_id: id,
-            });
+            const result = await this.floorRepository.delete({ floor_id : id });
             return isQueryAffected(result);
         } catch (error) {
-            throw new Error("Method not implemented.");
+            console.error(error);
+            throw error;
         }
     }
     /**

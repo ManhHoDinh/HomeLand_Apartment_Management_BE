@@ -20,14 +20,14 @@ export class ServicePackage {
     @PrimaryColumn()
     servicePackage_id: string;
     @ApiProperty({ example: "service0" })
-    @IsString()
-    @Column()
-    service_id: string;
+    @IsOptional()
+    @Column({nullable:true})
+    service_id?: string;
 
     @ManyToOne(() => Service, (service) => service.servicePackages, {
         nullable: true,
     })
-    //@JoinColumn({ name: "service_id" })
+    @JoinColumn({ name: "service_id" })
     service?: Service;
     @IsOptional()
     @Column({ nullable: true })

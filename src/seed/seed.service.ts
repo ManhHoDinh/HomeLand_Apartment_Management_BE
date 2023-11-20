@@ -29,6 +29,7 @@ import {
 } from "src/employee/employee.service";
 import { random } from "lodash";
 import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
+import { Service } from "../service/entities/service.entity";
 @Injectable()
 export class SeedService {
     constructor(
@@ -40,7 +41,7 @@ export class SeedService {
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
         private readonly residentService: ResidentRepository,
-    ) { }
+    ) {}
 
     async dropDB() {
         try {
@@ -68,6 +69,7 @@ export class SeedService {
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
     private readonly NUMBER_OF_ADMIN = 2;
+    private readonly NUMBER_OF_Service = 5;
 
     private readonly frontIdentity = {
         buffer: readFileSync(process.cwd() + "/src/seed/front.jpg"),
@@ -101,6 +103,7 @@ export class SeedService {
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
+        await this.createDemoServices();
 
         // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
@@ -306,17 +309,17 @@ export class SeedService {
             account:
                 random === 0
                     ? {
-                        owner_id: id,
-                        email: faker.internet.email(),
-                        password: this.hashService.hash("password"),
-                        avatarURL: await this.storageManager.upload(
-                            await this.avatarGenerator.generateAvatar(
-                                "DEMO RESIDENT",
-                            ),
-                            "resident/" + id + "/avatar.svg",
-                            "image/svg+xml",
-                        ),
-                    }
+                          owner_id: id,
+                          email: faker.internet.email(),
+                          password: this.hashService.hash("password"),
+                          avatarURL: await this.storageManager.upload(
+                              await this.avatarGenerator.generateAvatar(
+                                  "DEMO RESIDENT",
+                              ),
+                              "resident/" + id + "/avatar.svg",
+                              "image/svg+xml",
+                          ),
+                      }
                     : undefined,
         });
     }
@@ -346,7 +349,6 @@ export class SeedService {
                     "image/svg+xml",
                 ),
             },
-
         });
     }
 
@@ -416,5 +418,22 @@ export class SeedService {
             role: ContractRole.RENT,
             status: ContractStatusRole.INACTIVE,
         });
+    }
+    async createDemoServices() {
+        let ServiceInfo: any[] = [];
+        for (let i = 0; i < this.NUMBER_OF_Service; i++) {
+            ServiceInfo.push({
+                service_id: `Service${i}`,
+                name: `Service ${i}`,
+                images: this.images,
+                description: `This is a demo service ${i}`,
+            });
+        }
+        await this.dataSource
+            .createQueryBuilder()
+            .insert()
+            .into(Service)
+            .values(ServiceInfo)
+            .execute();
     }
 }

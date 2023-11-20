@@ -26,6 +26,7 @@ import { ServicePackageModule } from "./service-package/service-package.module";
 import { ManagerModule } from "./manager/manager.module";
 import { TechnicianModule } from "./technician/technician.module";
 import { EquipmentModule } from "./equipment/equipment.module";
+import { InvoiceModule } from './invoice/invoice.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -91,6 +92,7 @@ import { EquipmentModule } from "./equipment/equipment.module";
         ServicePackageModule,
         VehicleModule,
         EquipmentModule,
+        InvoiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],

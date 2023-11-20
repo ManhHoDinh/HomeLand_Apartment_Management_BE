@@ -48,12 +48,9 @@ export class Service {
     @Column("simple-array", { nullable: true })
     imageURLs?: string[];
 
-    @IsOptional()
-    @OneToMany(() => ServicePackage, (service) => service.service, {
-        nullable: true,
-    })
-    @JoinTable()
+    @OneToMany(() => ServicePackage, (servicePackage) => servicePackage.service)
     servicePackages?: ServicePackage[];
+
     @CreateDateColumn()
     created_at: Date;
 

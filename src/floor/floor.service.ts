@@ -28,6 +28,14 @@ export abstract class FloorService implements IRepository<Floor> {
     ): Promise<Floor>;
     abstract findAll(page?: number): Promise<Floor[]>;
     abstract search(query: string): Promise<Floor[]>;
+    abstract addapartment(
+        apartmentIds: string[] | string,
+        id: string,
+    ): Promise<Floor | null>;
+    abstract deleteapartment(
+        floor_id: string,
+        apartment_id: string,
+    ): Promise<Floor | null>;
 }
 
 @Injectable()
@@ -71,12 +79,17 @@ export class TypeORMFloorService extends FloorService {
     }
 
     async findAll() {
-        return await this.floorRepository.find();
+        return await this.floorRepository.find(
+            {
+                relations: ["apartments"],
+            }
+        );
     }
 
     async findOne(id: string) {
         return await this.floorRepository.findOne({
             where: { floor_id: id },
+            relations: ["apartments"],
         });
     }
 
@@ -134,5 +147,54 @@ export class TypeORMFloorService extends FloorService {
             },
         });
         return result;
+    }
+    async addapartment(
+        apartmentIds: string[] | string,
+        id: string,
+    ): Promise<Floor | null> {
+        try {
+            const floor = (await this.floorRepository.findOne({
+                where: {
+                    floor_id: id,
+                },
+            })) as Floor;
+            await this.floorRepository
+                .createQueryBuilder()
+                .relation(Floor, "apartments")
+                .of(floor)
+                .add(apartmentIds);
+            const result = await this.floorRepository.findOne({
+                where: {
+                    floor_id: id,
+                },
+                relations: ["apartments"],
+            });
+            console.log(result);
+            return result;
+        } catch (e) {
+            throw new Error(e);
+        }
+    }
+    async deleteapartment(
+        floor_id: string,
+        apartment_id: string,
+    ): Promise<Floor | null> {
+        const floor = await this.floorRepository.findOne({
+            where: {
+                floor_id,
+            },
+        });
+        await this.floorRepository
+            .createQueryBuilder()
+            .relation(Floor, "apartments")
+            .of(floor)
+            .remove(apartment_id);
+        const newBuilding = await this.floorRepository.findOne({
+            where: {
+                floor_id,
+            },
+            relations: ["apartments"],
+        });
+        return newBuilding;
     }
 }

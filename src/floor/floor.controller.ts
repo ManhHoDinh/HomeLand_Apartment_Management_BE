@@ -22,8 +22,8 @@ import { Floor } from "./entities/floor.entity";
 @ApiTags("Floor")
 @Controller("floor")
 export class FloorController {
-    constructor(private readonly floorRepository: FloorService) {}
-    @ApiOperation({summary: "create floor"})
+    constructor(private readonly floorRepository: FloorService) { }
+    @ApiOperation({ summary: "create floor" })
     @ApiConsumes("multipart/form-data")
     @Post()
     @FormDataRequest()
@@ -56,21 +56,32 @@ export class FloorController {
         if (building) return building;
         throw new NotFoundException("Floor not found");
     }
-   
+
     @Patch(":id")
     @ApiConsumes("multipart/form-data")
     @FormDataRequest()
     async updateFloor(
         @Param("id") id: string,
         @Body() updateFloorDto: UpdateFloorDto,
-    ) : Promise<Floor> {
+    ): Promise<Floor> {
         const floor = await this.floorRepository.updateFloor(
-                id,
-                updateFloorDto,
+            id,
+            updateFloorDto,
         );
         return floor;
-}
-    
+    }
+    @ApiOperation({ summary: "add apartment to floor" })
+    @Post("/:id/addManagers")
+    async addManagerToBuilding(@Param("id") id: string, @Query("apartmentIds") apartmentIds: string[]) {
+        return await this.floorRepository.addapartment(apartmentIds, id)
+    }
+
+    @ApiOperation({ summary: "delete manager from building" })
+    @Post("/:id/deleteManager")
+    async deleteManager(@Param("id") id: string, @Query("apartmentId") apartmentId: string) {
+        return await this.floorRepository.deleteapartment(id, apartmentId)
+    }
+
     // @Delete(":id")
     // remove(@Param("id") id: string) {
     //         return this.floorRepository.delete(id);

@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
 import { Employee } from "../entities/employee.entity";
-import { IsOptional } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 import {
     HasMimeType,
     IsFile,
@@ -11,6 +11,7 @@ import {
 import { commonImageMIMETypes } from "../../helper/constant";
 import { Transform } from "class-transformer";
 import { Profile } from "../../helper/class/profile.entity";
+import { Column } from "typeorm";
 export class CreateEmployeeDto extends PickType(Profile, [
     "name",
     "date_of_birth",
@@ -18,7 +19,11 @@ export class CreateEmployeeDto extends PickType(Profile, [
     "phone_number",
 
 ] as const) {
-
+    @ApiProperty({ required: false })
+    @IsString()
+    @Column()
+    task_info: string;
+    
     @ApiProperty({ type: "file", required: true })
     @IsFile()
     @MaxFileSize(10e6)

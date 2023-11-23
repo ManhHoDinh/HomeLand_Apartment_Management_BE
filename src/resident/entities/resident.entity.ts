@@ -13,7 +13,7 @@ import { Contract } from "../../contract/entities/contract.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { Vehicle } from "../../vehicle/entities/vehicle.entity";
-
+import { Feedback } from "src/feedback/entities/feedback.entity";
 @Entity()
 export class Resident {
     @PrimaryColumn()
@@ -37,6 +37,9 @@ export class Resident {
 
     @OneToMany(() => Contract, (contract) => contract.resident)
     contracts: Contract[];
+
+    @OneToMany(() => Feedback, (feedback) => feedback.resident)
+    feedback: Feedback[];
 
     @ManyToOne(() => Apartment, (apartment) => apartment.residents)
     @JoinColumn({ name: "stay_at_apartment_id" })

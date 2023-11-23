@@ -28,11 +28,11 @@ export abstract class FloorService implements IRepository<Floor> {
     ): Promise<Floor>;
     abstract findAll(page?: number): Promise<Floor[]>;
     abstract search(query: string): Promise<Floor[]>;
-    abstract addapartment(
+    abstract addApartment(
         apartmentIds: string[] | string,
         id: string,
     ): Promise<Floor | null>;
-    abstract deleteapartment(
+    abstract deleteApartment(
         floor_id: string,
         apartment_id: string,
     ): Promise<Floor | null>;
@@ -148,7 +148,7 @@ export class TypeORMFloorService extends FloorService {
         });
         return result;
     }
-    async addapartment(
+    async addApartment(
         apartmentIds: string[] | string,
         id: string,
     ): Promise<Floor | null> {
@@ -175,7 +175,7 @@ export class TypeORMFloorService extends FloorService {
             throw new Error(e);
         }
     }
-    async deleteapartment(
+    async deleteApartment(
         floor_id: string,
         apartment_id: string,
     ): Promise<Floor | null> {

@@ -7,6 +7,7 @@ import { IdGeneratorModule } from "../id-generator/id-generator.module";
 import { StorageModule } from "../storage/storage.module";
 import { Resident } from "../resident/entities/resident.entity";
 import { AuthModule } from "../auth/auth.module";
+import { ApartmentSubcriber } from "./apartment.subscriber";
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from "../auth/auth.module";
     ],
     controllers: [ApartmentController],
     providers: [
+        ApartmentSubcriber,
         {
             provide: ApartmentService,
             useClass: ApartmentServiceImp,

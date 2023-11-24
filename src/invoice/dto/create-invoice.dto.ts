@@ -3,5 +3,5 @@ import { Invoice } from "../entities/invoice.entity";
 
 export class CreateInvoiceDto extends OmitType(Invoice, [
     "servicePackage","invoice_id","buyer","created_at",
-    "deleted_at",
+    "deleted_at","expired_at"
 ] as const) {}

@@ -10,10 +10,10 @@ import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageError, StorageManager } from "../storage/storage.service";
 import { IdGenerator } from "../id-generator/id-generator.service";
-import { IRepository } from "../helper/interface/IRepository.interface";
 import { Resident } from "../resident/entities/resident.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { difference, isString } from "lodash";
+import { Client } from "elasticsearch";
 
 /**
  * @classdesc Represent the service that manage the apartment
@@ -53,6 +53,12 @@ export abstract class ApartmentService {
         residentIds: string[] | string,
         id: string,
     ): Promise<Apartment | null>;
+
+    abstract search(
+        field: string,
+        value: string,
+        from: number,
+    ): Promise<Apartment[]>;
 }
 
 @Injectable()
@@ -66,6 +72,7 @@ export class ApartmentServiceImp extends ApartmentService {
         private readonly dataSource: DataSource,
         private readonly idGenerate: IdGenerator,
         private readonly storageManager: StorageManager,
+        private readonly elasticSearchClient: Client,
     ) {
         super();
     }
@@ -88,9 +95,10 @@ export class ApartmentServiceImp extends ApartmentService {
                     this.storageManager.upload(
                         image.buffer,
                         `apartment/${apartment.apartment_id}/${
-                            index + Date.now() + (image.extension || ".png")
+                            index.toString() + Date.now() + image.extension ??
+                            ".png"
                         }`,
-                        `image/${image.extension}` || "image/png",
+                        `image/${image.extension ?? ".png"}`,
                     ),
                 ),
             );
@@ -235,7 +243,7 @@ export class ApartmentServiceImp extends ApartmentService {
     }
 
     async delete(id: string) {
-        await this.apartmentRepository.delete({ apartment_id: id });
+        await this.apartmentRepository.softRemove({ apartment_id: id });
     }
 
     async addResidentToApartment(
@@ -263,5 +271,28 @@ export class ApartmentServiceImp extends ApartmentService {
         } catch (e) {
             throw new Error(e);
         }
+    }
+
+    async search(
+        field: string,
+        value: string,
+        from: number,
+    ): Promise<Apartment[]> {
+        let object = {};
+        object[field] = value;
+        let result = await this.elasticSearchClient.search<Apartment>({
+            index: "apartment",
+            body: {
+                from: from,
+                size: 30,
+                query: {
+                    match: object,
+                },
+            },
+        });
+        let finalResutl: Apartment[] = result.hits.hits.map(
+            (hit) => hit._source,
+        );
+        return finalResutl;
     }
 }

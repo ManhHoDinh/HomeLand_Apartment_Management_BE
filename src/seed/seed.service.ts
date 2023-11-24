@@ -31,6 +31,7 @@ import { random } from "lodash";
 import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
 import { Service } from "../service/entities/service.entity";
 import { ServicePackage } from "../service-package/entities/service-package.entity";
+import { Client } from "elasticsearch";
 @Injectable()
 export class SeedService {
     constructor(
@@ -41,6 +42,7 @@ export class SeedService {
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
+        private readonly elasticsearchClient: Client,
         private readonly residentService: ResidentRepository,
     ) {}
 
@@ -48,9 +50,16 @@ export class SeedService {
         try {
             await this.storageManager.destroyStorage();
             await this.dataSource.dropDatabase();
+            await this.elasticsearchClient.indices.delete({
+                index: "apartment",
+            });
+            await this.elasticsearchClient.indices.create({
+                index: "apartment",
+                method: "PUT",
+            });
         } catch (error) {
             console.error(error);
-            throw error;
+            // throw error;
         }
     }
     async createDB() {
@@ -105,7 +114,7 @@ export class SeedService {
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
-     
+
         // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
@@ -449,7 +458,7 @@ export class SeedService {
                     service_id: `Service${i}`,
                     name: `Service package ${j} in Service ${i}`,
                     expired_date: 30,
-                    per_unit_price:10,
+                    per_unit_price: 10,
                 });
 
         await this.dataSource

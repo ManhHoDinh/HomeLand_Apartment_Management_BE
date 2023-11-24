@@ -22,6 +22,7 @@
     "dependencies": {
         "@dicebear/collection": "^7.0.1",
         "@dicebear/core": "^7.0.1",
+        "@elastic/elasticsearch": "^8.10.0",
         "@nestjs/axios": "^3.0.1",
         "@nestjs/common": "^10.0.0",
         "@nestjs/config": "^3.1.1",

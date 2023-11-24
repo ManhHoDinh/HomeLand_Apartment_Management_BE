@@ -10,7 +10,6 @@ import { Apartment } from "./entities/apartment.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { StorageError, StorageManager } from "../storage/storage.service";
 import { IdGenerator } from "../id-generator/id-generator.service";
-import { IRepository } from "../helper/interface/IRepository.interface";
 import { Resident } from "../resident/entities/resident.entity";
 import { MemoryStoredFile } from "nestjs-form-data";
 import { difference, isString } from "lodash";
@@ -53,6 +52,8 @@ export abstract class ApartmentService {
         residentIds: string[] | string,
         id: string,
     ): Promise<Apartment | null>;
+
+    abstract search(query: string): Promise<Apartment[]>;
 }
 
 @Injectable()
@@ -263,5 +264,9 @@ export class ApartmentServiceImp extends ApartmentService {
         } catch (e) {
             throw new Error(e);
         }
+    }
+
+    search(query: string): Promise<Apartment[]> {
+        throw new Error("Method not implemented.");
     }
 }

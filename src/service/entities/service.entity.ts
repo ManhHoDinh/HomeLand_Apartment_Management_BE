@@ -56,8 +56,9 @@ export class Service {
     @OneToMany(() => ServicePackage, (feedback) => feedback.service)
     feedback: Feedback[];
 
-    @JoinTable()
-    servicePackages?: ServicePackage[];
+    @OneToMany(() => ServicePackage, (servicePackage) => servicePackage.service)
+    servicePackages: ServicePackage[];
+
     @CreateDateColumn()
     created_at: Date;
 

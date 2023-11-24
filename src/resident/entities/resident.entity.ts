@@ -14,6 +14,8 @@ import { ManyToOne, JoinColumn } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { Vehicle } from "../../vehicle/entities/vehicle.entity";
 import { Feedback } from "src/feedback/entities/feedback.entity";
+import { Invoice } from "../../invoice/entities/invoice.entity";
+
 @Entity()
 export class Resident {
     @PrimaryColumn()
@@ -40,6 +42,10 @@ export class Resident {
 
     @OneToMany(() => Feedback, (feedback) => feedback.resident)
     feedback: Feedback[];
+    
+    @OneToMany(() => Invoice, (invoice) => invoice.buyer)
+    invoices: Invoice[];
+
 
     @ManyToOne(() => Apartment, (apartment) => apartment.residents)
     @JoinColumn({ name: "stay_at_apartment_id" })

@@ -11,18 +11,19 @@ import {
     Delete,
 } from "@nestjs/common";
 
-import { ApiConsumes, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FormDataRequest } from "nestjs-form-data";
 import { UpdateFloorDto } from "./dto/update-floor.dto";
 import { CreateFloorDto } from "./dto/create-floor.dto";
 import { FloorService } from "./floor.service";
 import { id_ID } from "@faker-js/faker";
+import { Floor } from "./entities/floor.entity";
 
 @ApiTags("Floor")
 @Controller("floor")
 export class FloorController {
-    constructor(private readonly floorRepository: FloorService) {}
-
+    constructor(private readonly floorRepository: FloorService) { }
+    @ApiOperation({ summary: "create floor" })
     @ApiConsumes("multipart/form-data")
     @Post()
     @FormDataRequest()
@@ -35,7 +36,7 @@ export class FloorController {
      * @param query string that admin search by name
      */
     @Get("search")
-    async searchBuilding(@Query("query") query: string) {
+    async search(@Query("query") query: string) {
         const result = await this.floorRepository.search(query);
         return result;
     }
@@ -53,23 +54,36 @@ export class FloorController {
     async findOne(@Param("id") id: string) {
         const building = await this.floorRepository.findOne(id);
         if (building) return building;
-        throw new NotFoundException("Building not found");
+        throw new NotFoundException("Floor not found");
     }
 
     @Patch(":id")
-    async update(
+    @ApiConsumes("multipart/form-data")
+    @FormDataRequest()
+    async updateFloor(
         @Param("id") id: string,
-        @Body() updateBuildingDto: UpdateFloorDto,
-    ) {
-        const result = await this.floorRepository.update(
+        @Body() updateFloorDto: UpdateFloorDto,
+    ): Promise<Floor> {
+        const floor = await this.floorRepository.updateFloor(
             id,
-            updateBuildingDto,
+            updateFloorDto,
         );
-        if (result) return { msg: "Building updated" };
-        throw new NotFoundException("Building not found");
+        return floor;
     }
-    @Delete("/:id")
-    async softDeleteBuilding(@Param("id") id: string) {
-        return await this.floorRepository.delete(id);
+    @ApiOperation({ summary: "add apartment to floor" })
+    @Post("/:id/addManagers")
+    async addApartment(@Param("id") id: string, @Query("apartmentIds") apartmentIds: string[]) {
+        return await this.floorRepository.addApartment(apartmentIds, id)
     }
+
+    @ApiOperation({ summary: "delete manager from building" })
+    @Delete("/:id/deleteManager")
+    async deleteApartment(@Param("id") id: string, @Query("apartmentId") apartmentId: string) {
+        return await this.floorRepository.deleteApartment(id, apartmentId)
+    }
+
+    // @Delete(":id")
+    // remove(@Param("id") id: string) {
+    //         return this.floorRepository.delete(id);
+    // }
 }

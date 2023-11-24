@@ -22,7 +22,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsOptional, IsString } from "class-validator";
 import { on } from "events";
 import { ServicePackage } from "../../service-package/entities/service-package.entity";
-
+import { Feedback } from "src/feedback/entities/feedback.entity";
 @Entity()
 export class Service {
     @PrimaryColumn()
@@ -47,6 +47,14 @@ export class Service {
 
     @Column("simple-array", { nullable: true })
     imageURLs?: string[];
+
+    @IsOptional()
+    @OneToMany(() => ServicePackage, (service) => service.service, {
+        nullable: true,
+    })
+
+    @OneToMany(() => ServicePackage, (feedback) => feedback.service)
+    feedback: Feedback[];
 
     @OneToMany(() => ServicePackage, (servicePackage) => servicePackage.service)
     servicePackages: ServicePackage[];

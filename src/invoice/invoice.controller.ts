@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from "@nestjs/common";
 import { InvoiceService } from "./invoice.service";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
@@ -18,22 +19,20 @@ import { FormDataRequest } from "nestjs-form-data";
 export class InvoiceController {
     constructor(private readonly invoiceService: InvoiceService) {}
 
-    @Post('create')
-    @ApiConsumes("multipart/form-data")
-    @FormDataRequest()
-  
-    create(@Body() createInvoiceDto: CreateInvoiceDto) {
-        return this.invoiceService.create(createInvoiceDto);
+    @Post("create")
+    create(
+        @Query() queryParams: any,
+    ) {
+        return this.invoiceService.create(queryParams);
     }
 
     @Post()
     @ApiConsumes("multipart/form-data")
     @FormDataRequest()
-  
     payment(@Body() createInvoiceDto: CreateInvoiceDto) {
         return this.invoiceService.payment(createInvoiceDto);
     }
-    
+
     @Get()
     findAll() {
         return this.invoiceService.findAll();

@@ -61,7 +61,7 @@ export class InvoiceService {
         var orderInfo = "pay with MoMo";
         var partnerCode = "MOMO";
         var redirectUrl =
-            "https://homeland-backend-pr-89.onrender.com/invoice" +
+            "https://homeland-backend-pr-89.onrender.com/invoice?" +
             this.convertJsonToParams(createInvoiceDto);
         var ipnUrl =
             "https://homeland-backend-pr-89.onrender.com/invoice/create?" +

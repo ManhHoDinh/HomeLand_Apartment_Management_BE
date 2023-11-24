@@ -3,29 +3,73 @@ import {
     EntitySubscriberInterface,
     EventSubscriber,
     InsertEvent,
+    SoftRemoveEvent,
+    UpdateEvent,
 } from "typeorm";
 import { Apartment } from "./entities/apartment.entity";
 import { OnModuleInit } from "@nestjs/common";
-import { Client } from "@elastic/elasticsearch";
+import { Client } from "elasticsearch";
 
 @EventSubscriber()
 export class ApartmentSubcriber
     implements EntitySubscriberInterface<Apartment>, OnModuleInit
 {
-    constructor(dataSource: DataSource) {
-        dataSource.subscribers.push(this);
+    constructor(
+        private readonly elasticSearchClient: Client,
+        private readonly dataSource: DataSource,
+    ) {
+        this.dataSource.subscribers.push(this);
     }
 
-    // private elasticSearchClient = new Client({
-    //     host: "localhost:9200",
-    // });
-    onModuleInit(): void {}
+    async onModuleInit() {
+        try {
+            await this.elasticSearchClient.indices.create({
+                index: "apartment",
+                method: "PUT",
+            });
+        } catch (error) {}
+    }
 
     listenTo() {
         return Apartment;
     }
 
-    afterInsert(event: InsertEvent<Apartment>): void | Promise<any> {
+    async afterInsert(event: InsertEvent<Apartment>) {
         console.log(event.entity);
+        let apartment = await event.manager.findOne(Apartment, {
+            where: { apartment_id: event.entity.apartment_id },
+        });
+        if (!apartment) return;
+
+        this.elasticSearchClient.index({
+            index: "apartment",
+            type: "apartment",
+            body: apartment,
+            id: apartment.apartment_id,
+            method: "PUT",
+        });
+    }
+
+    async afterUpdate(event: UpdateEvent<Apartment>) {
+        let apartment = await event.manager.findOne(Apartment, {
+            where: { apartment_id: event.databaseEntity.apartment_id },
+        });
+        if (!apartment) return;
+        this.elasticSearchClient.update({
+            index: "apartment",
+            type: "apartment",
+            body: {
+                doc: apartment,
+            },
+            id: apartment.apartment_id,
+        });
+    }
+
+    async afterSoftRemove(event: SoftRemoveEvent<Apartment>) {
+        await this.elasticSearchClient.delete({
+            index: "apartment",
+            type: "apartment",
+            id: event.entityId,
+        });
     }
 }

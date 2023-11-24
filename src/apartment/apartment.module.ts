@@ -8,6 +8,7 @@ import { StorageModule } from "../storage/storage.module";
 import { Resident } from "../resident/entities/resident.entity";
 import { AuthModule } from "../auth/auth.module";
 import { ApartmentSubcriber } from "./apartment.subscriber";
+import { Client } from "elasticsearch";
 
 @Module({
     imports: [
@@ -23,7 +24,12 @@ import { ApartmentSubcriber } from "./apartment.subscriber";
             provide: ApartmentService,
             useClass: ApartmentServiceImp,
         },
+        {
+            provide: Client,
+            useFactory: () =>
+                new Client({ host: process.env.ELASTIC_SEARCH_URL }),
+        },
     ],
-    exports: [ApartmentService],
+    exports: [ApartmentService, Client],
 })
 export class ApartmentModule {}

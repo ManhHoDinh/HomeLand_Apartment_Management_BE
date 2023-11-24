@@ -22,7 +22,6 @@
     "dependencies": {
         "@dicebear/collection": "^7.0.1",
         "@dicebear/core": "^7.0.1",
-        "@elastic/elasticsearch": "^8.10.0",
         "@nestjs/axios": "^3.0.1",
         "@nestjs/common": "^10.0.0",
         "@nestjs/config": "^3.1.1",
@@ -40,6 +39,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
         "crypto-js": "^4.2.0",
+        "elasticsearch": "^10.1.2",
         "form-data": "^4.0.0",
         "moment": "^2.29.4",
         "nestjs-form-data": "^1.9.1",
@@ -57,6 +57,7 @@
         "@nestjs/cli": "^10.0.0",
         "@nestjs/schematics": "^10.0.0",
         "@nestjs/testing": "^10.2.8",
+        "@types/elasticsearch": "^5.0.43",
         "@types/express": "^4.17.17",
         "@types/jest": "^29.5.2",
         "@types/multer": "^1.4.8",

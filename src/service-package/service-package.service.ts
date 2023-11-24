@@ -5,6 +5,7 @@ import { ServicePackage } from "./entities/service-package.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { IdGenerator } from "../id-generator/id-generator.service";
+import { isQueryAffected } from "../helper/validation";
 
 @Injectable()
 export class ServicePackageService {
@@ -44,7 +45,15 @@ export class ServicePackageService {
     }
 
     async update(id: string, updateServicePackageDto: UpdateServicePackageDto) {
-        return `This action updates a #${id} servicePackage`;
+        try {
+            let result = await this.servicePackageRepository.update(
+                id,
+                updateServicePackageDto,
+            );
+            return isQueryAffected(result);
+        } catch (error) {
+            throw new Error("Update failed due to " + error.message);
+        }
     }
 
     async remove(id: string) {

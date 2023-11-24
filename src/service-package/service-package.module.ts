@@ -11,5 +11,6 @@ import { ApiTags } from "@nestjs/swagger";
 
     controllers: [ServicePackageController],
     providers: [ServicePackageService],
+    exports: [ServicePackageService],
 })
 export class ServicePackageModule {}

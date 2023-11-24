@@ -49,7 +49,7 @@ export class Service {
     imageURLs?: string[];
 
     @OneToMany(() => ServicePackage, (servicePackage) => servicePackage.service)
-    servicePackages?: ServicePackage[];
+    servicePackages: ServicePackage[];
 
     @CreateDateColumn()
     created_at: Date;

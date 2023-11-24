@@ -61,10 +61,10 @@ export class InvoiceService {
         var orderInfo = "pay with MoMo";
         var partnerCode = "MOMO";
         var redirectUrl =
-            "http://localhost:3000/invoice?" +
+            "https://homeland-backend-pr-89.onrender.com/invoice" +
             this.convertJsonToParams(createInvoiceDto);
         var ipnUrl =
-            "http://localhost:3000/invoice/create?" +
+            "https://homeland-backend-pr-89.onrender.com/invoice/create?" +
             this.convertJsonToParams(createInvoiceDto);
         console.log(ipnUrl);
         const jsonObject = {
@@ -108,7 +108,7 @@ export class InvoiceService {
             "&requestType=" +
             requestType;
         //puts raw signature
-        
+
         console.log("--------------------RAW SIGNATURE----------------");
         console.log(rawSignature);
         //signature
@@ -151,29 +151,42 @@ export class InvoiceService {
             },
         };
         //Send the request and get the response
-        const req = await https.request(options, (res) => {
-            console.log(`Status: ${res.statusCode}`);
-            console.log(`Headers: ${JSON.stringify(res.headers)}`);
-            res.setEncoding("utf8");
-            res.on("data", (body) => {
-                console.log("Body: ");
-                console.log(body);
-                console.log("resultCode: ");
-                console.log(JSON.parse(body).resultCode);
+        return new Promise<string>((resolve, reject) => {
+            const req = https.request(options, (res) => {
+                let result = '';
+    
+                console.log(`Status: ${res.statusCode}`);
+                console.log(`Headers: ${JSON.stringify(res.headers)}`);
+    
+                res.setEncoding('utf8');
+                res.on('data', (body) => {
+                    result += body;
+                    console.log('Body: ');
+                    console.log(body);
+                    console.log('resultCode: ');
+                    console.log(JSON.parse(body).resultCode);
+                });
+    
+                res.on('end', () => {
+                    console.log('No more data in response.');
+                    // Resolve the promise with the result when the request is complete
+                    resolve(result);
+                });
             });
-            res.on("end", () => {
-                console.log("No more data in response.");
+    
+            req.on('error', (e) => {
+                console.log(`Problem with request: ${e.message}`);
+                // Reject the promise with the error if there is a problem with the request
+                reject(e.message);
             });
+    
+            // Write data to the request body
+            console.log('Sending....');
+            req.write(requestBody);
+    
+            // End the request
+            req.end();
         });
-
-        req.on("error", (e) => {
-            console.log(`problem with request: ${e.message}`);
-        });
-        // write data to request body
-        console.log("Sending....");
-        // req.write(requestBody);
-
-        return req.write(requestBody).data;
     }
     async findOne(id: string) {
         return await this.invoiceRepository.findOne({

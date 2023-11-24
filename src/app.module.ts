@@ -26,6 +26,10 @@ import { ServicePackageModule } from "./service-package/service-package.module";
 import { ManagerModule } from "./manager/manager.module";
 import { TechnicianModule } from "./technician/technician.module";
 import { EquipmentModule } from "./equipment/equipment.module";
+import { TaskModule } from "./task/task.module";
+import { ComplainModule } from "./complain/complain.module";
+import { ItemRepairInvoiceModule } from "./itemRepairInvoice/itemRepairInvoice.module";
+import { RepairInvoiceModule } from "./repairInvoice/repairInvoice.module";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -81,6 +85,8 @@ import { EquipmentModule } from "./equipment/equipment.module";
         ManagerModule,
         ContractModule,
         TechnicianModule,
+        TaskModule,
+        ComplainModule,
         AvatarGeneratorModule,
         NestjsFormDataModule.config({
             isGlobal: true,
@@ -91,6 +97,8 @@ import { EquipmentModule } from "./equipment/equipment.module";
         ServicePackageModule,
         VehicleModule,
         EquipmentModule,
+        RepairInvoiceModule,
+        ItemRepairInvoiceModule
     ],
     controllers: [AppController],
     providers: [AppService],

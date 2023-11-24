@@ -63,7 +63,7 @@ export class SeedService {
     private readonly NUMBER_OF_BUILDING = 5;
     private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 50;
+    private readonly NUMBER_OF_RESIDENT = 10;
     private readonly NUMBER_OF_EMPLOYEE = 10;
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
@@ -97,11 +97,14 @@ export class SeedService {
 
     async startSeeding() {
         await this.createDemoAdmin();
-        await this.createDemoResident();
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
 
+         //create demo resident
+        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+            await this.createDemoResident(i);
+        }
         // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
@@ -168,11 +171,6 @@ export class SeedService {
                     ).apartment_id,
                 );
             }
-        }
-
-        //create demo resident
-        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident();
         }
     }
     async createDemoAccountResident() {
@@ -284,11 +282,8 @@ export class SeedService {
         });
     }
 
-    async createDemoResident(residentId?: string, email?: string) {
+    async createDemoResident(index) {
         let id = "RES" + this.idGenerator.generateId();
-        const random = Math.random() * 2;
-        if (residentId) id = residentId;
-
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
@@ -314,7 +309,7 @@ export class SeedService {
                 ),
             },
             account:
-                random === 0
+                index % 2 === 0
                     ? {
                           owner_id: id,
                           email: faker.internet.email(),

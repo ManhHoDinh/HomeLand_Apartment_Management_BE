@@ -205,4 +205,5 @@ export class TechnicianService {
         });
         return technicians;
     }
+  
 }

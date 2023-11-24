@@ -13,6 +13,7 @@ import { Contract } from "../../contract/entities/contract.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
 import { Apartment } from "../../apartment/entities/apartment.entity";
 import { Vehicle } from "../../vehicle/entities/vehicle.entity";
+import { Complain } from "src/complain/entities/complain.entity";
 
 @Entity()
 export class Resident {
@@ -47,6 +48,9 @@ export class Resident {
 
     @OneToMany(() => Vehicle, (vehicle) => vehicle.resident)
     vehicles: Vehicle[];
+
+    @OneToMany(() => Complain, (complain) => complain.resident)
+    complains: Complain[];
 
     @CreateDateColumn()
     created_at: Date;

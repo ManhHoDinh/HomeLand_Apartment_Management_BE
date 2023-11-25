@@ -67,7 +67,12 @@ export class InvoiceService {
             this.convertJsonToParams(createInvoiceDto);
         console.log(ipnUrl);
         var requestType = "payWithMethod";
-        var amount = "50000";
+        let servicePackage = await this.servicePackageRepository.findOne({
+            where: { servicePackage_id: createInvoiceDto.servicePackage_id },
+        });
+
+        var amount =
+            createInvoiceDto.amount * (servicePackage?.per_unit_price ?? 1);
         var orderId = partnerCode + new Date().getTime();
         var requestId = orderId;
         var extraData = "";

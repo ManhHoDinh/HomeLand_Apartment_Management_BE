@@ -18,7 +18,7 @@ import { NestjsFormDataModule } from "nestjs-form-data";
 import { AccountModule } from "./account/account.module";
 import { AdminModule } from "./admin/admin.module";
 import { EmployeeModule } from "./employee/employee.module";
-import { BuildingModule } from "./building/building.module";
+import { BuildingModule} from "./building/building.module";
 import { ResidentModule } from "./resident/resident.module";
 import { VehicleModule } from "./vehicle/vehicle.module";
 import { ServiceModule } from "./service/service.module";
@@ -30,6 +30,8 @@ import { TaskModule } from "./task/task.module";
 import { ComplainModule } from "./complain/complain.module";
 import { ItemRepairInvoiceModule } from "./itemRepairInvoice/itemRepairInvoice.module";
 import { RepairInvoiceModule } from "./repairInvoice/repairInvoice.module";
+import { FloorModule } from "./floor/floor.module";
+import { InvoiceModule } from './invoice/invoice.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -83,6 +85,7 @@ import { RepairInvoiceModule } from "./repairInvoice/repairInvoice.module";
         ResidentModule,
         BuildingModule,
         ManagerModule,
+        FloorModule,
         ContractModule,
         TechnicianModule,
         TaskModule,
@@ -99,6 +102,7 @@ import { RepairInvoiceModule } from "./repairInvoice/repairInvoice.module";
         EquipmentModule,
         RepairInvoiceModule,
         ItemRepairInvoiceModule
+        InvoiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -40,11 +40,11 @@ export class ServiceService {
         const queryRunner = this.dataSource.createQueryRunner();
         if (images) {
             let uploadResults: PromiseSettledResult<string>[] = [];
-            
+
             try {
                 await queryRunner.connect();
                 await queryRunner.startTransaction();
-                
+
                 uploadResults = await Promise.allSettled(
                     images.map((image) =>
                         this.storageManager.upload(

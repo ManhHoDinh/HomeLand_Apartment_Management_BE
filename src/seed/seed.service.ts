@@ -29,6 +29,9 @@ import {
 } from "src/employee/employee.service";
 import { random } from "lodash";
 import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
+import { Service } from "../service/entities/service.entity";
+import { ServicePackage } from "../service-package/entities/service-package.entity";
+import { Client } from "elasticsearch";
 @Injectable()
 export class SeedService {
     constructor(
@@ -39,16 +42,24 @@ export class SeedService {
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
         private readonly apartmentService: ApartmentService,
+        private readonly elasticsearchClient: Client,
         private readonly residentService: ResidentRepository,
-    ) { }
+    ) {}
 
     async dropDB() {
         try {
             await this.storageManager.destroyStorage();
             await this.dataSource.dropDatabase();
+            await this.elasticsearchClient.indices.delete({
+                index: "apartment",
+            });
+            await this.elasticsearchClient.indices.create({
+                index: "apartment",
+                method: "PUT",
+            });
         } catch (error) {
             console.error(error);
-            throw error;
+            // throw error;
         }
     }
     async createDB() {
@@ -68,6 +79,8 @@ export class SeedService {
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
     private readonly NUMBER_OF_ADMIN = 2;
+    private readonly NUMBER_OF_Service = 5;
+    private readonly NUMBER_OF_ServicePackage_PER_SERVICE = 5;
 
     private readonly frontIdentity = {
         buffer: readFileSync(process.cwd() + "/src/seed/front.jpg"),
@@ -107,6 +120,8 @@ export class SeedService {
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
         await this.createDemoApartments(floorInfo);
         await this.createDemoContract();
+        await this.createDemoServices();
+        await this.createDemoServicePackages();
     }
     async createDemoBuildings() {
         let buildingInfo: any[] = [];
@@ -306,17 +321,17 @@ export class SeedService {
             account:
                 random === 0
                     ? {
-                        owner_id: id,
-                        email: faker.internet.email(),
-                        password: this.hashService.hash("password"),
-                        avatarURL: await this.storageManager.upload(
-                            await this.avatarGenerator.generateAvatar(
-                                "DEMO RESIDENT",
-                            ),
-                            "resident/" + id + "/avatar.svg",
-                            "image/svg+xml",
-                        ),
-                    }
+                          owner_id: id,
+                          email: faker.internet.email(),
+                          password: this.hashService.hash("password"),
+                          avatarURL: await this.storageManager.upload(
+                              await this.avatarGenerator.generateAvatar(
+                                  "DEMO RESIDENT",
+                              ),
+                              "resident/" + id + "/avatar.svg",
+                              "image/svg+xml",
+                          ),
+                      }
                     : undefined,
         });
     }
@@ -346,7 +361,6 @@ export class SeedService {
                     "image/svg+xml",
                 ),
             },
-
         });
     }
 
@@ -416,5 +430,42 @@ export class SeedService {
             role: ContractRole.RENT,
             status: ContractStatusRole.INACTIVE,
         });
+    }
+    async createDemoServices() {
+        let ServiceInfo: any[] = [];
+        for (let i = 0; i < this.NUMBER_OF_Service; i++) {
+            ServiceInfo.push({
+                service_id: `Service${i}`,
+                name: `Service ${i}`,
+                images: this.images,
+                description: `This is a demo service ${i}`,
+            });
+        }
+        await this.dataSource
+            .createQueryBuilder()
+            .insert()
+            .into(Service)
+            .values(ServiceInfo)
+            .execute();
+    }
+    async createDemoServicePackages() {
+        let ServicePackageInfo: any[] = [];
+
+        for (let i = 0; i < this.NUMBER_OF_Service; i++)
+            for (let j = 0; j < this.NUMBER_OF_ServicePackage_PER_SERVICE; j++)
+                ServicePackageInfo.push({
+                    servicePackage_id: `ServicePackage${i}-${j}`,
+                    service_id: `Service${i}`,
+                    name: `Service package ${j} in Service ${i}`,
+                    expired_date: 30,
+                    per_unit_price: 10,
+                });
+
+        await this.dataSource
+            .createQueryBuilder()
+            .insert()
+            .into(ServicePackage)
+            .values(ServicePackageInfo)
+            .execute();
     }
 }

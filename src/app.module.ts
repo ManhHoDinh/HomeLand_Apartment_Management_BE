@@ -27,6 +27,7 @@ import { ManagerModule } from "./manager/manager.module";
 import { TechnicianModule } from "./technician/technician.module";
 import { EquipmentModule } from "./equipment/equipment.module";
 import { FloorModule } from "./floor/floor.module";
+import { InvoiceModule } from './invoice/invoice.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -93,6 +94,7 @@ import { FloorModule } from "./floor/floor.module";
         ServicePackageModule,
         VehicleModule,
         EquipmentModule,
+        InvoiceModule,
     ],
     controllers: [AppController],
     providers: [AppService],

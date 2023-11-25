@@ -19,7 +19,8 @@ export class CreateEmployeeDto extends PickType(Profile, [
     "phone_number",
 
 ] as const) {
-    @ApiProperty({ required: false })
+    @ApiProperty({})
+    @IsOptional()
     @IsString()
     @Column()
     task_info: string;
@@ -36,7 +37,7 @@ export class CreateEmployeeDto extends PickType(Profile, [
     @HasMimeType(commonImageMIMETypes)
     back_identify_card_photo: MemoryStoredFile;
 
-    @ApiProperty({ type: "file", required: false })
+    @ApiProperty({ type: "file"})
     @IsFile()
     @Transform(({ value }) => (isFile(value) ? value : undefined))
     @IsOptional()

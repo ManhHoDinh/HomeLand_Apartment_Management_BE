@@ -22,35 +22,36 @@ import { Resident } from "src/resident/entities/resident.entity";
 export enum complainStatus {
     PENDING = "PENDING",
     FIXING = "FIXING",
-    RECEIVED = "RECEIVED",  
-    REJECTED = "REJECTED",  
-    DONE = "DONE"
+    RECEIVED = "RECEIVED",
+    REJECTED = "REJECTED",
+    DONE = "DONE",
 }
 @Entity()
 export class Complain {
     @PrimaryColumn()
     complain_id: string;
-    
-    @ApiProperty({required: true})
+
+    @ApiProperty({ required: true })
     @IsString()
     @Column()
     content: string;
 
-    @OneToOne(()=> Task, { nullable: true, cascade: true })
-    @JoinColumn()
-    task?: Task
+    @OneToOne(() => Task, (task) => task.complain, {
+        nullable: true,
+        cascade: true,
+        onDelete: "CASCADE",
+    })
+    task?: Task;    
 
-    @ManyToOne(()=> Resident, (resident)=> resident.complains)
+    @ManyToOne(() => Resident, (resident) => resident.complains)
     @JoinColumn()
     resident: Resident;
 
     @ApiProperty({ enum: complainStatus })
     @IsEnum(complainStatus)
     @Column({ enum: complainStatus, default: complainStatus.PENDING })
-    status: complainStatus
-    
+    status: complainStatus;
+
     @CreateDateColumn()
     created_at: Date;
-
-   
 }

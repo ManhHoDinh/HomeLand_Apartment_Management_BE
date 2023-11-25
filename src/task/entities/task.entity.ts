@@ -41,8 +41,10 @@ export class Task {
     @JoinColumn()
     assignee: Technician
 
-    @OneToOne(() => RepairInvoice, {cascade: true})
-    @JoinColumn()
+    @OneToOne(() => RepairInvoice, (repairInvoice) => repairInvoice.task, {
+        cascade: true,
+        onDelete:"CASCADE"
+    })
     invoice?: RepairInvoice;
 
     @ApiProperty({ enum: taskStatus })
@@ -50,7 +52,7 @@ export class Task {
     @Column({ enum: taskStatus, default: taskStatus.PENDING })
     status: taskStatus;
 
-    @OneToOne(() => Complain,{ cascade: true })
+    @OneToOne(() => Complain, (complain) => complain.task)
     @JoinColumn()
     complain: Complain
 

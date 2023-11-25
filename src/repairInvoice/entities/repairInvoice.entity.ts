@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsNumberString, IsString } from "class-validator";
+import { IsEnum, IsNumber, IsNumberString, IsString } from "class-validator";
 import { ItemRepairInvoice } from "src/itemRepairInvoice/entities/itemRepairInvoice.entity";
 import { Task } from "src/task/entities/task.entity";
 
@@ -15,7 +15,7 @@ export class RepairInvoice {
     @PrimaryColumn()
     id: string;
 
-    @OneToOne(() => Task, {cascade: true})
+    @OneToOne(() => Task,(task) => task.invoice)
     @JoinColumn()
     task?: Task;
     
@@ -29,6 +29,10 @@ export class RepairInvoice {
     status: repairInvoiceStatus
 
     
+    @Column({ nullable: false, type: "int", default: 0 })
+    @IsNumberString()
+    total: number;
+
     @CreateDateColumn()
     created_at: Date;
 }

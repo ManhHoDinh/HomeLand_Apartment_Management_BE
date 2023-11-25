@@ -7,6 +7,7 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { Task } from "src/task/entities/task.entity";
 import { ItemRepairInvoice } from "src/itemRepairInvoice/entities/itemRepairInvoice.entity";
 import { CreateItemRepairInvoiceDto } from "./dto/create-repairInvoice.dto";
+import { isQueryAffected } from "src/helper/validation";
 @Injectable()
 export class RepairInvoiceService {
     constructor(
@@ -18,19 +19,25 @@ export class RepairInvoiceService {
         private readonly itemRepairInvoiceRepository: Repository<ItemRepairInvoice>,
         private readonly idGenerate: IdGenerator,
     ) {}
-    async create(items: CreateItemRepairInvoiceDto[], task_id:string) {
+    async create(items: CreateItemRepairInvoiceDto[], task_id: string) {
         const task = (await this.taskRepository.findOne({
             where: { task_id },
         })) as Task;
         const id = "RI" + this.idGenerate.generateId();
-        console.log(id)
+        let total = 0;
+        items.forEach((item:any) => {
+            total += item.price;
+        })
+        console.log(id);
         const repairInvoice = this.repairInvoiceRepository.create({
             id,
             task,
+            total
 
-        })
+        });
+        
         await this.repairInvoiceRepository.save(repairInvoice);
-        console.log(repairInvoice)
+        console.log(repairInvoice);
         items.forEach(async (item) => {
             const item_id = "IRI" + this.idGenerate.generateId();
             const itemData = this.itemRepairInvoiceRepository.create({
@@ -47,8 +54,32 @@ export class RepairInvoiceService {
     }
     async findAll() {
         return await this.repairInvoiceRepository.find({
-            relations: ["items", "task"]
-           
+            relations: ["items", "task"],
         });
+    }
+    async getInvoiceByTaskId(id: string) {
+        console.log(id);
+        const result = await this.repairInvoiceRepository.findOne({
+            where: {
+                task: {
+                    task_id: id,
+                },
+            },
+            relations: {
+                items: true,
+                task: true
+            }
+        });
+        return result;
+    }
+    async delete(id: string): Promise<boolean> {
+        try {
+            const result = await this.repairInvoiceRepository.delete({
+                id: id,
+            });
+            return isQueryAffected(result);
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }

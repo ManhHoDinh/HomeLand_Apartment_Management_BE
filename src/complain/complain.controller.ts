@@ -37,7 +37,7 @@ export class ComplainController {
 
     @ApiOperation({ summary: "get complain of resident" })
     @Get("/resident/:id")
-    getComplainsOfResident(@Param ("id") id: string) {
+    getComplainsOfResident(@Param("id") id: string) {
         return this.complainRepository.getComplainsOfResident(id);
     }
 
@@ -67,15 +67,7 @@ export class ComplainController {
 
     @ApiOperation({ summary: "delete complain" })
     @Delete("/:id")
-    async softDeleteComplain(@Param("id") id: string) {
+    async deleteComplain(@Param("id") id: string) {
         return await this.complainRepository.delete(id);
     }
-
-    @ApiOperation({ summary: "reject complain" })
-    @Patch(":id/reject")
-    async rejectComplain(@Param("id") id: string) {
-        return await this.complainRepository.reject(id)
-    }
-
-
 }

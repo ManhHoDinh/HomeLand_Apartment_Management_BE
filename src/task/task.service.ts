@@ -77,7 +77,7 @@ export class TaskService {
 
     async findAll() {
         return await this.taskRepository.find({
-            relations: ["assignee", "assigner", "complain"],
+            relations: ["assignee", "assigner", "complain", "invoice"],
         });
     }
 
@@ -86,16 +86,6 @@ export class TaskService {
             where: { task_id: id },
             relations: ["assignee", "assigner", "complain"],
         });
-    }
-    async delete(id: string): Promise<boolean> {
-        try {
-            const result = await this.taskRepository.delete({
-                task_id: id,
-            });
-            return isQueryAffected(result);
-        } catch (error) {
-            throw new Error("Method not implemented.");
-        }
     }
 
     async done(id: string): Promise<Task | null> {
@@ -113,6 +103,7 @@ export class TaskService {
             throw new Error(err);
         }
     }
+
     async getTaskOfTechnician(id: string) {
         const result = await this.taskRepository.find({
             where: {

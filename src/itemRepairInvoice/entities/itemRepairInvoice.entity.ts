@@ -17,7 +17,7 @@ export class ItemRepairInvoice {
     @Column()
     price: number;
     
-    @ManyToOne(() => RepairInvoice, (repairInvoice) => repairInvoice.items)
+    @ManyToOne(() => RepairInvoice, (repairInvoice) => repairInvoice.items, {onDelete: "CASCADE"})
     @JoinColumn()
     invoice?: RepairInvoice;
     

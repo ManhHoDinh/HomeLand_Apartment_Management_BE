@@ -49,13 +49,6 @@ export class TaskController {
         throw new NotFoundException("Task not found");
     }
 
-    @ApiOperation({ summary: "delete task" })
-    @Delete("/:id")
-    async softDeleteTask(@Param("id") id: string) {
-        return await this.taskRepository.delete(id);
-    }
-
-  
 
     @ApiOperation({ summary: "done task" })
     @Patch(":id/done")

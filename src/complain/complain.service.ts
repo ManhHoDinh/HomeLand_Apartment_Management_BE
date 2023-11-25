@@ -45,10 +45,10 @@ export class ComplainService {
             throw error;
         }
     }
-    
+
     async findAll() {
         return await this.complainRepository.find({
-            relations: ["resident"],
+            relations: ["resident", "task"],
         });
     }
 
@@ -79,33 +79,22 @@ export class ComplainService {
             });
             return isQueryAffected(result);
         } catch (error) {
-            throw new Error("Method not implemented.");
-        }
-    }
-    async reject(id: string): Promise<Complain | null> {
-        try {
-            await this.complainRepository.update(id, {
-                status: complainStatus.REJECTED,
-            });
-            const result = this.complainRepository.findOne({
-                where: {
-                    complain_id: id,
-                },
-            });
-            return result;
-        } catch (err) {
-            throw new Error(err);
+            throw new Error(error);
         }
     }
     async getComplainsOfResident(resident_id: string) {
         const result = await this.complainRepository.find({
             where: {
                 resident: {
-                    id: resident_id
-                }
-            }
-        })
+                    id: resident_id,
+                },
+            },
+            relations: {
+                task: {
+                    invoice: true,
+                },
+            },
+        });
         return result;
-
     }
 }

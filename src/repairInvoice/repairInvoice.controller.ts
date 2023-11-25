@@ -30,9 +30,23 @@ export class RepairInvoiceController {
         return await this.repairInvoiceRepository.create(items, task_id);
     }
 
+    @ApiOperation({ summary: "get invoice by task id" })
+    @Get("/:task_id")
+    getByTaskId(@Param ("task_id") task_id:string) {
+        return this.repairInvoiceRepository.getInvoiceByTaskId(task_id);
+    }
+
     @ApiOperation({ summary: "get all invoice" })
     @Get()
     findAll() {
         return this.repairInvoiceRepository.findAll();
     }
+
+    @ApiOperation({ summary: "delete invoice" })
+    @Delete("/:id")
+    async deleteComplain(@Param("id") id: string) {
+        return await this.repairInvoiceRepository.delete(id);
+    }
+
+  
 }

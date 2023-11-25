@@ -101,7 +101,7 @@ import { InvoiceModule } from './invoice/invoice.module';
         VehicleModule,
         EquipmentModule,
         RepairInvoiceModule,
-        ItemRepairInvoiceModule
+        ItemRepairInvoiceModule,
         InvoiceModule,
     ],
     controllers: [AppController],

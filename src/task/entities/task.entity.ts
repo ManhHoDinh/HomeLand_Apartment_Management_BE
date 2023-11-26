@@ -43,22 +43,21 @@ export class Task {
 
     @OneToOne(() => RepairInvoice, (repairInvoice) => repairInvoice.task, {
         cascade: true,
-        onDelete:"CASCADE"
+        onDelete: "CASCADE"
     })
-    invoice?: RepairInvoice;
+    invoice: RepairInvoice;
 
     @ApiProperty({ enum: taskStatus })
     @IsEnum(taskStatus)
     @Column({ enum: taskStatus, default: taskStatus.PENDING })
     status: taskStatus;
 
-    @OneToOne(() => Complain, (complain) => complain.task)
+    @OneToOne(() => Complain, (complain) => complain.task, {
+        onDelete:"CASCADE"
+    })
     @JoinColumn()
     complain: Complain
 
     @CreateDateColumn()
     created_at: Date
-   
-
-   
 }

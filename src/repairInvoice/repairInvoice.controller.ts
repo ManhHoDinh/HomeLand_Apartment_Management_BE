@@ -41,12 +41,5 @@ export class RepairInvoiceController {
     findAll() {
         return this.repairInvoiceRepository.findAll();
     }
-
-    @ApiOperation({ summary: "delete invoice" })
-    @Delete("/:id")
-    async deleteComplain(@Param("id") id: string) {
-        return await this.repairInvoiceRepository.delete(id);
-    }
-
   
 }

@@ -65,9 +65,17 @@ export class ComplainController {
         throw new NotFoundException("Complain not found");
     }
 
+    @ApiOperation({ summary: "reject complain" })
+    @Patch("/:id/reject")
+    async rejectComplain(@Param("id") id: string) {
+        return await this.complainRepository.reject(id);
+    }
+
     @ApiOperation({ summary: "delete complain" })
     @Delete("/:id")
     async deleteComplain(@Param("id") id: string) {
         return await this.complainRepository.delete(id);
     }
+
+    
 }

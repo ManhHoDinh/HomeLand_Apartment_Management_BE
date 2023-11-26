@@ -97,4 +97,13 @@ export class ComplainService {
         });
         return result;
     }
+    async reject(id: string) {
+        await this.complainRepository.update(id, {
+            status: complainStatus.REJECTED,
+        });
+        const result = await this.complainRepository.findOne({
+            where: { complain_id: id },
+        });
+        return result;
+    }
 }

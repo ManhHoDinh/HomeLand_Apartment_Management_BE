@@ -39,7 +39,7 @@ export class Complain {
     @OneToOne(() => Task, (task) => task.complain, {
         nullable: true,
         cascade: true,
-        onDelete: "CASCADE",
+        onDelete: "CASCADE"
     })
     task?: Task;    
 

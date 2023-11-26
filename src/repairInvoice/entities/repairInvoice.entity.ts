@@ -15,7 +15,9 @@ export class RepairInvoice {
     @PrimaryColumn()
     id: string;
 
-    @OneToOne(() => Task,(task) => task.invoice)
+    @OneToOne(() => Task,(task) => task.invoice, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn()
     task?: Task;
     

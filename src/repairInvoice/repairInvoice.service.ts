@@ -8,6 +8,7 @@ import { Task } from "src/task/entities/task.entity";
 import { ItemRepairInvoice } from "src/itemRepairInvoice/entities/itemRepairInvoice.entity";
 import { CreateItemRepairInvoiceDto } from "./dto/create-repairInvoice.dto";
 import { isQueryAffected } from "src/helper/validation";
+import { Complain } from "src/complain/entities/complain.entity";
 @Injectable()
 export class RepairInvoiceService {
     constructor(
@@ -17,6 +18,8 @@ export class RepairInvoiceService {
         private readonly taskRepository: Repository<Task>,
         @InjectRepository(ItemRepairInvoice)
         private readonly itemRepairInvoiceRepository: Repository<ItemRepairInvoice>,
+        @InjectRepository(Complain)
+        private readonly complainRepository: Repository<Complain>,
         private readonly idGenerate: IdGenerator,
     ) {}
     async create(items: CreateItemRepairInvoiceDto[], task_id: string) {
@@ -25,17 +28,16 @@ export class RepairInvoiceService {
         })) as Task;
         const id = "RI" + this.idGenerate.generateId();
         let total = 0;
-        items.forEach((item:any) => {
+        items.forEach((item: any) => {
             total += item.price;
-        })
+        });
         console.log(id);
         const repairInvoice = this.repairInvoiceRepository.create({
             id,
             task,
-            total
-
+            total,
         });
-        
+
         await this.repairInvoiceRepository.save(repairInvoice);
         console.log(repairInvoice);
         items.forEach(async (item) => {
@@ -67,19 +69,10 @@ export class RepairInvoiceService {
             },
             relations: {
                 items: true,
-                task: true
-            }
+                task: true,
+            },
         });
         return result;
     }
-    async delete(id: string): Promise<boolean> {
-        try {
-            const result = await this.repairInvoiceRepository.delete({
-                id: id,
-            });
-            return isQueryAffected(result);
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
+    
 }

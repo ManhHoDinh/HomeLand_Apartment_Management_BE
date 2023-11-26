@@ -15,7 +15,7 @@ import { Task } from "src/task/entities/task.entity";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([ItemRepairInvoice, RepairInvoice, Task]),
+        TypeOrmModule.forFeature([ItemRepairInvoice, RepairInvoice, Task, Complain]),
         IdGeneratorModule,
         StorageModule,
     ],

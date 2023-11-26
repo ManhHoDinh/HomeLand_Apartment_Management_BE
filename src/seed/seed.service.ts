@@ -25,6 +25,13 @@ import { ServicePackage } from "../service-package/entities/service-package.enti
 import { Client } from "elasticsearch";
 import { BuildingService } from "../building/building.service";
 import { FloorService } from "../floor/floor.service";
+import { Apartment } from "../apartment/entities/apartment.entity";
+import {
+    Equipment,
+    EquipmentStatus,
+} from "../equipment/entities/equipment.entity";
+import { eq } from "lodash";
+import { EquipmentService } from "../equipment/equipment.service";
 @Injectable()
 export class SeedService {
     constructor(
@@ -39,6 +46,7 @@ export class SeedService {
         private readonly buildingService: BuildingService,
         private readonly apartmentService: ApartmentService,
         private readonly floorService: FloorService,
+        private readonly equipmentService: EquipmentService,
     ) {}
 
     async dropDB() {
@@ -109,16 +117,93 @@ export class SeedService {
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
+        await this.createDemoResidents();
 
         // Create demo building
         let buildings: Building[] = await this.createDemoBuildings();
         let floors: Floor[] = await this.createDemoFloors(buildings);
-        await this.createDemoApartments(floors);
+        let apartments: Apartment[] = await this.createDemoApartments(floors);
+        let equipments: Equipment[] = await this.createDemoEquipments(
+            buildings,
+            floors,
+            apartments,
+        );
         await this.createDemoContract();
         await this.createDemoServices();
         await this.createDemoServicePackages();
     }
 
+    async createDemoEquipments(
+        buildings: Building[],
+        floors: Floor[],
+        apartments: Apartment[],
+    ): Promise<Equipment[]> {
+        let thangmayImage = {
+            buffer: readFileSync(process.cwd() + "/src/seed/thangmay.jpg"),
+        } as MemoryStoredFile;
+        let equipments: Equipment[] = [];
+        for (let building of buildings) {
+            for (let i = 0; i < 3; i++)
+                equipments.push(
+                    await this.equipmentService.create({
+                        name: "Thang may",
+                        images: [thangmayImage],
+                        description: "Thang may",
+                        building_id: building.building_id,
+                        status: EquipmentStatus.AVAILABLE,
+                    }),
+                );
+        }
+        let cambienkhoiImage = {
+            buffer: readFileSync(process.cwd() + "/src/seed/cambienkhoi.jpg"),
+        } as MemoryStoredFile;
+
+        for (let floor of floors) {
+            for (let i = 0; i < 5; i++)
+                equipments.push(
+                    await this.equipmentService.create({
+                        name: "Cam bien khoi",
+                        images: [cambienkhoiImage],
+                        description: "Cam bien khoi",
+                        floor_id: floor.floor_id,
+                        status: EquipmentStatus.AVAILABLE,
+                    }),
+                );
+        }
+        let tulanhImage = {
+            buffer: readFileSync(process.cwd() + "/src/seed/tulanh.jpg"),
+        } as MemoryStoredFile;
+
+        for (let apartment of apartments) {
+            equipments.push(
+                await this.equipmentService.create({
+                    name: "Tu lanh",
+                    images: [tulanhImage],
+                    description: "Tu lanh",
+                    apartment_id: apartment.apartment_id,
+                    status: EquipmentStatus.AVAILABLE,
+                }),
+            );
+        }
+
+        let maylanhImage = {
+            buffer: readFileSync(process.cwd() + "/src/seed/maylanh.jpg"),
+        } as MemoryStoredFile;
+
+        for (let apartment of apartments) {
+            equipments.push(
+                await this.equipmentService.create({
+                    name: "May lanh",
+                    images: [maylanhImage],
+                    description: "May lanh",
+                    apartment_id: apartment.apartment_id,
+                    status: EquipmentStatus.AVAILABLE,
+                }),
+            );
+        }
+
+        return equipments;
+    }
     async createDemoBuildings(): Promise<Building[]> {
         let buildings: Building[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
@@ -150,36 +235,31 @@ export class SeedService {
 
         return floors;
     }
-    async createDemoApartments(floors: Floor[]) {
-        let apartmentIds: any[] = [];
+    async createDemoApartments(floors: Floor[]): Promise<Apartment[]> {
+        let apartments: Apartment[] = [];
         for (let floor of floors) {
             for (let i = 0; i < this.NUMBER_OF_APARTMENT_PER_FLOOR; i++) {
-                apartmentIds.push(
-                    (
-                        await this.apartmentService.create({
-                            name: "St. Crytal",
-                            images: this.images,
-                            length: 20,
-                            building_id: floor.building_id,
-                            floor_id: floor.floor_id,
-                            width: 15,
-                            description: faker.lorem.paragraphs({
-                                min: 3,
-                                max: 5,
-                            }),
-                            number_of_bathroom: 2,
-                            number_of_bedroom: 1,
-                            rent: 9000000,
-                        })
-                    ).apartment_id,
+                apartments.push(
+                    await this.apartmentService.create({
+                        name: "St. Crytal",
+                        images: this.images,
+                        length: 20,
+                        building_id: floor.building_id,
+                        floor_id: floor.floor_id,
+                        width: 15,
+                        description: faker.lorem.paragraphs({
+                            min: 3,
+                            max: 5,
+                        }),
+                        number_of_bathroom: 2,
+                        number_of_bedroom: 1,
+                        rent: 9000000,
+                    }),
                 );
             }
         }
 
-        //create demo resident
-        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident();
-        }
+        return apartments;
     }
     async createDemoAccountResident() {
         let id = "RESIDENT";
@@ -458,5 +538,11 @@ export class SeedService {
             .into(ServicePackage)
             .values(ServicePackageInfo)
             .execute();
+    }
+
+    async createDemoResidents() {
+        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+            await this.createDemoResident();
+        }
     }
 }

@@ -10,6 +10,7 @@ import { EmployeeModule } from "src/employee/employee.module";
 import { ResidentModule } from "../resident/resident.module";
 import { BuildingModule } from "../building/building.module";
 import { FloorModule } from "../floor/floor.module";
+import { EquipmentModule } from "../equipment/equipment.module";
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { FloorModule } from "../floor/floor.module";
         EmployeeModule,
         BuildingModule,
         FloorModule,
+        EquipmentModule,
     ],
     controllers: [Seed],
     providers: [SeedService],

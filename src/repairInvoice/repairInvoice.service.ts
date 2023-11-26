@@ -31,6 +31,7 @@ export class RepairInvoiceService {
         items.forEach((item: any) => {
             total += item.price;
         });
+        console.log(items);
         console.log(id);
         const repairInvoice = this.repairInvoiceRepository.create({
             id,

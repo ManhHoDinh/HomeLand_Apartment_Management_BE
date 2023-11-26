@@ -170,9 +170,9 @@ export class InvoiceService {
 
                     // Create an object for additional information
                     const additionalInfo = {
-                        ipnUrl: "example.com/invoice/create?servicePackage_id=ServicePackage0-0&buyer_id=RESIDENT&total=1&amount=1&baseLink=example.com&redirectUrl=example.com&orderInfo=pay+with+momo",
-                        redirectUrl: "example.com",
-                        orderInfo: "pay with momo",
+                        ipnUrl: ipnUrl,
+                        redirectUrl: redirectUrl,
+                        orderInfo: orderInfo,
                     };
 
                     // Add additional information to the original response

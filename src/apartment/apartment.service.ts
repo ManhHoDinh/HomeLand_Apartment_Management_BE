@@ -199,7 +199,6 @@ export class ApartmentServiceImp extends ApartmentService {
 
                 const newImageURLS = newImages.map((result) => result.value);
                 // this task can be done in parallel, will enhance later
-                // console.log(difference(apartment.imageURLs, newImageURLS));
                 await this.storageManager.remove(
                     difference(apartment.imageURLs, newImageURLS),
                 );

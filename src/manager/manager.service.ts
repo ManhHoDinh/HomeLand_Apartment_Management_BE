@@ -98,7 +98,6 @@ export class ManagerService {
 
             profile.front_identify_card_photo_URL = frontURL;
             profile.back_identify_card_photo_URL = backURL;
-            profile.avatarURL = avatarURL;
             manager.profile = profile;
             const managerData = await this.managerRepository.save(manager);
             //set account
@@ -106,6 +105,7 @@ export class ManagerService {
             account.owner_id = manager.id;
             account.email = email;
             account.password = this.hashService.hash(profile.phone_number);
+            account.avatarURL = avatarURL;
             account.manager = manager;
             await this.accountRepository.save(account);
             return managerData;
@@ -156,13 +156,12 @@ export class ManagerService {
                     "/avatarURL." +
                     (avataPhoto.extension || "png"),
                 avataPhoto.mimetype || "image/png",
-               
             );
-            profile.avatarURL = avatarURL;
         } 
         try {
             await this.accountRepository.update(id, {
-                email
+                email,
+                avatarURL
             });
         manager.profile = profile;
         

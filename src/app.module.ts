@@ -28,6 +28,8 @@ import { TechnicianModule } from "./technician/technician.module";
 import { EquipmentModule } from "./equipment/equipment.module";
 import { FloorModule } from "./floor/floor.module";
 import { InvoiceModule } from './invoice/invoice.module';
+import { FeedbackModule } from "./feedback/feedback.module";
+import { Feedback } from "./feedback/entities/feedback.entity";
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
@@ -81,6 +83,7 @@ import { InvoiceModule } from './invoice/invoice.module';
         ResidentModule,
         BuildingModule,
         ManagerModule,
+        FeedbackModule,
         FloorModule,
         ContractModule,
         TechnicianModule,

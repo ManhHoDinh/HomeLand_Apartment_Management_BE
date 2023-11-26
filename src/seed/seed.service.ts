@@ -74,7 +74,7 @@ export class SeedService {
     private readonly NUMBER_OF_BUILDING = 5;
     private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 5;
+    private readonly NUMBER_OF_RESIDENT = 50;
     private readonly NUMBER_OF_EMPLOYEE = 10;
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
@@ -110,14 +110,11 @@ export class SeedService {
 
     async startSeeding() {
         await this.createDemoAdmin();
+        await this.createDemoResident();
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
 
-         //create demo resident
-        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident(i);
-        }
         // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
@@ -187,6 +184,11 @@ export class SeedService {
                 );
             }
         }
+
+        //create demo resident
+        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+            await this.createDemoResident();
+        }
     }
     async createDemoAccountResident() {
         let id = "RESIDENT";
@@ -207,17 +209,16 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: "11111111",
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "resident/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
             },
             account: {
                 owner_id: id,
                 email: "resident@gmail.com",
                 password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
+                    "resident/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
             },
         });
     }
@@ -245,7 +246,11 @@ export class SeedService {
                             "admin/" + id + "/backIdentifyPhoto.jpg",
                             "image/jpeg",
                         ),
-                    identify_number: "2222222",
+                },
+                account: {
+                    owner_id: id,
+                    email: "technician@gmail.com",
+                    password: this.hashService.hash("password"),
                     avatarURL: await this.storageManager.upload(
                         await this.avatarGenerator.generateAvatar(
                             "DEMO TECHNICIAN",
@@ -253,11 +258,6 @@ export class SeedService {
                         "admin/" + id + "/avatar.svg",
                         "image/svg+xml",
                     ),
-                },
-                account: {
-                    owner_id: id,
-                    email: "technician@gmail.com",
-                    password: this.hashService.hash("password"),
                 },
             });
     }
@@ -281,24 +281,25 @@ export class SeedService {
                     "admin/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-
-                identify_number: "44444444",
+            },
+            account: {
+                owner_id: id,
+                email: "manager@gmail.com",
+                password: this.hashService.hash("password"),
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
                     "admin/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
             },
-            account: {
-                owner_id: id,
-                email: "manager@gmail.com",
-                password: this.hashService.hash("password"),
-            },
         });
     }
 
-    async createDemoResident(index) {
+    async createDemoResident(residentId?: string, email?: string) {
         let id = "RES" + this.idGenerator.generateId();
+        const random = Math.random() * 2;
+        if (residentId) id = residentId;
+
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
             profile: {
@@ -316,19 +317,20 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: "583838383",
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
-                    "resident/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
             },
             account:
-                index % 2 === 0
+                random === 0
                     ? {
                           owner_id: id,
                           email: faker.internet.email(),
                           password: this.hashService.hash("password"),
+                          avatarURL: await this.storageManager.upload(
+                              await this.avatarGenerator.generateAvatar(
+                                  "DEMO RESIDENT",
+                              ),
+                              "resident/" + id + "/avatar.svg",
+                              "image/svg+xml",
+                          ),
                       }
                     : undefined,
         });
@@ -381,17 +383,16 @@ export class SeedService {
                     "admin/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: "999999999",
-                avatarURL: await this.storageManager.upload(
-                    await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
-                    "admin/" + id + "/avatar.svg",
-                    "image/svg+xml",
-                ),
             },
             account: {
                 owner_id: id,
                 email: "admin@gmail.com",
                 password: this.hashService.hash("password"),
+                avatarURL: await this.storageManager.upload(
+                    await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
+                    "admin/" + id + "/avatar.svg",
+                    "image/svg+xml",
+                ),
             },
         });
     }

@@ -97,7 +97,7 @@ export class ApartmentServiceImp extends ApartmentService {
                         `apartment/${apartment.apartment_id}/${
                             index.toString() + Date.now()
                         }`,
-                        `image/${image.extension ?? ".png"}`,
+                        `image/${image.extension ?? "png"}`,
                     ),
                 ),
             );
@@ -188,7 +188,7 @@ export class ApartmentServiceImp extends ApartmentService {
                         return this.storageManager.upload(
                             element.buffer,
                             uploadPath,
-                            `image/${element.extension}` || ".png",
+                            `image/${element.extension ?? "png"}`,
                         );
                     }),
                 );

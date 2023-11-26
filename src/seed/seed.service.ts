@@ -16,22 +16,15 @@ import { ApartmentService } from "../apartment/apartment.service";
 import { Resident } from "../resident/entities/resident.entity";
 import { Manager } from "../manager/entities/manager.entity";
 import { Technician } from "../technician/entities/technician.entity";
-import {
-    ResidentRepository,
-    ResidentService,
-} from "../resident/resident.service";
+import { ResidentRepository } from "../resident/resident.service";
 import { Contract } from "src/contract/entities/contract.entity";
 
-import { Employee } from "src/employee/entities/employee.entity";
-import {
-    EmployeeRepository,
-    EmployeeService,
-} from "src/employee/employee.service";
-import { random } from "lodash";
 import { ContractRole, ContractStatusRole } from "../helper/enums/contractEnum";
 import { Service } from "../service/entities/service.entity";
 import { ServicePackage } from "../service-package/entities/service-package.entity";
 import { Client } from "elasticsearch";
+import { BuildingService } from "../building/building.service";
+import { FloorService } from "../floor/floor.service";
 @Injectable()
 export class SeedService {
     constructor(
@@ -41,9 +34,11 @@ export class SeedService {
         private readonly idGenerator: IdGenerator,
         private readonly hashService: HashService,
         private readonly avatarGenerator: AvatarGenerator,
-        private readonly apartmentService: ApartmentService,
         private readonly elasticsearchClient: Client,
         private readonly residentService: ResidentRepository,
+        private readonly buildingService: BuildingService,
+        private readonly apartmentService: ApartmentService,
+        private readonly floorService: FloorService,
     ) {}
 
     async dropDB() {
@@ -116,52 +111,48 @@ export class SeedService {
         await this.createDemoAccountResident();
 
         // Create demo building
-        let buildingInfo: any[] = await this.createDemoBuildings();
-        let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
-        await this.createDemoApartments(floorInfo);
+        let buildings: Building[] = await this.createDemoBuildings();
+        let floors: Floor[] = await this.createDemoFloors(buildings);
+        await this.createDemoApartments(floors);
         await this.createDemoContract();
         await this.createDemoServices();
         await this.createDemoServicePackages();
     }
-    async createDemoBuildings() {
-        let buildingInfo: any[] = [];
+
+    async createDemoBuildings(): Promise<Building[]> {
+        let buildings: Building[] = [];
         for (let i = 0; i < this.NUMBER_OF_BUILDING; i++) {
-            buildingInfo.push({
-                building_id: `BLD${i}`,
-                name: `Building ${i}`,
-                address: faker.location.streetAddress(),
-            });
+            buildings.push(
+                await this.buildingService.create({
+                    name: `Building ${i}`,
+                    address: faker.location.streetAddress(),
+                    max_floor: this.NUMBER_OF_FLOOR_PER_BUILDING,
+                }),
+            );
         }
-        await this.dataSource
-            .createQueryBuilder()
-            .insert()
-            .into(Building)
-            .values(buildingInfo)
-            .execute();
-        return buildingInfo;
+
+        return buildings;
     }
-    async createDemoFloors(buildingInfo: any[]) {
-        let floorInfo: any[] = [];
-        for (let building of buildingInfo) {
+
+    async createDemoFloors(buildings: Building[]): Promise<Floor[]> {
+        let floors: Floor[] = [];
+        for (let building of buildings) {
             for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
-                floorInfo.push({
-                    floor_id: `${building.building_id}/FLR${i}`,
-                    name: `Floor ${i}`,
-                    building_id: building.building_id,
-                });
+                floors.push(
+                    await this.floorService.create({
+                        name: `Floor ${i}`,
+                        building_id: building.building_id,
+                        max_apartment: this.NUMBER_OF_APARTMENT_PER_FLOOR,
+                    }),
+                );
             }
         }
-        await this.dataSource
-            .createQueryBuilder()
-            .insert()
-            .into(Floor)
-            .values(floorInfo)
-            .execute();
-        return floorInfo;
+
+        return floors;
     }
-    async createDemoApartments(floorInfo: any[]) {
+    async createDemoApartments(floors: Floor[]) {
         let apartmentIds: any[] = [];
-        for (let floor of floorInfo) {
+        for (let floor of floors) {
             for (let i = 0; i < this.NUMBER_OF_APARTMENT_PER_FLOOR; i++) {
                 apartmentIds.push(
                     (

@@ -58,23 +58,21 @@ export class InvoiceService {
         //parameters
         var accessKey = "F8BBA842ECF85";
         var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-        var orderInfo = "pay with MoMo";
+        var orderInfo = createInvoiceDto.orderInfo;
         var partnerCode = "MOMO";
-        var redirectUrl =
-            "https://homeland-backend-pr-89.onrender.com/invoice?" +
-            this.convertJsonToParams(createInvoiceDto);
+        var redirectUrl = createInvoiceDto.redirectUrl;
         var ipnUrl =
-            "https://homeland-backend-pr-89.onrender.com/invoice/create?" +
+            createInvoiceDto.baseLink +
+            "/invoice/create?" +
             this.convertJsonToParams(createInvoiceDto);
         console.log(ipnUrl);
-        const jsonObject = {
-            key1: "value1",
-            key2: "value2",
-            key3: "value3",
-        };
-
         var requestType = "payWithMethod";
-        var amount = "50000";
+        let servicePackage = await this.servicePackageRepository.findOne({
+            where: { servicePackage_id: createInvoiceDto.servicePackage_id },
+        });
+
+        var amount =
+            createInvoiceDto.amount * (servicePackage?.per_unit_price ?? 1);
         var orderId = partnerCode + new Date().getTime();
         var requestId = orderId;
         var extraData = "";
@@ -84,8 +82,6 @@ export class InvoiceService {
         var autoCapture = true;
         var lang = "vi";
 
-        //before sign HMAC SHA256 with format
-        //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
         var rawSignature =
             "accessKey=" +
             accessKey +
@@ -153,37 +149,50 @@ export class InvoiceService {
         //Send the request and get the response
         return new Promise<string>((resolve, reject) => {
             const req = https.request(options, (res) => {
-                let result = '';
-    
+                let result = "";
+
                 console.log(`Status: ${res.statusCode}`);
                 console.log(`Headers: ${JSON.stringify(res.headers)}`);
-    
-                res.setEncoding('utf8');
-                res.on('data', (body) => {
+
+                res.setEncoding("utf8");
+                res.on("data", (body) => {
                     result += body;
-                    console.log('Body: ');
+                    console.log("Body: ");
                     console.log(body);
-                    console.log('resultCode: ');
+                    console.log("resultCode: ");
                     console.log(JSON.parse(body).resultCode);
                 });
-    
-                res.on('end', () => {
-                    console.log('No more data in response.');
+
+                res.on("end", () => {
+                    console.log("No more data in response.");
                     // Resolve the promise with the result when the request is complete
-                    resolve(result);
+                    const originalResponse = JSON.parse(result);
+
+                    // Create an object for additional information
+                    const additionalInfo = {
+                        ipnUrl: ipnUrl,
+                        redirectUrl: redirectUrl,
+                        orderInfo: orderInfo,
+                    };
+
+                    // Add additional information to the original response
+                    originalResponse.additionalInfo = additionalInfo;
+
+                    // Resolve the promise with the modified JSON response
+                    resolve(JSON.stringify(originalResponse));
                 });
             });
-    
-            req.on('error', (e) => {
+
+            req.on("error", (e) => {
                 console.log(`Problem with request: ${e.message}`);
                 // Reject the promise with the error if there is a problem with the request
                 reject(e.message);
             });
-    
+
             // Write data to the request body
-            console.log('Sending....');
+            console.log("Sending....");
             req.write(requestBody);
-    
+
             // End the request
             req.end();
         });

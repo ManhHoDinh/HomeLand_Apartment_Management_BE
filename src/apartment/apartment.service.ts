@@ -95,8 +95,7 @@ export class ApartmentServiceImp extends ApartmentService {
                     this.storageManager.upload(
                         image.buffer,
                         `apartment/${apartment.apartment_id}/${
-                            index.toString() + Date.now() + image.extension ??
-                            ".png"
+                            index.toString() + Date.now()
                         }`,
                         `image/${image.extension ?? ".png"}`,
                     ),

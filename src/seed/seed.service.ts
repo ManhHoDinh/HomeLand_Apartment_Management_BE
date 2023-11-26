@@ -30,7 +30,6 @@ import {
     Equipment,
     EquipmentStatus,
 } from "../equipment/entities/equipment.entity";
-import { eq } from "lodash";
 import { EquipmentService } from "../equipment/equipment.service";
 @Injectable()
 export class SeedService {
@@ -111,6 +110,11 @@ export class SeedService {
         } as MemoryStoredFile,
     ];
 
+    private buildings: Building[] = [];
+    private floors: Floor[] = [];
+    private apartments: Apartment[] = [];
+    private equipments: Equipment[] = [];
+
     async startSeeding() {
         await this.createDemoAdmin();
         await this.createDemoResident();
@@ -119,15 +123,15 @@ export class SeedService {
         await this.createDemoAccountResident();
         await this.createDemoResidents();
 
-        // Create demo building
-        let buildings: Building[] = await this.createDemoBuildings();
-        let floors: Floor[] = await this.createDemoFloors(buildings);
-        let apartments: Apartment[] = await this.createDemoApartments(floors);
-        let equipments: Equipment[] = await this.createDemoEquipments(
-            buildings,
-            floors,
-            apartments,
+        this.buildings = await this.createDemoBuildings();
+        this.floors = await this.createDemoFloors(this.buildings);
+        this.apartments = await this.createDemoApartments(this.floors);
+        this.equipments = await this.createDemoEquipments(
+            this.buildings,
+            this.floors,
+            this.apartments,
         );
+
         await this.createDemoContract();
         await this.createDemoServices();
         await this.createDemoServicePackages();
@@ -138,10 +142,11 @@ export class SeedService {
         floors: Floor[],
         apartments: Apartment[],
     ): Promise<Equipment[]> {
+        let equipments: Equipment[] = [];
+
         let thangmayImage = {
             buffer: readFileSync(process.cwd() + "/src/seed/thangmay.jpg"),
         } as MemoryStoredFile;
-        let equipments: Equipment[] = [];
         for (let building of buildings) {
             for (let i = 0; i < 3; i++)
                 equipments.push(
@@ -154,10 +159,10 @@ export class SeedService {
                     }),
                 );
         }
+
         let cambienkhoiImage = {
             buffer: readFileSync(process.cwd() + "/src/seed/cambienkhoi.jpg"),
         } as MemoryStoredFile;
-
         for (let floor of floors) {
             for (let i = 0; i < 5; i++)
                 equipments.push(
@@ -170,10 +175,10 @@ export class SeedService {
                     }),
                 );
         }
+
         let tulanhImage = {
             buffer: readFileSync(process.cwd() + "/src/seed/tulanh.jpg"),
         } as MemoryStoredFile;
-
         for (let apartment of apartments) {
             equipments.push(
                 await this.equipmentService.create({
@@ -189,7 +194,6 @@ export class SeedService {
         let maylanhImage = {
             buffer: readFileSync(process.cwd() + "/src/seed/maylanh.jpg"),
         } as MemoryStoredFile;
-
         for (let apartment of apartments) {
             equipments.push(
                 await this.equipmentService.create({
@@ -308,13 +312,13 @@ export class SeedService {
                     front_identify_card_photo_URL:
                         await this.storageManager.upload(
                             this.frontIdentity.buffer,
-                            "admin/" + id + "/frontIdentifyPhoto.jpg",
+                            "technician/" + id + "/frontIdentifyPhoto.jpg",
                             "image/jpeg",
                         ),
                     back_identify_card_photo_URL:
                         await this.storageManager.upload(
                             this.backIdentity.buffer,
-                            "admin/" + id + "/backIdentifyPhoto.jpg",
+                            "technician/" + id + "/backIdentifyPhoto.jpg",
                             "image/jpeg",
                         ),
                 },
@@ -326,7 +330,7 @@ export class SeedService {
                         await this.avatarGenerator.generateAvatar(
                             "DEMO TECHNICIAN",
                         ),
-                        "admin/" + id + "/avatar.svg",
+                        "technician/" + id + "/avatar.svg",
                         "image/svg+xml",
                     ),
                 },
@@ -344,12 +348,12 @@ export class SeedService {
                 phone_number: "0677778787",
                 front_identify_card_photo_URL: await this.storageManager.upload(
                     this.frontIdentity.buffer,
-                    "admin/" + id + "/frontIdentifyPhoto.jpg",
+                    "manager/" + id + "/frontIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
                 back_identify_card_photo_URL: await this.storageManager.upload(
                     this.backIdentity.buffer,
-                    "admin/" + id + "/backIdentifyPhoto.jpg",
+                    "manager/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
             },
@@ -359,7 +363,7 @@ export class SeedService {
                 password: this.hashService.hash("password"),
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
-                    "admin/" + id + "/avatar.svg",
+                    "manager/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
             },
@@ -418,17 +422,17 @@ export class SeedService {
                 phone_number: faker.phone.number(),
                 front_identify_card_photo_URL: await this.storageManager.upload(
                     this.frontIdentity.buffer,
-                    "resident/" + id + "/frontIdentifyPhoto.jpg",
+                    "employee/" + id + "/frontIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
                 back_identify_card_photo_URL: await this.storageManager.upload(
                     this.backIdentity.buffer,
-                    "resident/" + id + "/backIdentifyPhoto.jpg",
+                    "employee/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO EMPOLYEE"),
-                    "admin/" + id + "/avatar.svg",
+                    "employee/" + id + "/avatar.svg",
                     "image/svg+xml",
                 ),
             },
@@ -475,8 +479,8 @@ export class SeedService {
                 name: "St. Crytal",
                 images: this.images,
                 length: 20,
-                building_id: "BLD0",
-                floor_id: "BLD0/FLR0",
+                building_id: this.floors[0].building_id,
+                floor_id: this.floors[0].floor_id,
                 width: 15,
                 description: faker.lorem.paragraphs({
                     min: 3,
@@ -489,6 +493,7 @@ export class SeedService {
             apartmentId,
         );
     }
+
     async createDemoContract() {
         await this.createDemoResident("RES123");
         await this.createDemoApartment("APM1698502960091");
@@ -519,6 +524,7 @@ export class SeedService {
             .values(ServiceInfo)
             .execute();
     }
+
     async createDemoServicePackages() {
         let ServicePackageInfo: any[] = [];
 

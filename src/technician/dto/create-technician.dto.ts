@@ -17,7 +17,6 @@ export class CreateTechnicianDto extends PickType(Profile, [
     "date_of_birth",
     "gender",
     "phone_number",
-    "identify_number"
 ] as const) {
 
     @ApiProperty({required: true})

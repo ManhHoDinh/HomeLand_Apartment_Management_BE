@@ -114,6 +114,10 @@ export class SeedService {
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
 
+         //create demo resident
+        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
+            await this.createDemoResident(i);
+        }
         // Create demo building
         let buildingInfo: any[] = await this.createDemoBuildings();
         let floorInfo: any[] = await this.createDemoFloors(buildingInfo);
@@ -183,11 +187,6 @@ export class SeedService {
                 );
             }
         }
-        //create demo resident
-        for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident(i);
-        }
-
     }
     async createDemoAccountResident() {
         let id = "RESIDENT";
@@ -208,7 +207,7 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: faker.string.numeric(12),
+                identify_number: "11111111",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
                     "resident/" + id + "/avatar.svg",
@@ -246,7 +245,7 @@ export class SeedService {
                             "admin/" + id + "/backIdentifyPhoto.jpg",
                             "image/jpeg",
                         ),
-                    identify_number: faker.string.numeric(12),
+                    identify_number: "2222222",
                     avatarURL: await this.storageManager.upload(
                         await this.avatarGenerator.generateAvatar(
                             "DEMO TECHNICIAN",
@@ -283,7 +282,7 @@ export class SeedService {
                     "image/jpeg",
                 ),
 
-                identify_number: faker.string.numeric(12),
+                identify_number: "44444444",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO MANAGER"),
                     "admin/" + id + "/avatar.svg",
@@ -317,7 +316,7 @@ export class SeedService {
                     "resident/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: faker.string.numeric(12),
+                identify_number: "583838383",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO RESIDENT"),
                     "resident/" + id + "/avatar.svg",
@@ -382,7 +381,7 @@ export class SeedService {
                     "admin/" + id + "/backIdentifyPhoto.jpg",
                     "image/jpeg",
                 ),
-                identify_number: faker.string.numeric(12),
+                identify_number: "999999999",
                 avatarURL: await this.storageManager.upload(
                     await this.avatarGenerator.generateAvatar("DEMO ADMIN"),
                     "admin/" + id + "/avatar.svg",

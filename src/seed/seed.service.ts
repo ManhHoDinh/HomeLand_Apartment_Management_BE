@@ -74,7 +74,7 @@ export class SeedService {
     private readonly NUMBER_OF_BUILDING = 5;
     private readonly NUMBER_OF_FLOOR_PER_BUILDING = 5;
     private readonly NUMBER_OF_APARTMENT_PER_FLOOR = 6;
-    private readonly NUMBER_OF_RESIDENT = 5;
+    private readonly NUMBER_OF_RESIDENT = 50;
     private readonly NUMBER_OF_EMPLOYEE = 10;
     private readonly NUMBER_OF_MANAGER = 10;
     private readonly NUMBER_OF_TECHNICIAN = 10;
@@ -110,6 +110,7 @@ export class SeedService {
 
     async startSeeding() {
         await this.createDemoAdmin();
+        await this.createDemoResident();
         await this.createDemoManager();
         await this.createDemoTechnician();
         await this.createDemoAccountResident();
@@ -183,13 +184,15 @@ export class SeedService {
                 );
             }
         }
+
+
         //create demo resident
         for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident(i);
+            await this.createDemoResident();
         }
 
     }
-    async createDemoAccountResident() {
+ async createDemoAccountResident() {
         let id = "RESIDENT";
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
@@ -263,7 +266,7 @@ export class SeedService {
             });
     }
 
-    async createDemoManager() {
+      async createDemoManager() {
         let id = "MNG" + this.idGenerator.generateId();
         const manager = await this.dataSource.getRepository(Manager).save({
             id: id,
@@ -298,7 +301,7 @@ export class SeedService {
         });
     }
 
-    async createDemoResident(index) {
+   async createDemoResident(index) {
         let id = "RES" + this.idGenerator.generateId();
         const resident = await this.dataSource.getRepository(Resident).save({
             id: id,
@@ -363,7 +366,7 @@ export class SeedService {
         });
     }
 
-    async createDemoAdmin() {
+     async createDemoAdmin() {
         let id = "ADM" + this.idGenerator.generateId();
         const admin = await this.dataSource.getRepository(Admin).save({
             id: id,

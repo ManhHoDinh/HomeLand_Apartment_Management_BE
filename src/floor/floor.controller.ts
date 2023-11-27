@@ -78,7 +78,7 @@ export class FloorController {
     }
 
     @ApiOperation({ summary: "delete manager from building" })
-    @Delete("/:id/deleteApartment")
+    @Post("/:id/deleteApartment")
     async deleteApartment(@Param("id") id: string, @Query("apartmentId") apartmentId: string) {
         return await this.floorRepository.deleteApartment(id, apartmentId)
     }

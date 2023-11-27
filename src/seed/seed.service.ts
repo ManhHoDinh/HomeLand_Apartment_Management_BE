@@ -145,7 +145,7 @@ export class SeedService {
         for (let building of buildingInfo) {
             for (let i = 0; i < this.NUMBER_OF_FLOOR_PER_BUILDING; i++) {
                 floorInfo.push({
-                    floor_id: `${building.building_id}/FLR${i}`,
+                    floor_id: `FLR${i}`,
                     name: `Floor ${i}`,
                     building_id: building.building_id,
                 });
@@ -405,7 +405,7 @@ export class SeedService {
                 images: this.images,
                 length: 20,
                 building_id: "BLD0",
-                floor_id: "BLD0/FLR0",
+                floor_id: "FLR0",
                 width: 15,
                 description: faker.lorem.paragraphs({
                     min: 3,

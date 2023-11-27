@@ -52,7 +52,8 @@ export class FloorController {
     }
     @Get(":id")
     async findOne(@Param("id") id: string) {
-        const building = await this.floorRepository.findOne(id);
+        const decodedId = decodeURIComponent(id);
+        const building = await this.floorRepository.findOne(decodedId);
         if (building) return building;
         throw new NotFoundException("Floor not found");
     }

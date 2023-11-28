@@ -547,7 +547,7 @@ export class SeedService {
 
     async createDemoResidents() {
         for (let i = 0; i < this.NUMBER_OF_RESIDENT; i++) {
-            await this.createDemoResident();
+            await this.createDemoResident(i);
         }
     }
 }

@@ -193,5 +193,9 @@ export class TypeORMFloorService extends FloorService {
             relations: ["apartments"],
         });
         return newBuilding;
+    } catch (err) {
+        console.error(err);
+        throw err;
+      }
     }
 }

@@ -173,11 +173,9 @@ export class ResidentService implements ResidentRepository {
         id: string,
         updateResidentDto: UpdateResidentDto,
     ): Promise<Resident> {
-        console.log(id)
         let resident = await this.residentRepository.findOne({
             where: { id },
         });
-        console.log(resident)
         const { payment_info, avatar_photo, email, ...rest } =
             updateResidentDto;
         if (!resident) throw new NotFoundException();

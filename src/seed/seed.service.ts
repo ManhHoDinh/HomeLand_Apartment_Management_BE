@@ -494,12 +494,12 @@ export class SeedService {
     }
 
     async createDemoContract() {
-        await this.createDemoResident("RES123");
+        // await this.createDemoResident(2);
         await this.createDemoApartment("APM1698502960091");
         let contractId = "Contract" + this.idGenerator.generateId();
         await this.dataSource.getRepository(Contract).save({
             contract_id: contractId,
-            resident_id: "RES123",
+            resident_id: "RESIDENT",    
             apartment_id: "APM1698502960091",
             expire_at: new Date("2030-01-01"),
             role: ContractRole.RENT,

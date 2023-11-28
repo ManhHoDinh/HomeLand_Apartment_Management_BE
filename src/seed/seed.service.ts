@@ -46,7 +46,7 @@ export class SeedService {
         private readonly apartmentService: ApartmentService,
         private readonly floorService: FloorService,
         private readonly equipmentService: EquipmentService,
-    ) {}
+    ) { }
 
     async dropDB() {
         try {
@@ -396,17 +396,17 @@ export class SeedService {
             account:
                 random === 0
                     ? {
-                          owner_id: id,
-                          email: faker.internet.email(),
-                          password: this.hashService.hash("password"),
-                          avatarURL: await this.storageManager.upload(
-                              await this.avatarGenerator.generateAvatar(
-                                  "DEMO RESIDENT",
-                              ),
-                              "resident/" + id + "/avatar.svg",
-                              "image/svg+xml",
-                          ),
-                      }
+                        owner_id: id,
+                        email: faker.internet.email(),
+                        password: this.hashService.hash("password"),
+                        avatarURL: await this.storageManager.upload(
+                            await this.avatarGenerator.generateAvatar(
+                                "DEMO RESIDENT",
+                            ),
+                            "resident/" + id + "/avatar.svg",
+                            "image/svg+xml",
+                        ),
+                    }
                     : undefined,
         });
     }

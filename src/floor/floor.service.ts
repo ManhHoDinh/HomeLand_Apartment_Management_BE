@@ -174,26 +174,29 @@ export class TypeORMFloorService extends FloorService {
             throw new Error(e);
         }
     }
-    async deleteApartment(
-        floor_id: string,
-        apartment_id: string,
-    ): Promise<Floor | null> {
-        const floor = await this.floorRepository.findOne({
+    async deleteApartment(floor_id: string, apartment_id: string): Promise<Floor | null> {
+        try {
+          const floor = await this.floorRepository.findOne({
             where: {
-                floor_id,
+              floor_id,
             },
-        });
-        await this.floorRepository
+          });
+          await this.floorRepository
             .createQueryBuilder()
             .relation(Floor, "apartments")
             .of(floor)
             .remove(apartment_id);
-        const newBuilding = await this.floorRepository.findOne({
+          const newBuilding = await this.floorRepository.findOne({
             where: {
-                floor_id,
+              floor_id,
             },
             relations: ["apartments"],
-        });
-        return newBuilding;
-    }
+          });
+          return newBuilding;
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+      }
+  
 }

@@ -46,7 +46,7 @@ export class SeedService {
         private readonly apartmentService: ApartmentService,
         private readonly floorService: FloorService,
         private readonly equipmentService: EquipmentService,
-    ) {}
+    ) { }
 
     async dropDB() {
         try {

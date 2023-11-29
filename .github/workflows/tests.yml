@@ -1,5 +1,6 @@
 name: Tests
-on: pull_request:
+on: 
+  pull_request:
     branches: [test/main]
     types: [opened, synchronize, closed]          
 jobs:

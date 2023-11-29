@@ -20,7 +20,5 @@ jobs:
         docker run --rm hello-world
         
         docker compose pull
-    - name: Install modules
-      run: npm ci
     - name: Run tests
       run: npm run test

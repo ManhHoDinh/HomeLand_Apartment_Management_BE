@@ -1,0 +1,13 @@
+name: Tests
+on: pull_request:
+    branches: [test/main]
+    types: [opened, synchronize, closed]          
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Install modules
+      run: npm ci
+    - name: Run tests
+      run: npm run test

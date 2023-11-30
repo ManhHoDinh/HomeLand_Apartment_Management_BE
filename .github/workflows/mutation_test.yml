@@ -18,9 +18,12 @@ jobs:
         docker run --rm hello-world
         
         docker compose pull
-        docker compose up -d
+        docker compose up 
         npx supabase start
-    
+    - name: Start dev
+      run: |
+         npm run start:dev
+         
     - name: Run stryker
       run: |
          npm install -g stryker-cli

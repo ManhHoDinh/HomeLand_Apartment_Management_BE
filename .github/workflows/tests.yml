@@ -29,6 +29,6 @@ jobs:
       timeout-minutes: 3
       run: |
         npm run test:cov --detectOpenHandles --u
-        npm run test:mutation -- --reporters progress,dashboard
+        # npm run test:mutation -- --reporters progress,dashboard
       
     

@@ -20,9 +20,6 @@ jobs:
         docker compose pull
         docker compose up 
         npx supabase start
-    - name: Start dev
-      run: |
-         npm run start:dev
          
     - name: Run stryker
       run: |

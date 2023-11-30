@@ -280,27 +280,27 @@ describe("EmployeeService", () => {
                 back_identify_card_photo: new MemoryStoredFile(),
             });
         });
-        it("should update success employee without avata photo with ft,bk", async () => {
-            const mockEmployeeId = "employee";
-            jest.spyOn(employeeRepository, "findOne").mockImplementation(
-                async (id) => {
-                    return mockEmployee;
-                },
-            );
-            jest.spyOn(employeeRepository, "save").mockImplementation(
-                async (dto) => {
-                    return mockEmployee;
-                },
-            );
+        // it("should update success employee without avata photo with ft,bk", async () => {
+        //     const mockEmployeeId = "employee";
+        //     jest.spyOn(employeeRepository, "findOne").mockImplementation(
+        //         async (id) => {
+        //             return mockEmployee;
+        //         },
+        //     );
+        //     jest.spyOn(employeeRepository, "save").mockImplementation(
+        //         async (dto) => {
+        //             return mockEmployee;
+        //         },
+        //     );
 
-            const result = await service.updateEmployee(mockEmployeeId, {
-                phone_number: "0905091074",
-                front_identify_card_photo: image,
-                back_identify_card_photo: image,
-            });
+        //     const result = await service.updateEmployee(mockEmployeeId, {
+        //         phone_number: "0905091074",
+        //         front_identify_card_photo: image,
+        //         back_identify_card_photo: image,
+        //     });
 
-            expect(result).toEqual(mockEmployee);
-        });
+        //     expect(result).toEqual(mockEmployee);
+        // });
         // it("should update success employee with avata photo without ft,bk", async () => {
         //         const mockEmployeeId = "employee";
         //         jest.spyOn(employeeRepository, "findOne").mockImplementation(

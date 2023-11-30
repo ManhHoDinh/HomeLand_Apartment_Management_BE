@@ -9,16 +9,26 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install modules
-      run: npm ci
+      run: npm i
     - uses: docker-practice/actions-setup-docker@master
       timeout-minutes: 12
     - run: |
         set -x
-
         docker version
-
         docker run --rm hello-world
         
         docker compose pull
+        docker compose up -d
+        npx supabase start
+    # - name: Run stryker
+    #   run: |
+    #     npm install -g stryker-cli
+    #     stryker run --logLevel trace
+
     - name: Run tests
-      run: npm run test
+      timeout-minutes: 3
+      run: |
+        npm run test:cov --detectOpenHandles --u
+        npm run test:mutation -- --reporters progress,dashboard
+      
+    

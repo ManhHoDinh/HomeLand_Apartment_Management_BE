@@ -39,7 +39,7 @@ async function bootstrap() {
 
     const option: SwaggerDocumentOptions = {
         deepScanRoutes: true,
-        extraModels: [Admin, Technician, Manager, Resident, Employee],
+        extraModels: [Admin, Technician, Manager, Resident],
     };
     const document = SwaggerModule.createDocument(app, config, option);
 

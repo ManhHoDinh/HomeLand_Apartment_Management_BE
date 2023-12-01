@@ -95,7 +95,9 @@
             "**/*.{!(module|entity|guard|filter|sub|seed.service),}.(t|j)s"
         ],
         "coveragePathIgnorePatterns": [
-            "<rootDir>/storage/storage.service.ts"
+            "<rootDir>/storage/storage.service.ts",
+            "<rootDir>/avatar-generator/avatar-generator.service.ts"
+
         ],
         "setupFiles": [
             "../setEnvVars.js"

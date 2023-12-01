@@ -19,7 +19,8 @@ jobs:
         
         docker compose pull
         docker compose up -d
-        
+        npx supabase start
+    
     # - name: Run stryker
     #   run: |
     #     npm install -g stryker-cli

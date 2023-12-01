@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install modules
-      run: npm ci
+      run: npm i
     - uses: docker-practice/actions-setup-docker@master
       timeout-minutes: 12
     - run: |

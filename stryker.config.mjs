@@ -15,15 +15,20 @@ const config = {
         plugins: [],
     },
 
+    
     mutate: [
         // "!src/**/*.module.ts",
-        "!src/**/*.entity.ts",
+
+
+
+        // "!src/**/*.entity.ts",
         // "!src/**/*.guard.ts",
         // "!src/**/*.filter.ts",
         // "!src/**/*.sub.ts",
         "src/**/*.ts",
         "!src/**/*.spec.ts",
         "!src/**/*.module.ts",
+        "!src/avatar-generator/*.ts"
     ],
 };
 export default config;

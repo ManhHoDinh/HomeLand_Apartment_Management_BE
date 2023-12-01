@@ -8,19 +8,22 @@ const config = {
     testRunner: "jest",
     testRunner_comment:
         "Take a look at (missing 'homepage' URL in package.json) for information about the jest plugin.",
-    coverageAnalysis: "perTest",
+    coverageAnalysis: "off",
     checkers: ["typescript"],
     tsconfigFile: "tsconfig.json",
-
     mutator: {
         plugins: [],
     },
+
     mutate: [
-        "!src/**/*.module.ts",
+        // "!src/**/*.module.ts",
         "!src/**/*.entity.ts",
-        "!src/**/*.guard.ts",
-        "!src/**/*.filter.ts",
-        "!src/**/*.sub.ts",
+        // "!src/**/*.guard.ts",
+        // "!src/**/*.filter.ts",
+        // "!src/**/*.sub.ts",
+        "src/**/*.ts",
+        "!src/**/*.spec.ts",
+        "!src/**/*.module.ts",
     ],
 };
 export default config;

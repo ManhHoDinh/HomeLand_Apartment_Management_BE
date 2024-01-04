@@ -23,14 +23,7 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Install modules
-      run: npm i
-  
-      
-    - name: Setup docker
-      uses: crazy-max/ghaction-setup-docker/master
-
-
-      timeout-minutes: 12
+      run: npm I
 
     - name: Display Docker version
       run: docker version

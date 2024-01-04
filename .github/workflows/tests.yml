@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-lastesr,macos-13]
+        os: [ubuntu-lastesr]
         node: [18, 20]
 
     steps:

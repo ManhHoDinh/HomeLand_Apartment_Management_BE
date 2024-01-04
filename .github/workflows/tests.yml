@@ -26,7 +26,7 @@ jobs:
       run: npm i
 
     - name: Set up Docker
-      uses: docker-practice/actions-setup-docker@master
+      uses: docker/setup-docker@v2
       with:
         docker-version: '20.10.8' # adjust to a compatible version
       timeout-minutes: 12

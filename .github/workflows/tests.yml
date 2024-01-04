@@ -1,34 +1,48 @@
 name: Tests
-on: 
+
+on:
   pull_request:
     branches: [test/main]
-    types: [opened, synchronize, closed]          
+    types: [opened, synchronize, closed]
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        node: [14, 16]
+        node: [12, 14, 16]
+
     steps:
-    - uses: actions/checkout@v4.1.1
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node }}
+
     - name: Install modules
       run: npm i
-    - uses: docker-practice/actions-setup-docker@master
+
+    - name: Set up Docker
+      uses: docker-practice/actions-setup-docker@master
       timeout-minutes: 12
-    - run: |
-        set -x
-        docker version
-        docker run --rm hello-world
-        
+
+    - name: Display Docker version
+      run: docker version
+
+    - name: Run hello-world in Docker
+      run: docker run --rm hello-world
+
+    - name: Pull and start Docker Compose
+      run: |
         docker compose pull
         docker compose up -d
         npx supabase start
-    
+
     - name: Run tests
       timeout-minutes: 3
       run: |
         npm run test:cov --detectOpenHandles --u
         # npm run test:mutation -- --reporters progress,dashboard
-      
-    

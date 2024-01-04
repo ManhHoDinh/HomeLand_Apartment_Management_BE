@@ -10,8 +10,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        node: [16, 20]
+        os: [macos-latest, ubuntu-latest]
+        node: [18, 20]
 
     steps:
     - name: Checkout code
@@ -37,8 +37,7 @@ jobs:
 
     - name: Pull and start Docker Compose
       run: |
-        if ($env:RUNNER_OS -eq "Linux" -or $env:RUNNER_OS -eq "macOS") 
-          set -x
+        set -x
         
         docker compose pull
         docker compose up -d

@@ -37,6 +37,7 @@ jobs:
 
     - name: Pull and start Docker Compose
       run: |
+        set -x
         docker compose pull
         docker compose up -d
         npx supabase start

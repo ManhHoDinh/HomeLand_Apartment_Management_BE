@@ -23,7 +23,7 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Install modules
-      run: npm I
+      run: npm i
   
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3

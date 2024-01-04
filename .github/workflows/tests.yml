@@ -26,8 +26,8 @@ jobs:
       run: npm i
   
       
-    - name: Set up Docker
-      uses: crazy-max/ghaction-setup-docker@v3
+    - name: Set up Docker         
+      uses: Byloth/docker-setup-action@v1.1.1
       timeout-minutes: 12
 
     - name: Display Docker version

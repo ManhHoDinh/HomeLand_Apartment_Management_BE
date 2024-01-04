@@ -27,6 +27,8 @@ jobs:
 
     - name: Set up Docker
       uses: docker-practice/actions-setup-docker@master
+      with:
+        docker-version: '20.10.8' # adjust to a compatible version
       timeout-minutes: 12
 
     - name: Display Docker version

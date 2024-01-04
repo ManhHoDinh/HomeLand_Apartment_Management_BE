@@ -26,8 +26,8 @@ jobs:
       run: npm i
   
       
-    - name: Docker Setup QEMU        
-      uses: docker/setup-qemu-action@v3.0.0
+    - name: Setup docker
+      uses: docker-practice/actions-setup-docker@1.0.8
 
 
       timeout-minutes: 12

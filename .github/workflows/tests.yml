@@ -26,7 +26,11 @@ jobs:
       run: npm i
 
     - name: Set up Docker
-      uses: docker-practice/actions-setup-docker@master
+      uses: byloth/docker-setup-action@v1
+        with:
+          registry: registry.domain.io
+          repository: AccountUsername/repository-name
+          shaLength: '8'
       timeout-minutes: 12
 
     - name: Display Docker version

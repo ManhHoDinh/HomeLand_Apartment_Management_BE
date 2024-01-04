@@ -27,7 +27,7 @@ jobs:
   
       
     - name: Setup docker
-      uses: docker-practice/actions-setup-docker@1.0.11
+      uses: douglascamata/setup-docker-macos-action@v1-alpha
 
 
       timeout-minutes: 12

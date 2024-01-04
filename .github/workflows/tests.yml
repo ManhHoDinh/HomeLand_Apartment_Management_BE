@@ -37,11 +37,9 @@ jobs:
 
     - name: Pull and start Docker Compose
       run: |
-        if ($env:RUNNER_OS -eq "Linux" -or $env:RUNNER_OS -eq "macOS") {
-        Write-Host "Setting -x"
-        # The following line is only executed on Linux or macOS
+        if ($env:RUNNER_OS -eq "Linux" -or $env:RUNNER_OS -eq "macOS") 
           set -x
-        }
+        
         docker compose pull
         docker compose up -d
         npx supabase start

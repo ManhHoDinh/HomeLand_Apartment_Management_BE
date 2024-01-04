@@ -27,7 +27,7 @@ jobs:
   
       
     - name: Setup docker
-      uses: docker-practice/actions-setup-docker@1.0.8
+      uses: docker-practice/actions-setup-docker@1.0.9
 
 
       timeout-minutes: 12

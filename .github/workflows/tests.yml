@@ -5,7 +5,11 @@ on:
     types: [opened, synchronize, closed]          
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        node: [14, 16]
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install modules
@@ -21,11 +25,6 @@ jobs:
         docker compose up -d
         npx supabase start
     
-    # - name: Run stryker
-    #   run: |
-    #     npm install -g stryker-cli
-    #     stryker run --logLevel trace
-
     - name: Run tests
       timeout-minutes: 3
       run: |

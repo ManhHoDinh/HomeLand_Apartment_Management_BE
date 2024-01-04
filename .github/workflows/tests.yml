@@ -25,11 +25,9 @@ jobs:
     - name: Install modules
       run: npm i
   
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
       
     - name: Set up Docker
-      uses: docker/setup-buildx-action@v3
+      uses: crazy-max/ghaction-setup-docker@v3
       timeout-minutes: 12
 
     - name: Display Docker version

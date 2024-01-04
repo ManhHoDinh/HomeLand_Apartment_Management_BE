@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v3
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -24,12 +24,6 @@ jobs:
 
     - name: Install modules
       run: npm ci
-
-    - name: Display Docker version
-      run: docker version
-
-    - name: Run hello-world in Docker
-      run: docker run --rm hello-world
 
     - name: Pull and start Docker Compose
       run: |

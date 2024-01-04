@@ -23,7 +23,7 @@ jobs:
         node-version: ${{ matrix.node }}
 
     - name: Install modules
-      run: npm I
+      run: npm ci
 
     - name: Display Docker version
       run: docker version

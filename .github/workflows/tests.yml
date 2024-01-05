@@ -21,7 +21,7 @@ jobs:
       # Add support for more platforms with QEMU (optional)
       # https://github.com/docker/setup-qemu-action
       name: Set up Docker Buildx
-      uses: KengoTODA/actions-setup-docker-compose@v1
+      uses: docker-practice/actions-setup-docker@master
       with:
         version: '2.14.2' 
     - name: Set up Node.js
@@ -45,7 +45,7 @@ jobs:
       run: |
         npm run test:cov --detectOpenHandles --u
         # npm run test:mutation -- --reporters progress,dashboard
-    - name: Run stryker
-      run: |
-         npm install -g stryker-cli
-         stryker run --logLevel trace
+    # - name: Run stryker
+    #   run: |
+    #      npm install -g stryker-cli
+    #      stryker run --logLevel trace

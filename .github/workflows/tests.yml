@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, closed]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,8 +22,7 @@ jobs:
       # https://github.com/docker/setup-qemu-action
       name: Set up Docker Buildx
       uses: docker-practice/actions-setup-docker@master
-      with:
-        version: '2.14.2' 
+       
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -45,6 +44,24 @@ jobs:
       run: |
         npm run test:cov --detectOpenHandles --u
         # npm run test:mutation -- --reporters progress,dashboard
+  
+  mutation-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Install modules
+      run: npm i
+    - uses: docker-practice/actions-setup-docker@master
+      timeout-minutes: 12
+    - run: |
+        set -x
+        docker version
+        docker run --rm hello-world
+        
+        docker compose pull
+        docker compose up -d 
+        npx supabase start
+    
     - name: Run stryker
       run: |
          npm install -g stryker-cli

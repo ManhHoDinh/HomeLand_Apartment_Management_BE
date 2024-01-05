@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [macos-11, ubuntu-latest]
+        os: [macos-11, ubuntu-latest, windows-latest]
         node: [18, 20]
 
     steps:

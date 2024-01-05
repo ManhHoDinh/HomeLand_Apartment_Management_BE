@@ -47,6 +47,10 @@ jobs:
   
   mutation-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-latest, windows-latest]
+        node: [18, 20]
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install modules

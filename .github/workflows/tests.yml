@@ -45,3 +45,7 @@ jobs:
       run: |
         npm run test:cov --detectOpenHandles --u
         # npm run test:mutation -- --reporters progress,dashboard
+    - name: Run stryker
+      run: |
+         npm install -g stryker-cli
+         stryker run --logLevel trace

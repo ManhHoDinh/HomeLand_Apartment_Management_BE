@@ -1,0 +1,72 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [test/main]
+    types: [opened, synchronize, closed]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-latest, windows-latest]
+        node: [18, 20]
+
+    steps:
+    - 
+      name: Checkout
+      uses: actions/checkout@v4
+    -
+      # Add support for more platforms with QEMU (optional)
+      # https://github.com/docker/setup-qemu-action
+      name: Set up Docker Buildx
+      uses: docker-practice/actions-setup-docker@master
+       
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node }}
+  
+    - name: Install modules
+      run: npm ci
+
+    - name: Pull and start Docker Compose
+      run: |
+        set -x
+        
+        docker compose pull
+        docker compose up -d
+        npx supabase start
+
+    - name: Run tests
+      timeout-minutes: 3
+      run: |
+        npm run test:cov --detectOpenHandles --u
+        # npm run test:mutation -- --reporters progress,dashboard
+  
+  mutation-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-latest, windows-latest]
+        node: [18, 20]
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Install modules
+      run: npm i
+    - uses: docker-practice/actions-setup-docker@master
+      timeout-minutes: 12
+    - run: |
+        set -x
+        docker version
+        docker run --rm hello-world
+        
+        docker compose pull
+        docker compose up -d 
+        npx supabase start
+    
+    - name: Run stryker
+      run: |
+         npm install -g stryker-cli
+         stryker run --logLevel trace
